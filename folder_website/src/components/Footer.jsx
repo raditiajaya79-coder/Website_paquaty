@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Facebook, Instagram } from 'lucide-react';
+import { Facebook, Instagram, Mail } from 'lucide-react';
 import { COMPANY_INFO } from '../data/products';
 
 /**
@@ -36,7 +36,6 @@ const Footer = () => {
                             <ul className="space-y-4">
                                 <li><a href="https://wa.me/6281287990370" target="_blank" rel="noopener noreferrer" className="text-[#78716C] hover:text-[#A3B14B] transition-colors">Sales</a></li>
                                 <li><a href="https://wa.me/6282142205147" target="_blank" rel="noopener noreferrer" className="text-[#78716C] hover:text-[#A3B14B] transition-colors">Partnerships</a></li>
-                                <li><a href={`mailto:${COMPANY_INFO.email}`} className="text-[#78716C] hover:text-[#A3B14B] transition-colors">{COMPANY_INFO.email}</a></li>
                             </ul>
                         </div>
                         <div>
@@ -54,6 +53,7 @@ const Footer = () => {
                     <div className="flex gap-6">
                         <a href={COMPANY_INFO.instagram} target="_blank" rel="noopener noreferrer" className="text-[#78716C] hover:text-[#A3B14B]"><Instagram className="w-5 h-5" /></a>
                         <a href={COMPANY_INFO.facebook} target="_blank" rel="noopener noreferrer" className="text-[#78716C] hover:text-[#A3B14B]"><Facebook className="w-5 h-5" /></a>
+                        <a href={`mailto:${COMPANY_INFO.email}`} className="text-[#78716C] hover:text-[#A3B14B]"><Mail className="w-5 h-5" /></a>
                     </div>
                 </div>
             </div>
