@@ -1,10 +1,12 @@
 export const COMPANY_INFO = {
-    name: "Pakuaty",
+    name: "PT. Bala Aditi Pakuaty",
     tagline: "Bridging Nature to Global Markets",
-    email: "hello@pakuaty.com",
-    phone: "+62 812-XXXX-XXXX",
-    address: "Kediri, East Java, Indonesia",
-    instagram: "@pakuaty.official",
+    email: "bala.aditi.pakuaty@gmail.com",
+    phone: "+62 812-8799-0370",
+    phone2: "+62 821-4220-5147",
+    address: "Jl. Veteran No.15 B Kota Kediri 64114 Jawa Timur Indonesia",
+    instagram: "https://www.instagram.com/pakuaty_tempechips/",
+    facebook: "https://www.facebook.com/share/1L5CQdgKFZ/",
     linkedin: "pakuaty-exports"
 };
 
@@ -29,6 +31,33 @@ export const PRODUCTS = [
     },
     {
         id: 3,
+        name: "Black Pepper",
+        grade: "Tellicherry Bold",
+        origin: "Vietnam / India",
+        moq: "200 kg",
+        image: "https://images.unsplash.com/photo-1506085621370-98b475435879?q=80&w=687&auto=format&fit=crop",
+        tag: ""
+    },
+    {
+        id: 4,
+        name: "Black Pepper",
+        grade: "Tellicherry Bold",
+        origin: "Vietnam / India",
+        moq: "200 kg",
+        image: "https://images.unsplash.com/photo-1506085621370-98b475435879?q=80&w=687&auto=format&fit=crop",
+        tag: ""
+    },
+    {
+        id: 5,
+        name: "Black Pepper",
+        grade: "Tellicherry Bold",
+        origin: "Vietnam / India",
+        moq: "200 kg",
+        image: "https://images.unsplash.com/photo-1506085621370-98b475435879?q=80&w=687&auto=format&fit=crop",
+        tag: ""
+    },
+    {
+        id: 6,
         name: "Black Pepper",
         grade: "Tellicherry Bold",
         origin: "Vietnam / India",

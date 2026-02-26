@@ -41,10 +41,11 @@ const Contact = () => {
                                         <MapPin className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h4 className="text-lg font-medium text-stone-dark mb-2">Global Headquarters</h4>
+                                        <h4 className="text-lg font-medium text-stone-dark mb-2">Our Office</h4>
                                         <p className="text-stone-500 font-light leading-relaxed">
-                                            Kediri, East Java<br />
-                                            Indonesia
+                                            Jl. Veteran No.15 B<br />
+                                            Kota Kediri 64114<br />
+                                            Jawa Timur, Indonesia
                                         </p>
                                     </div>
                                 </div>
@@ -54,10 +55,9 @@ const Contact = () => {
                                         <Mail className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h4 className="text-lg font-medium text-stone-dark mb-2">Direct Inquiries</h4>
+                                        <h4 className="text-lg font-medium text-stone-dark mb-2">Email</h4>
                                         <p className="text-stone-500 font-light leading-relaxed">
-                                            Wholesale: hello@pakuaty.com<br />
-                                            General: info@pakuaty.com
+                                            bala.aditi.pakuaty@gmail.com
                                         </p>
                                     </div>
                                 </div>
@@ -67,10 +67,10 @@ const Contact = () => {
                                         <Phone className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h4 className="text-lg font-medium text-stone-dark mb-2">Connect with us</h4>
+                                        <h4 className="text-lg font-medium text-stone-dark mb-2">WhatsApp</h4>
                                         <p className="text-stone-500 font-light leading-relaxed">
-                                            Office: +62 812-XXXX-XXXX<br />
-                                            WhatsApp: +62 812-XXXX-XXXX
+                                            +62 812-8799-0370<br />
+                                            +62 821-4220-5147
                                         </p>
                                     </div>
                                 </div>

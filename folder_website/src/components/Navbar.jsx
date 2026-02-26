@@ -12,8 +12,7 @@ const Navbar = () => {
         <nav className="fixed top-0 w-full z-50 bg-[#FAFAF9]/80 backdrop-blur-md border-b border-[#E7E5E4]">
             <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                 <Link to="/" className="flex gap-3 items-center group">
-                    <div className="w-8 h-8 bg-[#A3B14B] rounded-full group-hover:scale-110 transition-transform"></div>
-                    <span className="text-xl font-medium tracking-tight text-[#292524]">Pakuaty</span>
+                    <img src="/images/pure logo pakuaty.png" alt="Pakuaty" className="h-10 object-contain group-hover:scale-105 transition-transform" />
                 </Link>
 
                 <div className="hidden md:flex items-center gap-8">

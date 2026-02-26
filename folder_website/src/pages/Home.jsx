@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Download, Sprout, Microscope, Container, Store, Award, ShieldCheck, Check, FileBadge, Leaf, Scale } from 'lucide-react';
 import { PRODUCTS } from '../data/products';
+import CTA from '../components/CTA';
 
 const Home = () => {
     const fadeIn = {
@@ -104,7 +105,7 @@ const Home = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {PRODUCTS.map((product) => (
+                        {PRODUCTS.slice(0, 3).map((product) => (
                             <Link to={`/products/${product.id}`} key={product.id} className="group relative h-[500px] rounded-3xl bg-[#132316] border border-white/5 hover:border-[#A3B14B]/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl overflow-hidden block">
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a140c] via-[#0a140c]/50 to-transparent opacity-90 z-10"></div>
                                 <img src={product.image} alt={product.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80" />
@@ -235,6 +236,7 @@ const Home = () => {
                     </div>
                 </div>
             </section>
+            <CTA />
         </div>
     );
 };
