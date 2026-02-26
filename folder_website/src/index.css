@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #A3B14B;
+  --color-stone-dark: #1C1917;
+  --color-stone-light: #FAFAF9;
+  --color-stone-border: #E7E5E4;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-[#FAFAF9] text-[#1C1917] antialiased;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* Selection colors from template */
+  ::selection {
+    @apply bg-[#A3B14B] text-white;
+  }
+
+  /* Custom heading styles */
+  h1, h2, h3, .font-serif {
+    @apply tracking-tight;
+  }
+}
+
+/* Scrollbar hiding as per template */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
