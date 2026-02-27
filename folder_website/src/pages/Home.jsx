@@ -21,13 +21,13 @@ const Home = () => {
     };
 
     const heroImages = PRODUCTS
-        .filter(p => ["Original", "Balado", "BBQ", "Keju", "Sapi Panggang"].includes(p.name))
+        .filter(p => ["Original", "Balado", "BBQ", "Keju", "Sapi Panggang", "Jamur Crispy"].includes(p.name))
         .map(p => p.image);
 
     return (
         <div className="bg-stone-light text-stone-dark">
             {/* Hero Section — Slanted Reveal */}
-            <section className="relative h-[85vh] min-h-[600px] overflow-hidden bg-[#1C1917]">
+            <section className="relative min-h-screen overflow-hidden bg-[#1C1917]">
                 {/* Stage 1: Brand Intro (Lines & Text) */}
                 <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
                     <motion.div
@@ -74,12 +74,12 @@ const Home = () => {
                 </div>
 
                 {/* Slices Container */}
-                <div className="absolute inset-0 flex w-[130%] h-full z-0 overflow-hidden -left-[10%] pointer-events-none">
+                <div className="absolute inset-0 flex w-[140%] h-full z-0 overflow-hidden -left-[10%] pointer-events-none">
                     {heroImages.map((src, idx) => (
                         <motion.div
                             key={idx}
                             initial={{ width: "0%" }}
-                            animate={{ width: isRevealed ? "28%" : "0%" }}
+                            animate={{ width: isRevealed ? "23%" : "0%" }}
                             transition={{ duration: 1.2, delay: 0.8 + (idx * 0.1), ease: [0.22, 1, 0.36, 1] }}
                             className="relative h-full overflow-hidden group pointer-events-auto"
                             style={{
@@ -95,7 +95,7 @@ const Home = () => {
                                 <img
                                     src={src}
                                     alt="Product"
-                                    className="w-full h-full object-cover scale-[1.3] object-center"
+                                    className="w-full h-full object-cover scale-[1.7] object-bottom md:object-center"
                                 />
                                 <div className="absolute inset-0 bg-stone-dark/40 group-hover:bg-transparent transition-colors duration-700"></div>
                             </motion.div>
@@ -131,79 +131,127 @@ const Home = () => {
                         </motion.div>
                     </div>
                 </div>
-            </section>
 
-            {/* Content Section (Transitioning back to light theme) */}
-            <div className="relative z-10 bg-white">
-                {/* High-Fidelity Badge Strip */}
-                <div className="border-b border-stone-border py-12 relative z-20">
+                {/* Seamless Badge Strip Overlay */}
+                <div className="absolute bottom-0 left-0 w-full z-40 bg-gradient-to-t from-stone-dark/90 to-transparent pt-20 pb-12">
                     <div className="max-w-7xl mx-auto px-6">
-                        <div className="flex flex-wrap justify-center md:justify-between items-center gap-10 opacity-50 grayscale hover:grayscale-0 transition-all duration-700">
+                        <div className="flex flex-wrap justify-center md:justify-between items-center gap-10 opacity-40 grayscale group hover:grayscale-0 transition-all duration-700">
                             {["WholeFoods", "TESCO", "Carrefour", "Waitrose", "TraderJoe's"].map(brand => (
-                                <span key={brand} className="text-xl font-semibold tracking-tight">{brand}</span>
+                                <span key={brand} className="text-xl font-semibold tracking-tight text-white/70 italic hover:text-brand-gold transition-colors">{brand}</span>
                             ))}
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* Products Grid */}
-            <section id="products" className="relative py-32 bg-stone-dark overflow-hidden">
-                <div className="absolute top-0 right-0 w-[800px] h-[800px] opacity-40 pointer-events-none mix-blend-screen bg-brand-blue/10 blur-3xl rounded-full"></div>
-                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] opacity-30 pointer-events-none mix-blend-screen bg-brand-gold/10 blur-2xl rounded-full"></div>
+            {/* Products Grid — Premium Vibrant Light Design */}
+            <section id="products" className="relative py-24 bg-stone-light overflow-hidden">
+                {/* Multi-Color Vibrant Decorative Elements (Blue & Gold) */}
+                <div className="absolute top-0 right-0 w-[800px] h-[800px] opacity-20 bg-brand-gold blur-[150px] rounded-full translate-x-1/3 -translate-y-1/3 pointer-events-none animate-pulse duration-[8000ms]"></div>
+                <div className="absolute bottom-0 left-0 w-[700px] h-[700px] opacity-15 bg-brand-blue blur-[120px] rounded-full -translate-x-1/4 translate-y-1/4 pointer-events-none animate-pulse duration-[10000ms]"></div>
+
+                {/* Subtle Radial Mesh Gradient for Color Blending */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,_rgba(218,165,32,0.05)_0%,_transparent_50%),radial-gradient(circle_at_20%_80%,_rgba(38,84,161,0.05)_0%,_transparent_50%)] pointer-events-none"></div>
 
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
-                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
-                        <div>
-                            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-white mb-4">
-                                Taste the <span className="text-brand-gold">Tradition</span>
-                            </h2>
-                            <p className="text-lg text-neutral-400 max-w-md font-light leading-relaxed">
-                                Authentic Indonesian tempe chips in bold flavors, crafted from heritage recipes and the finest local ingredients.
-                            </p>
+                    {/* Section Header */}
+                    <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 gap-8">
+                        <div className="max-w-2xl">
+                            <motion.h2
+                                {...fadeIn}
+                                className="text-5xl md:text-7xl font-medium tracking-tight text-stone-dark mb-6"
+                            >
+                                Artisan <span className="text-brand-blue">Tempe Chips</span>
+                            </motion.h2>
+                            <motion.p
+                                {...fadeIn}
+                                transition={{ delay: 0.2 }}
+                                className="text-lg text-stone-dark/60 leading-relaxed"
+                            >
+                                Premium Indonesian tempe chips crafted with heritage techniques and bold, authentic flavors for the global palate.
+                            </motion.p>
                         </div>
 
-                        <Link to="/products" className="group flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 border border-white/10 hover:bg-brand-gold hover:border-brand-gold transition-all duration-300 backdrop-blur-sm">
-                            <span className="text-neutral-200 font-medium group-hover:text-stone-dark">View Full Catalog</span>
-                            <ArrowRight className="w-5 h-5 text-neutral-400 group-hover:text-stone-dark transition-colors" />
-                        </Link>
+                        <motion.div {...fadeIn}>
+                            <Link
+                                to="/products"
+                                className="group flex items-center gap-3 px-8 py-4 rounded-full bg-white border border-stone-border hover:bg-brand-blue hover:border-brand-blue transition-all duration-300 shadow-sm"
+                            >
+                                <span className="text-stone-dark font-medium group-hover:text-white transition-colors">View Full Catalog</span>
+                                <ArrowRight className="w-4 h-4 text-stone-dark group-hover:translate-x-1 group-hover:text-white transition-all" />
+                            </Link>
+                        </motion.div>
                     </div>
 
+                    {/* Product Cards Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {PRODUCTS.slice(0, 3).map((product) => (
-                            <Link to={`/products/${product.id}`} key={product.id} className="group relative h-[500px] rounded-3xl bg-[#132316] border border-white/5 hover:border-brand-gold/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-brand-gold/20 overflow-hidden block">
-                                <div className="absolute inset-0 bg-gradient-to-t from-[#0a140c] via-[#0a140c]/50 to-transparent opacity-90 z-10"></div>
-                                <img src={product.image} alt={product.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80" />
+                        {PRODUCTS.slice(0, 3).map((product, idx) => (
+                            <motion.div
+                                key={product.id}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.6, delay: idx * 0.1 }}
+                            >
+                                <Link
+                                    to={`/products/${product.id}`}
+                                    className="group relative block aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-white border border-stone-border hover:border-brand-gold transition-all duration-500 shadow-xl hover:shadow-2xl"
+                                >
+                                    {/* Image */}
+                                    <img
+                                        src={product.image}
+                                        alt={product.name}
+                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                    />
 
-                                <div className="relative z-20 h-full p-8 flex flex-col justify-between">
-                                    <div className="flex justify-between items-start">
+                                    {/* Gradient Overlay - Soft Bottom Gradient for Text Readability */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-stone-dark/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500"></div>
+
+                                    {/* Top Badges - using brand colors */}
+                                    <div className="absolute top-8 left-8 flex items-center gap-3">
                                         {product.tag && (
-                                            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-brand-gold text-stone-dark shadow-lg backdrop-blur-md border border-white/10">
+                                            <span className="px-4 py-1.5 rounded-full bg-brand-gold text-black text-[10px] font-bold uppercase tracking-wider shadow-lg">
                                                 {product.tag}
                                             </span>
                                         )}
-                                        <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0 ml-auto">
-                                            <ArrowRight className="w-5 h-5 text-white -rotate-45" />
+                                        {idx === 1 && (
+                                            <span className="px-4 py-1.5 rounded-full bg-brand-blue text-white text-[10px] font-bold uppercase tracking-wider shadow-lg border border-white/10">
+                                                Premium
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Circle Arrow Icon - updated to brand blue */}
+                                    <div className="absolute top-8 right-8 w-12 h-12 rounded-full bg-brand-blue/20 backdrop-blur-md border border-brand-blue/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                                        <ArrowRight className="w-5 h-5 text-brand-gold -rotate-45" />
+                                    </div>
+
+                                    {/* Content Overlay */}
+                                    <div className="absolute bottom-0 left-0 w-full p-8 z-20">
+                                        <h3 className="text-3xl font-bold text-white mb-1 group-hover:text-brand-gold transition-colors duration-300">
+                                            {product.name}
+                                        </h3>
+                                        <p className="text-brand-gold-light text-sm font-medium mb-2 group-hover:mb-6 transition-all duration-500 opacity-90 uppercase tracking-wide">
+                                            {product.grade}
+                                        </p>
+
+                                        {/* Hidden Details - Visible only on hover, using brand-gold accent */}
+                                        <div className="opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 flex items-center gap-10 pt-4 border-t border-white/20">
+                                            <div>
+                                                <p className="text-[10px] uppercase tracking-widest text-brand-gold/60 mb-1 font-bold">Origin</p>
+                                                <p className="text-sm font-semibold text-white/90">{product.origin}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] uppercase tracking-widest text-brand-gold/60 mb-1 font-bold">MOQ</p>
+                                                <p className="text-sm font-semibold text-white/90">{product.moq}</p>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                                        <h3 className="text-3xl font-semibold text-white tracking-tight mb-2">{product.name}</h3>
-                                        <p className="text-brand-gold font-medium text-base mb-6">{product.grade}</p>
-
-                                        <div className="grid grid-cols-2 gap-4 border-t border-white/10 pt-5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-                                            <div>
-                                                <p className="text-[10px] text-neutral-400 uppercase tracking-widest mb-1">Origin</p>
-                                                <p className="text-sm font-medium text-neutral-200">{product.origin}</p>
-                                            </div>
-                                            <div>
-                                                <p className="text-[10px] text-neutral-400 uppercase tracking-widest mb-1">MOQ</p>
-                                                <p className="text-sm font-medium text-neutral-200">{product.moq}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
+                                    {/* Hover Border Glow - updated to brand blue */}
+                                    <div className="absolute inset-0 bg-brand-blue/0 group-hover:bg-brand-blue/5 transition-all duration-500 pointer-events-none"></div>
+                                </Link>
+                            </motion.div>
                         ))}
                     </div>
                 </div>
