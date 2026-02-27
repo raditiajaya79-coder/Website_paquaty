@@ -1,39 +1,45 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #1E3A8A;
-  --color-accent: #EAB308;
-  --color-stone-dark: #0F172A;
-  --color-stone-light: #F8FAFC;
-  --color-stone-border: #E2E8F0;
+  --color-brand-blue: #2654A1;
+  --color-brand-gold: #DAA520;
+  --color-brand-gold-light: #E8B84B;
+  --color-stone-dark: #1C1917;
+  --color-stone-light: #FAFAF9;
+  --color-stone-mid: #F5F5F4;
+  --color-stone-border: #E7E5E4;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
   }
-  
+
   body {
-    @apply bg-[#FAFAF9] text-[#1C1917] antialiased;
+    @apply bg-stone-light text-stone-dark antialiased;
     font-family: 'Plus Jakarta Sans', sans-serif;
   }
 
-  /* Selection colors from template */
+  /* Selection colors — brand blue */
   ::selection {
-    @apply bg-[#A3B14B] text-white;
+    @apply bg-brand-blue text-white;
   }
 
   /* Custom heading styles */
-  h1, h2, h3, .font-serif {
+  h1,
+  h2,
+  h3,
+  .font-serif {
     @apply tracking-tight;
   }
 }
 
-/* Scrollbar hiding as per template */
+/* Scrollbar hiding */
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;

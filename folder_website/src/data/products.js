@@ -1,9 +1,10 @@
 export const COMPANY_INFO = {
     name: "PT. Bala Aditi Pakuaty",
-    tagline: "Bridging Nature to Global Markets",
+    tagline: "Crunch the Culture",
     email: "bala.aditi.pakuaty@gmail.com",
     phone: "+62 812-8799-0370",
     phone2: "+62 821-4220-5147",
+    whatsapp: "6281287990370",
     address: "Jl. Veteran No.15 B Kota Kediri 64114 Jawa Timur Indonesia",
     instagram: "https://www.instagram.com/pakuaty_tempechips/",
     facebook: "https://www.facebook.com/share/1L5CQdgKFZ/",
@@ -13,63 +14,63 @@ export const COMPANY_INFO = {
 export const PRODUCTS = [
     {
         id: 1,
-        name: "Green Cardamom",
-        grade: "Alleppey Grade A",
-        origin: "Kerala, India",
-        moq: "500 kg",
-        image: "https://images.unsplash.com/photo-1701190588800-67a7007492ad?q=80&w=1000&auto=format&fit=crop",
-        tag: "Top Seller"
+        name: "Original",
+        grade: "Classic Tempe Chip",
+        origin: "Kediri, East Java",
+        moq: "100 pcs",
+        image: "/images/keripik tempe original pakuaty.jpg",
+        tag: "Best Seller"
     },
     {
         id: 2,
-        name: "Orthodox Tea",
-        grade: "Whole Leaf Black",
-        origin: "Assam, India",
-        moq: "1000 kg",
-        image: "https://images.unsplash.com/photo-1531969179221-3946e6b5a5e7?q=80&w=687&auto=format&fit=crop",
-        tag: "Premium"
+        name: "Balado",
+        grade: "Spicy Chili Tempe Chip",
+        origin: "Kediri, East Java",
+        moq: "100 pcs",
+        image: "/images/keirpik tempe balado pakuaty.jpg",
+        tag: "Spicy"
     },
     {
         id: 3,
-        name: "Black Pepper",
-        grade: "Tellicherry Bold",
-        origin: "Vietnam / India",
-        moq: "200 kg",
-        image: "https://images.unsplash.com/photo-1506085621370-98b475435879?q=80&w=687&auto=format&fit=crop",
+        name: "BBQ",
+        grade: "Smoky BBQ Tempe Chip",
+        origin: "Kediri, East Java",
+        moq: "100 pcs",
+        image: "/images/keripik tempe bbq pakuaty.jpg",
         tag: ""
     },
     {
         id: 4,
-        name: "Black Pepper",
-        grade: "Tellicherry Bold",
-        origin: "Vietnam / India",
-        moq: "200 kg",
-        image: "https://images.unsplash.com/photo-1506085621370-98b475435879?q=80&w=687&auto=format&fit=crop",
-        tag: ""
+        name: "Keju",
+        grade: "Cheese Tempe Chip",
+        origin: "Kediri, East Java",
+        moq: "100 pcs",
+        image: "/images/keripik tempe keju pakuaty.jpg",
+        tag: "Popular"
     },
     {
         id: 5,
-        name: "Black Pepper",
-        grade: "Tellicherry Bold",
-        origin: "Vietnam / India",
-        moq: "200 kg",
-        image: "https://images.unsplash.com/photo-1506085621370-98b475435879?q=80&w=687&auto=format&fit=crop",
+        name: "Sapi Panggang",
+        grade: "Roasted Beef Tempe Chip",
+        origin: "Kediri, East Java",
+        moq: "100 pcs",
+        image: "/images/keripik tempe sapi pakuaty.jpg",
         tag: ""
     },
     {
         id: 6,
-        name: "Black Pepper",
-        grade: "Tellicherry Bold",
-        origin: "Vietnam / India",
-        moq: "200 kg",
-        image: "https://images.unsplash.com/photo-1506085621370-98b475435879?q=80&w=687&auto=format&fit=crop",
-        tag: ""
+        name: "Jamur Crispy",
+        grade: "Crispy Mushroom Chip",
+        origin: "Kediri, East Java",
+        moq: "100 pcs",
+        image: "/images/keripik jamur pakuaty.jpg",
+        tag: "New"
     }
 ];
 
 export const FOUNDER = {
     name: "Billy",
     title: "Founder & CEO",
-    bio: "Passionate about connecting global markets with premium natural commodities.",
+    bio: "Passionate about bringing Indonesian tempe chips to the global market.",
     image: "/images/BILLY FOUNDER PAQUATY.png"
 };

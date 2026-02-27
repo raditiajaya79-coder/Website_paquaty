@@ -2,11 +2,11 @@ import { Link, NavLink } from 'react-router-dom';
 import { ArrowRight, Menu } from 'lucide-react';
 
 /**
- * Navbar — Reverted to Template Design + Pakuaty Branding
+ * Navbar — Template style with brand accents
  */
 const Navbar = () => {
     const activeStyle = ({ isActive }) =>
-        `text-base font-normal transition-colors ${isActive ? 'text-primary font-medium' : 'text-slate-600 hover:text-stone-dark'}`;
+        `text-base font-normal transition-colors ${isActive ? 'text-brand-blue font-medium' : 'text-[#57534E] hover:text-stone-dark'}`;
 
     return (
         <nav className="fixed top-0 w-full z-50 bg-stone-light/80 backdrop-blur-md border-b border-stone-border">
@@ -22,7 +22,7 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <button className="hidden md:flex items-center gap-2 bg-stone-dark text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-accent hover:text-stone-dark transition-all duration-300 shadow-lg shadow-blue-900/10">
+                    <button className="hidden md:flex items-center gap-2 bg-stone-dark text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-brand-gold hover:text-stone-dark transition-all duration-300 shadow-lg shadow-neutral-200">
                         Partner with us
                         <ArrowRight className="w-4 h-4" />
                     </button>
