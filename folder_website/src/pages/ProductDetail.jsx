@@ -23,7 +23,7 @@ const ProductDetail = () => {
         return (
             <div className="pt-40 pb-20 text-center">
                 <h2 className="text-2xl font-serif text-stone-dark mb-4">Product Not Found</h2>
-                <Link to="/products" className="text-primary font-medium hover:underline">Return to Catalog</Link>
+                <Link to="/products" className="text-accent font-medium hover:underline">Return to Catalog</Link>
             </div>
         );
     }
@@ -67,9 +67,9 @@ const ProductDetail = () => {
 
                         {/* Info Section */}
                         <motion.div {...fadeIn} transition={{ delay: 0.2 }} className="lg:sticky lg:top-32">
-                            <span className="text-primary font-bold tracking-[0.3em] uppercase text-xs mb-6 block underline decoration-primary/30 decoration-2 underline-offset-8">Premium Commodity</span>
+                            <span className="text-accent font-bold tracking-[0.3em] uppercase text-xs mb-6 block underline decoration-accent/30 decoration-2 underline-offset-8">Premium Commodity</span>
                             <h1 className="text-5xl md:text-7xl font-serif font-medium text-stone-dark tracking-tight mb-6 leading-[1.1]">{product.name}</h1>
-                            <p className="text-2xl text-stone-500 font-light mb-10 italic">Nature's finest selection.</p>
+                            <p className="text-2xl text-slate-500 font-light mb-10 italic">Nature's finest selection.</p>
 
                             <div className="grid grid-cols-2 gap-4 mb-12">
                                 <div className="p-6 bg-white rounded-3xl border border-stone-border shadow-sm flex flex-col gap-3">

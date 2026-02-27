@@ -6,10 +6,10 @@ import { ArrowRight, Menu } from 'lucide-react';
  */
 const Navbar = () => {
     const activeStyle = ({ isActive }) =>
-        `text-base font-normal transition-colors ${isActive ? 'text-[#A3B14B] font-medium' : 'text-[#57534E] hover:text-[#1C1917]'}`;
+        `text-base font-normal transition-colors ${isActive ? 'text-primary font-medium' : 'text-slate-600 hover:text-stone-dark'}`;
 
     return (
-        <nav className="fixed top-0 w-full z-50 bg-[#FAFAF9]/80 backdrop-blur-md border-b border-[#E7E5E4]">
+        <nav className="fixed top-0 w-full z-50 bg-stone-light/80 backdrop-blur-md border-b border-stone-border">
             <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                 <Link to="/" className="flex gap-3 items-center group">
                     <img src="/images/pure logo pakuaty.png" alt="Pakuaty" className="h-10 object-contain group-hover:scale-105 transition-transform" />
@@ -22,12 +22,12 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <button className="hidden md:flex items-center gap-2 bg-[#1C1917] text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-[#A3B14B] transition-all duration-300 shadow-lg shadow-neutral-200">
+                    <button className="hidden md:flex items-center gap-2 bg-stone-dark text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-accent hover:text-stone-dark transition-all duration-300 shadow-lg shadow-blue-900/10">
                         Partner with us
                         <ArrowRight className="w-4 h-4" />
                     </button>
 
-                    <button className="md:hidden text-[#1C1917]">
+                    <button className="md:hidden text-stone-dark">
                         <Menu className="w-6 h-6" />
                     </button>
                 </div>

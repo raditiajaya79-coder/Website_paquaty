@@ -25,7 +25,7 @@ const Contact = () => {
                 <div className="max-w-7xl mx-auto px-6">
                     <motion.div {...fadeIn} className="text-center max-w-2xl mx-auto mb-20">
                         <h1 className="text-5xl font-serif font-medium text-stone-dark mb-6 tracking-tight">
-                            Let's Start a <span className="text-primary italic">Partnership.</span>
+                            Let's Start a <span className="text-accent italic">Partnership.</span>
                         </h1>
                         <p className="text-lg text-stone-600 font-light leading-relaxed">
                             Whether you're looking for a reliable supply chain partner or have questions about our origin sourcing, our team is here to help.
@@ -76,9 +76,9 @@ const Contact = () => {
                                 </div>
 
                                 <div className="p-8 bg-stone-dark rounded-[2rem] text-white relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary opacity-20 blur-3xl"></div>
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-accent opacity-20 blur-3xl"></div>
                                     <div className="flex items-center gap-4 mb-4">
-                                        <Clock className="w-5 h-5 text-primary" />
+                                        <Clock className="w-5 h-5 text-accent" />
                                         <span className="text-sm font-medium tracking-wider uppercase">Business Hours</span>
                                     </div>
                                     <p className="text-stone-400 font-light">
