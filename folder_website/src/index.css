@@ -8,6 +8,7 @@
   --color-stone-light: #FAFAF9;
   --color-stone-mid: #F5F5F4;
   --color-stone-border: #E7E5E4;
+  --shadow-soft: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
 }
 
 @layer base {

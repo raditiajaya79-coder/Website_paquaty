@@ -257,33 +257,84 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* How We Craft — Process Section */}
-            <section id="process" className="py-24 bg-stone-mid relative overflow-hidden">
-                <div className="absolute right-0 top-0 w-1/3 h-full bg-brand-blue opacity-5 blur-[100px]"></div>
+            {/* How We Craft — Process Journey Section */}
+            <section id="process" className="py-24 bg-stone-light relative overflow-hidden">
+                {/* Vibrant Background Accents (Low Opacity) */}
+                <div className="absolute top-0 right-0 md:w-1/2 w-full h-full bg-[radial-gradient(circle_at_80%_20%,_rgba(38,84,161,0.05)_0%,_transparent_50%)] pointer-events-none"></div>
+                <div className="absolute bottom-0 left-0 md:w-1/2 w-full h-full bg-[radial-gradient(circle_at_20%_80%,_rgba(218,165,32,0.05)_0%,_transparent_50%)] pointer-events-none"></div>
 
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
-                    <div className="text-center mb-20">
-                        <span className="text-brand-blue font-medium tracking-wide uppercase text-sm">Our Process</span>
-                        <h2 className="md:text-5xl text-3xl font-medium tracking-tight mt-4 text-stone-dark">From Soybean to Crunch</h2>
+                    <div className="text-center mb-24">
+                        <motion.span
+                            {...fadeIn}
+                            className="text-brand-blue font-bold tracking-[0.3em] uppercase text-xs mb-4 block underline decoration-brand-blue/20 decoration-2 underline-offset-8"
+                        >
+                            Our Heritage Process
+                        </motion.span>
+                        <motion.h2
+                            {...fadeIn}
+                            transition={{ delay: 0.1 }}
+                            className="md:text-6xl text-4xl font-medium tracking-tight text-stone-dark"
+                        >
+                            From Soybean to <span className="text-brand-gold italic">Crunch</span>
+                        </motion.h2>
                     </div>
 
                     <div className="relative">
-                        <div className="hidden md:block absolute top-12 left-0 w-full h-[1px] bg-gradient-to-r from-stone-border via-brand-gold to-stone-border"></div>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+                        {/* Connecting Path Animation */}
+                        <div className="hidden md:block absolute top-[64px] left-[12.5%] right-[12.5%] h-[2px] bg-stone-border/30">
+                            <motion.div
+                                initial={{ width: "0%" }}
+                                whileInView={{ width: "100%" }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 2, ease: "easeInOut", delay: 0.5 }}
+                                className="h-full bg-gradient-to-r from-brand-blue via-brand-gold to-brand-blue shadow-[0_0_15px_rgba(218,165,32,0.4)]"
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 relative">
                             {[
-                                { step: "01", title: "Premium Soybeans", desc: "Locally sourced non-GMO soybeans for the freshest quality.", icon: Sprout },
-                                { step: "02", title: "Natural Fermentation", desc: "Traditional 48-hour slow fermentation process.", icon: Microscope },
-                                { step: "03", title: "Bold Seasoning", desc: "Hand-seasoned with signature heritage spice blends.", icon: Container },
-                                { step: "04", title: "Export Ready", desc: "Vacuum-sealed to ensure international export quality.", icon: Store },
+                                { step: "01", title: "Premium Soybeans", desc: "Locally sourced non-GMO soybeans for the freshest quality.", icon: Sprout, color: "bg-green-500/10" },
+                                { step: "02", title: "Natural Fermentation", desc: "Traditional 48-hour slow fermentation process.", icon: Microscope, color: "bg-blue-500/10" },
+                                { step: "03", title: "Bold Seasoning", desc: "Hand-seasoned with signature heritage spice blends.", icon: Container, color: "bg-orange-500/10" },
+                                { step: "04", title: "Export Ready", desc: "Vacuum-sealed to ensure international export quality.", icon: Store, color: "bg-brand-gold/10" },
                             ].map((item, idx) => (
-                                <div key={idx} className="relative group text-center md:text-left">
-                                    <div className="w-24 h-24 rounded-full bg-white border border-stone-border flex items-center justify-center mb-6 relative z-10 group-hover:border-brand-gold transition-colors duration-300 mx-auto md:mx-0 shadow-sm">
-                                        <item.icon className="w-10 h-10 text-brand-gold" />
+                                <motion.div
+                                    key={idx}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.6, delay: 0.3 + (idx * 0.15) }}
+                                    className="relative group pt-4"
+                                >
+                                    {/* Icon Container with Glass Effect */}
+                                    <div className="relative z-10 mb-8 flex justify-center">
+                                        <motion.div
+                                            whileHover={{ scale: 1.1, rotate: 5 }}
+                                            className="w-24 h-24 rounded-[2rem] bg-white border border-stone-border shadow-soft flex items-center justify-center relative overflow-hidden group-hover:border-brand-gold/50 transition-all duration-500"
+                                        >
+                                            <div className={`absolute inset-0 ${item.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+                                            <item.icon className="w-10 h-10 text-brand-gold relative z-10 group-hover:scale-110 transition-transform duration-500" />
+                                        </motion.div>
+
+                                        {/* Step Indicator Badge */}
+                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-stone-dark text-white text-[10px] font-bold flex items-center justify-center border-4 border-stone-light shadow-xl z-20">
+                                            {item.step}
+                                        </div>
                                     </div>
-                                    <span className="block text-xs font-medium text-[#78716C] mb-2 uppercase tracking-widest">Step {item.step}</span>
-                                    <h3 className="text-2xl font-medium mb-3 text-stone-dark">{item.title}</h3>
-                                    <p className="text-lg text-[#57534E] leading-relaxed">{item.desc}</p>
-                                </div>
+
+                                    <div className="text-center md:text-left">
+                                        <h3 className="text-2xl font-bold mb-4 text-stone-dark group-hover:text-brand-blue transition-colors duration-300 tracking-tight">
+                                            {item.title}
+                                        </h3>
+                                        <p className="text-[#57534E] leading-relaxed font-light">
+                                            {item.desc}
+                                        </p>
+                                    </div>
+
+                                    {/* Subtle Animated Glow on Hover */}
+                                    <div className="absolute -inset-4 bg-brand-gold/0 group-hover:bg-brand-gold/[0.02] rounded-[3rem] -z-10 transition-all duration-700 blur-xl"></div>
+                                </motion.div>
                             ))}
                         </div>
                     </div>

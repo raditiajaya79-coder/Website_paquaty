@@ -18,6 +18,11 @@ export const PRODUCTS = [
         grade: "Classic Tempe Chip",
         origin: "Kediri, East Java",
         moq: "100 pcs",
+        packagingOptions: [
+            { label: "50 Gram", value: "50g" },
+            { label: "200 Gram", value: "200g" },
+            { label: "325 Gram (Jar)", value: "325g-jar" }
+        ],
         image: "/images/keripik tempe original pakuaty.jpg",
         tag: "Best Seller"
     },
@@ -27,6 +32,9 @@ export const PRODUCTS = [
         grade: "Spicy Chili Tempe Chip",
         origin: "Kediri, East Java",
         moq: "100 pcs",
+        packagingOptions: [
+            { label: "50 Gram", value: "50g" }
+        ],
         image: "/images/keirpik tempe balado pakuaty.jpg",
         tag: "Spicy"
     },
@@ -36,6 +44,9 @@ export const PRODUCTS = [
         grade: "Smoky BBQ Tempe Chip",
         origin: "Kediri, East Java",
         moq: "100 pcs",
+        packagingOptions: [
+            { label: "50 Gram", value: "50g" }
+        ],
         image: "/images/keripik tempe bbq pakuaty.jpg",
         tag: ""
     },
@@ -45,6 +56,9 @@ export const PRODUCTS = [
         grade: "Cheese Tempe Chip",
         origin: "Kediri, East Java",
         moq: "100 pcs",
+        packagingOptions: [
+            { label: "50 Gram", value: "50g" }
+        ],
         image: "/images/keripik tempe keju pakuaty.jpg",
         tag: "Popular"
     },
@@ -54,6 +68,9 @@ export const PRODUCTS = [
         grade: "Roasted Beef Tempe Chip",
         origin: "Kediri, East Java",
         moq: "100 pcs",
+        packagingOptions: [
+            { label: "50 Gram", value: "50g" }
+        ],
         image: "/images/keripik tempe sapi pakuaty.jpg",
         tag: ""
     },
@@ -63,6 +80,9 @@ export const PRODUCTS = [
         grade: "Crispy Mushroom Chip",
         origin: "Kediri, East Java",
         moq: "100 pcs",
+        packagingOptions: [
+            { label: "50 Gram", value: "50g" }
+        ],
         image: "/images/keripik jamur pakuaty.jpg",
         tag: "New"
     }

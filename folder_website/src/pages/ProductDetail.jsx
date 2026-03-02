@@ -1,13 +1,15 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { ArrowLeft, CheckCircle2, ShoppingBag, ShieldCheck, Globe2, MessageCircle, FileText } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ShoppingBag, ShieldCheck, Globe2, MessageCircle, FileText, Package } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
 import { PRODUCTS, COMPANY_INFO } from '../data/products';
 
 const ProductDetail = () => {
     const { id } = useParams();
     const product = PRODUCTS.find(p => p.id === parseInt(id));
+    const [selectedPackaging, setSelectedPackaging] = useState(product?.packagingOptions?.[0] || { label: "50 Gram", value: "50g" });
 
     const fadeIn = {
         initial: { opacity: 0, y: 20 },
@@ -25,7 +27,7 @@ const ProductDetail = () => {
     }
 
     const handleWhatsAppOrder = () => {
-        const message = `Halo ${COMPANY_INFO.name}, saya tertarik untuk mengimpor produk ${product.name} (${product.grade}). Mohon informasi katalog lengkap dan price list ekspor.`;
+        const message = `Halo ${COMPANY_INFO.name}, saya tertarik untuk mengimpor produk ${product.name} (${product.grade}) dengan kemasan ${selectedPackaging.label}. Mohon informasi katalog lengkap dan price list ekspor.`;
         window.open(`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
@@ -64,7 +66,7 @@ const ProductDetail = () => {
                             <h1 className="text-5xl md:text-7xl font-serif font-medium text-stone-dark tracking-tight mb-6 leading-[1.1]">{product.name}</h1>
                             <p className="text-2xl text-[#78716C] font-light mb-10 italic">Nature's finest selection.</p>
 
-                            <div className="grid grid-cols-2 gap-4 mb-12">
+                            <div className="grid grid-cols-1 gap-4 mb-12">
                                 <div className="p-6 bg-white rounded-3xl border border-stone-border shadow-sm flex flex-col gap-3">
                                     <Globe2 className="w-6 h-6 text-brand-blue" />
                                     <div>
@@ -72,13 +74,33 @@ const ProductDetail = () => {
                                         <p className="font-bold text-stone-dark">{product.origin}</p>
                                     </div>
                                 </div>
-                                <div className="p-6 bg-white rounded-3xl border border-stone-border shadow-sm flex flex-col gap-3">
-                                    <ShoppingBag className="w-6 h-6 text-brand-blue" />
-                                    <div>
-                                        <p className="text-[10px] text-[#78716C] uppercase font-bold tracking-widest mb-1">MOQ</p>
-                                        <p className="font-bold text-stone-dark">{product.moq}</p>
-                                    </div>
+                            </div>
+
+                            <div className="mb-12">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <Package className="w-5 h-5 text-brand-blue" />
+                                    <p className="text-[10px] text-[#78716C] uppercase font-bold tracking-widest">Select Packaging</p>
                                 </div>
+                                {product.packagingOptions.length > 1 ? (
+                                    <div className="flex flex-wrap gap-3">
+                                        {product.packagingOptions.map(opt => (
+                                            <button
+                                                key={opt.value}
+                                                onClick={() => setSelectedPackaging(opt)}
+                                                className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all border-2 ${selectedPackaging.value === opt.value
+                                                        ? 'bg-brand-blue border-brand-blue text-white shadow-lg shadow-brand-blue/20 scale-105'
+                                                        : 'bg-white border-stone-border text-stone-dark hover:border-brand-blue/30 hover:bg-stone-50'
+                                                    }`}
+                                            >
+                                                {opt.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="px-6 py-4 bg-white rounded-2xl border border-stone-border inline-block">
+                                        <p className="font-bold text-stone-dark">{product.packagingOptions[0].label}</p>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="prose prose-stone mb-12">

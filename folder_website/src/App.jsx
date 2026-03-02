@@ -11,6 +11,8 @@ import About from './pages/About.jsx';
 import Products from './pages/Products.jsx';
 import ProductDetail from './pages/ProductDetail.jsx';
 import Contact from './pages/Contact.jsx';
+import Events from './pages/Events.jsx';
+import Gallery from './pages/Gallery.jsx';
 
 /**
  * App — Root component yang mengatur routing
@@ -40,6 +42,12 @@ function App() {
 
                 {/* Halaman kontak/order — URL: /contact */}
                 <Route path="/contact" element={<Contact />} />
+
+                {/* Halaman artikel/event — URL: /events */}
+                <Route path="/events" element={<Events />} />
+
+                {/* Halaman galeri — URL: /gallery */}
+                <Route path="/gallery" element={<Gallery />} />
             </Route>
         </Routes>
     );
