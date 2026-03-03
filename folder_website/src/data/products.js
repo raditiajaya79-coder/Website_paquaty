@@ -23,7 +23,7 @@ export const PRODUCTS = [
             { label: "200 Gram", value: "200g" },
             { label: "325 Gram (Jar)", value: "325g-jar" }
         ],
-        image: "/logo-product-pure/01.ORIGINAL-HOLO-PNG - GRADING .png",
+        image: "/logo-product-pure/01.ORIGINAL-HOLO-PNG - GRADING.webp",
         detailImage: "/images/keripik tempe original pakuaty.jpg",
         tag: "Best Seller",
         price: 12000,
@@ -39,7 +39,7 @@ export const PRODUCTS = [
         packagingOptions: [
             { label: "50 Gram", value: "50g" }
         ],
-        image: "/logo-product-pure/02.BALADOHOLOPNG-GRADING.png",
+        image: "/logo-product-pure/02.BALADO-HOLOPNG-GRADING.webp",
         detailImage: "/images/keirpik tempe balado pakuaty.jpg",
         tag: "Spicy",
         price: 12000,
@@ -55,7 +55,7 @@ export const PRODUCTS = [
         packagingOptions: [
             { label: "50 Gram", value: "50g" }
         ],
-        image: "/logo-product-pure/04.BBQHOLOPNG-GRADING.png",
+        image: "/logo-product-pure/04.BBQ-HOLO-PNG-GRADING.webp",
         detailImage: "/images/keripik tempe bbq pakuaty.jpg",
         tag: "",
         price: 12000,
@@ -71,7 +71,7 @@ export const PRODUCTS = [
         packagingOptions: [
             { label: "50 Gram", value: "50g" }
         ],
-        image: "/logo-product-pure/05.KEJUHOLOPNG-GRADING.png",
+        image: "/logo-product-pure/05.KEJU-HOLO-PNG-GRADING.webp",
         detailImage: "/images/keripik tempe keju pakuaty.jpg",
         tag: "Popular",
         price: 12000,
@@ -87,7 +87,7 @@ export const PRODUCTS = [
         packagingOptions: [
             { label: "50 Gram", value: "50g" }
         ],
-        image: "/logo-product-pure/03.SPPHOLOPNG-GRADING.png",
+        image: "/logo-product-pure/03.SPP-HOLO-PNG-GRADING.webp",
         detailImage: "/images/keripik tempe sapi pakuaty.jpg",
         tag: "",
         price: 12000,
