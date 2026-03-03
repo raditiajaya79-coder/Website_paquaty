@@ -1,10 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 const CTA = () => {
     return (
-        <section className="py-24 relative overflow-hidden">
+        <section className="py-24 relative overflow-hidden bg-brand-cream">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="bg-stone-dark rounded-[2.5rem] p-8 md:p-20 text-center relative overflow-hidden">
+                <div className="bg-brand-blue rounded-[2.5rem] p-8 md:p-20 text-center relative overflow-hidden">
                     {/* Decorative Gold Glow */}
                     <div className="absolute top-0 right-0 w-64 h-64 bg-brand-gold rounded-full blur-[80px] opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
 
@@ -21,7 +23,7 @@ const CTA = () => {
                             placeholder="Enter your business email"
                             className="w-full sm:w-96 px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent transition-all"
                         />
-                        <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-brand-gold text-stone-dark font-semibold hover:bg-brand-gold-light transition-all whitespace-nowrap shadow-lg shadow-brand-gold/20">
+                        <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-brand-gold text-brand-blue font-semibold hover:bg-brand-cyan hover:text-white transition-all whitespace-nowrap shadow-lg shadow-brand-gold/20">
                             Get Started
                         </button>
                     </div>

@@ -23,7 +23,7 @@ const Gallery = () => {
     ];
 
     return (
-        <div className="bg-neutral-bone min-h-screen pt-32 pb-24 relative overflow-hidden">
+        <div className="bg-brand-cream min-h-screen pt-32 pb-24 relative overflow-hidden">
             <Helmet>
                 <title>{generatePageTitle('Visual Gallery')}</title>
                 <meta name="description" content="Explore the visual journey of Pakuaty's premium tempe chips." />
@@ -102,7 +102,7 @@ const Gallery = () => {
                 <motion.div
                     {...fadeIn}
                     transition={{ delay: 0.6 }}
-                    className="mt-20 p-12 bg-white rounded-[3.5rem] border border-stone-border shadow-soft flex flex-col md:flex-row items-center justify-between gap-8"
+                    className="mt-20 p-12 bg-white rounded-[3.5rem] border border-brand-gold/20 shadow-soft flex flex-col md:flex-row items-center justify-between gap-8"
                 >
                     <div className="max-w-md text-center md:text-left">
                         <h3 className="text-3xl font-serif font-medium text-stone-dark mb-4">Follow Our Journey</h3>
@@ -112,7 +112,7 @@ const Gallery = () => {
                         href="https://instagram.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-3 px-10 py-5 bg-stone-dark text-white rounded-full font-bold text-sm tracking-widest uppercase hover:bg-brand-blue transition-all shadow-xl active:scale-95"
+                        className="flex items-center gap-3 px-10 py-5 bg-brand-blue text-white rounded-full font-bold text-sm tracking-widest uppercase hover:bg-brand-cyan transition-all shadow-xl active:scale-95"
                     >
                         <Instagram className="w-5 h-5" />
                         Explore on Instagram

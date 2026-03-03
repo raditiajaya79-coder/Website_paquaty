@@ -40,9 +40,9 @@ const Navbar = () => {
     const activeStyle = ({ isActive }) => {
         const base = "text-sm font-medium transition-all duration-300 relative group";
         if (isTransparent) {
-            return `${base} ${isActive ? 'text-white' : 'text-white/60 hover:text-white'}`;
+            return `${base} ${isActive ? 'text-white' : 'text-white/60 hover:text-brand-cyan hover:scale-105'}`;
         }
-        return `${base} ${isActive ? 'text-brand-blue' : 'text-stone-dark/60 hover:text-brand-blue'}`;
+        return `${base} ${isActive ? 'text-brand-blue' : 'text-stone-dark/60 hover:text-brand-cyan hover:scale-105'}`;
     };
 
     return (
@@ -50,14 +50,14 @@ const Navbar = () => {
             ? 'bg-transparent border-transparent py-2'
             : 'bg-white/90 backdrop-blur-xl border-b border-stone-border/50 py-0 shadow-soft'
             }`}>
-            <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div className="max-w-7xl mx-auto px-6 h-14 md:h-16 flex items-center justify-between">
                 <Link to="/" className="flex gap-3 items-center group relative">
                     {/* Logo Glow Effect — Enhanced for WOW impact */}
                     <div className="absolute inset-0 bg-brand-gold/0 group-hover:bg-brand-gold/20 blur-2xl rounded-full transition-all duration-700 -z-10" />
                     <img
                         src="/images/pure logo pakuaty.png"
                         alt="Pakuaty"
-                        className={`h-11 object-contain group-hover:scale-105 transition-all duration-500 ${isTransparent ? 'brightness-[1.2] contrast-[1.1]' : ''}`}
+                        className={`h-9 md:h-11 object-contain group-hover:scale-105 transition-all duration-500 ${isTransparent ? 'brightness-[1.2] contrast-[1.1]' : ''}`}
                     />
                 </Link>
 
@@ -89,8 +89,8 @@ const Navbar = () => {
 
                 <div className="flex items-center gap-4">
                     <button className={`hidden md:flex items-center gap-2 px-7 py-3 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-xl active:scale-95 ${isTransparent
-                        ? 'bg-white/10 text-white backdrop-blur-md border border-white/20 hover:bg-white hover:text-stone-dark'
-                        : 'bg-stone-dark text-white hover:bg-brand-blue hover:shadow-brand-blue/30 shadow-stone-dark/10'
+                        ? 'bg-white/10 text-white backdrop-blur-md border border-white/20 hover:bg-brand-cyan hover:text-white hover:border-brand-cyan'
+                        : 'bg-brand-blue text-white hover:bg-brand-cyan hover:shadow-brand-cyan/30 shadow-brand-blue/10'
                         }`}>
                         Partner with us
                         <ArrowRight className="w-4 h-4" />
@@ -135,7 +135,7 @@ const Navbar = () => {
                         >
                             <NavLink
                                 to={link.path}
-                                className={({ isActive }) => `text-lg font-bold tracking-tight transition-all duration-300 flex items-center gap-2 ${isActive ? 'text-brand-blue' : 'text-stone-dark hover:text-brand-blue'}`}
+                                className={({ isActive }) => `text-lg font-bold tracking-tight transition-all duration-300 flex items-center gap-2 ${isActive ? 'text-brand-cyan' : 'text-stone-dark hover:text-brand-cyan'}`}
                             >
                                 <span className="text-[7px] font-black text-brand-gold">0{idx + 1}</span>
                                 {link.name}
@@ -162,8 +162,8 @@ const Navbar = () => {
                         ))}
                     </div>
                 </motion.div>
-            </motion.div>
-        </nav>
+            </motion.div >
+        </nav >
     );
 };
 

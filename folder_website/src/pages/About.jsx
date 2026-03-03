@@ -27,7 +27,7 @@ const About = () => {
                 <meta name="description" content={`Learn the story of PT Bala Aditi Pakuaty. Discover how we're transforming Indonesian heritage into a global premium tempe chip brand, rooted in tradition and designed for the world.`} />
             </Helmet>
 
-            <div className="bg-neutral-bone min-h-screen pt-24 pb-16 md:py-32">
+            <div className="bg-brand-cream min-h-screen pt-24 pb-16 md:py-32">
                 <div className="max-w-7xl mx-auto px-6">
 
                     {/* ========================== */}
@@ -161,8 +161,8 @@ const About = () => {
                                 </div>
                                 {/* Tanda tangan founder */}
                                 <div className="mt-8 pt-8 border-t border-brand-blue/10">
-                                    <p className="text-stone-dark font-semibold text-lg">Billy Bachtiar</p>
-                                    <p className="text-sm text-[#78716C]">Founder, PT. Bala Aditi Pakuaty</p>
+                                    <p className="text-stone-dark font-semibold text-lg">{FOUNDER.name}</p>
+                                    <p className="text-sm text-stone-dark/60">Founder, PT. Bala Aditi Pakuaty</p>
                                 </div>
                             </motion.div>
                         </div>
@@ -176,33 +176,34 @@ const About = () => {
                         <h2 className="text-4xl md:text-5xl font-medium text-stone-dark tracking-tight">Nilai Inti Kami</h2>
                     </motion.div>
 
-                    {/* Grid 3 kartu core values */}
-                    <div className="grid md:grid-cols-3 gap-8 mb-32">
+                    {/* Grid/Flex container for core values */}
+                    <div className="flex flex-nowrap md:grid md:grid-cols-3 gap-6 md:gap-8 mb-32 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory no-scrollbar -mx-6 px-6 md:mx-0 md:px-0">
                         {[
                             {
                                 icon: Lightbulb,
                                 title: "Teknologi Tempe",
-                                desc: "Kami melihat tempe bukan hanya sebagai makanan, tetapi sebagai proses fermentasi berusia berabad-abad yang dapat diterapkan pada sumber protein apapun secara global."
+                                desc: "Kami melihat tempe bukan hanya sebagai makanan, tetapi sebagai proses fermentasi berusia berabad-abad."
                             },
                             {
                                 icon: Globe,
                                 title: "Adaptasi Global",
-                                desc: "Visi kami adalah memberdayakan bangsa lain untuk menggunakan kacang lokal mereka dengan keahlian fermentasi Indonesia untuk menciptakan nutrisi berkelanjutan."
+                                desc: "Visi kami adalah memberdayakan bangsa lain untuk menggunakan kacang lokal mereka dengan keahlian fermentasi Indonesia."
                             },
                             {
                                 icon: Sprout,
                                 title: "Kearifan Indonesia",
-                                desc: "Menghormati teknik 'ragi' tradisional sambil mengembangkannya menjadi solusi global berteknologi tinggi untuk masa depan industri makanan."
+                                desc: "Menghormati teknik 'ragi' tradisional sambil mengembangkannya menjadi solusi global berteknologi tinggi."
                             }
                         ].map((pillar, idx) => (
-                            // Card core value — hover effect pada border
-                            <motion.div key={idx} {...fadeIn} transition={{ ...fadeIn.transition, delay: idx * 0.1 }} className="bg-white p-10 rounded-[2.5rem] border border-stone-dark/5 hover:border-brand-gold transition-all duration-700 shadow-sm" >
-                                {/* Icon pillar */}
-                                <pillar.icon className="w-10 h-10 text-brand-blue mb-6" />
-                                {/* Judul pillar */}
+                            <motion.div
+                                key={idx}
+                                {...fadeIn}
+                                transition={{ ...fadeIn.transition, delay: idx * 0.1 }}
+                                className="min-w-[85vw] md:min-w-0 bg-white p-8 md:p-10 rounded-[2.5rem] border border-brand-gold/20 hover:border-brand-cyan hover:shadow-brand-cyan/10 transition-all duration-700 shadow-sm snap-center"
+                            >
+                                <pillar.icon className="w-10 h-10 text-brand-blue mb-6 group-hover:text-brand-cyan transition-colors" />
                                 <h4 className="text-xl font-bold text-stone-dark mb-4">{pillar.title}</h4>
-                                {/* Deskripsi pillar */}
-                                <p className="text-[#57534E] font-light leading-relaxed">{pillar.desc}</p>
+                                <p className="text-stone-dark/70 font-light leading-relaxed text-sm md:text-base">{pillar.desc}</p>
                             </motion.div>
                         ))}
                     </div>

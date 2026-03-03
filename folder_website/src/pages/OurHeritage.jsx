@@ -28,7 +28,7 @@ const OurHeritage = () => {
     };
 
     return (
-        <div ref={containerRef} className="bg-neutral-bone min-h-screen">
+        <div ref={containerRef} className="bg-brand-cream min-h-screen">
             <Helmet>
                 <title>{generatePageTitle('Our Heritage')}</title>
                 <meta name="description" content="Discover the heartbeat of PT Bala Aditi Pakuaty. A journey of heritage, global vision, and the soul of Indonesian tempe." />
@@ -96,15 +96,15 @@ const OurHeritage = () => {
                                 key={idx}
                                 {...fadeIn}
                                 transition={{ delay: idx * 0.2 }}
-                                className="group p-12 bg-white rounded-[3rem] border border-stone-border/30 hover:border-brand-gold transition-all duration-700 hover:shadow-2xl hover:-translate-y-2"
+                                className="group p-12 bg-white rounded-[3rem] border border-brand-gold/20 hover:border-brand-cyan transition-all duration-700 hover:shadow-2xl hover:-translate-y-2"
                             >
-                                <div className="w-14 h-14 bg-neutral-50 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-brand-blue group-hover:text-white transition-colors duration-500">
+                                <div className="w-14 h-14 bg-brand-cream rounded-2xl flex items-center justify-center mb-8 group-hover:bg-brand-cyan group-hover:text-white transition-colors duration-500">
                                     <item.icon className="w-6 h-6" />
                                 </div>
                                 <h3 className="text-3xl font-bold text-stone-dark mb-2 tracking-tight">{item.title}</h3>
                                 <p className="text-brand-gold text-[10px] font-bold uppercase tracking-[0.2em] mb-4">{item.subtitle}</p>
                                 <p className="text-brand-blue text-xs font-semibold italic mb-6">{item.lang}</p>
-                                <p className="text-stone-dark/60 leading-relaxed font-light">{item.desc}</p>
+                                <p className="text-stone-dark/70 leading-relaxed font-light">{item.desc}</p>
                             </motion.div>
                         ))}
                     </div>
@@ -154,7 +154,7 @@ const OurHeritage = () => {
                             </motion.div>
 
                             {/* Pillars of Excellence */}
-                            <div className="grid gap-8">
+                            <div className="flex flex-nowrap lg:grid lg:grid-cols-1 gap-8 md:gap-8 overflow-x-auto lg:overflow-x-visible pb-8 lg:pb-0 snap-x snap-mandatory no-scrollbar -mx-6 px-6 lg:mx-0 lg:px-0">
                                 {[
                                     { icon: Lightbulb, title: "Precision Craft", desc: "Merging traditional 'ragi' techniques with high-tech production consistency." },
                                     { icon: Sprout, title: "Origin Integrity", desc: "Directly empowering local farmers to ensure the purest non-GMO ingredients." },
@@ -163,7 +163,7 @@ const OurHeritage = () => {
                                     <motion.div
                                         key={idx}
                                         {...fadeIn}
-                                        className="p-8 bg-white/5 border border-white/10 rounded-[2.5rem] flex gap-6 items-center hover:bg-white/10 transition-all"
+                                        className="min-w-[85vw] lg:min-w-0 p-8 bg-white/5 border border-white/10 rounded-[2.5rem] flex gap-6 items-center hover:bg-white/10 transition-all snap-center shadow-xl md:shadow-none"
                                     >
                                         <div className="w-12 h-12 rounded-2xl bg-brand-gold/20 flex items-center justify-center text-brand-gold shrink-0">
                                             <pillar.icon className="w-6 h-6" />
@@ -197,7 +197,7 @@ const OurHeritage = () => {
                             Join us in bringing the soul of Indonesian tradition to the world's most discerning tables.
                         </p>
                         <div className="flex flex-wrap justify-center gap-6">
-                            <button className="px-10 py-5 bg-white text-brand-blue rounded-full font-bold text-xs uppercase tracking-[0.2em] hover:bg-brand-gold hover:text-white transition-all shadow-xl active:scale-95">Our Products</button>
+                            <button className="px-10 py-5 bg-white text-brand-blue rounded-full font-bold text-xs uppercase tracking-[0.2em] hover:bg-brand-cyan hover:text-white transition-all shadow-xl active:scale-95">Our Products</button>
                             <button className="px-10 py-5 bg-transparent border border-white/30 text-white rounded-full font-bold text-xs uppercase tracking-[0.2em] hover:bg-white/10 transition-all active:scale-95">Contact Team</button>
                         </div>
                     </div>

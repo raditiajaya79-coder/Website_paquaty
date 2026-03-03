@@ -61,7 +61,7 @@ const Home = () => {
 
 
     return (
-        <div className="bg-neutral-bone text-stone-dark">
+        <div className="bg-brand-cream text-stone-dark">
             {/* Hero Section — Balanced Premium "Muted Gold" Theme */}
             <section
                 className="relative min-h-screen overflow-hidden bg-[#EAD890]"
@@ -321,8 +321,8 @@ const Home = () => {
                 </motion.div>
             </section>
 
-            {/* Brand Badge Strip — Standalone Divider Section (Neutral Bone Background) */}
-            <div className="relative z-10 bg-neutral-bone py-3 md:py-8 border-b border-stone-dark/5">
+            {/* Brand Badge Strip — Standalone Divider Section (Brand Cream Background) */}
+            <div className="relative z-10 bg-brand-cream py-3 md:py-8 border-b border-brand-gold/10">
                 <div className="max-w-7xl mx-auto px-4 md:px-6">
                     <div className="flex flex-wrap justify-center md:justify-between items-center gap-4 md:gap-10 opacity-30 grayscale hover:grayscale-0 transition-all duration-1000">
                         {["WholeFoods", "TESCO", "Carrefour", "Waitrose", "TraderJoe's"].map(brand => (
@@ -332,15 +332,19 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Products Grid — Premium Balanced Contrast Design */}
-            <section id="products" className="relative py-16 md:py-24 bg-neutral-bone overflow-hidden">
-                {/* Multi-Color Vibrant Decorative Elements — Migrated from blur to gradients for Ultra-Light performance */}
-                <div className="absolute top-0 right-0 w-[850px] h-[850px] opacity-20 bg-[radial-gradient(circle,rgba(38,84,161,0.15)_0%,transparent_70%)] translate-x-1/3 -translate-y-1/3 pointer-events-none animate-pulse duration-[8000ms]"></div>
-                <div className="absolute bottom-0 left-0 w-[700px] h-[700px] opacity-20 bg-[radial-gradient(circle,rgba(218,165,32,0.15)_0%,transparent_70%)] -translate-x-1/4 translate-y-1/4 pointer-events-none animate-pulse duration-[10000ms]"></div>
-                <div className="absolute bottom-0 left-0 w-[700px] h-[700px] opacity-20 bg-[radial-gradient(circle,rgba(218,165,32,0.15)_0%,transparent_70%)] -translate-x-1/4 translate-y-1/4 pointer-events-none animate-pulse duration-[10000ms]"></div>
+            {/* Artisan Tempe Chips section — White Background (25% distribution) */}
+            <section id="products" className="relative py-16 md:py-24 bg-white overflow-hidden">
+                {/* Background Watermark — Adds high-end editorial depth */}
+                <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none opacity-[0.03] overflow-hidden">
+                    <span className="text-[25vw] font-black tracking-tighter text-stone-dark leading-none -rotate-12 translate-y-20">ARTISAN</span>
+                </div>
+
+                {/* Multi-Color Vibrant Decorative Elements */}
+                <div className="absolute top-0 right-0 w-[850px] h-[850px] opacity-25 bg-[radial-gradient(circle,rgba(38,84,161,0.2)_0%,transparent_70%)] translate-x-1/3 -translate-y-1/3 pointer-events-none animate-pulse duration-[8000ms]"></div>
+                <div className="absolute bottom-0 left-0 w-[700px] h-[700px] opacity-25 bg-[radial-gradient(circle,rgba(255,237,0,0.25)_0%,transparent_70%)] -translate-x-1/4 translate-y-1/4 pointer-events-none animate-pulse duration-[10000ms]"></div>
 
                 {/* Subtle Radial Mesh Gradient for Color Blending */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,_rgba(218,165,32,0.05)_0%,_transparent_50%),radial-gradient(circle_at_20%_80%,_rgba(38,84,161,0.05)_0%,_transparent_50%)] pointer-events-none"></div>
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,_rgba(255,237,0,0.08)_0%,_transparent_50%),radial-gradient(circle_at_20%_80%,_rgba(38,84,161,0.08)_0%,_transparent_50%)] pointer-events-none"></div>
 
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
                     {/* Section Header */}
@@ -348,16 +352,16 @@ const Home = () => {
                         <div className="max-w-2xl">
                             <motion.h2
                                 {...fadeIn}
-                                className="text-4xl md:text-6xl lg:text-7xl font-medium tracking-tight text-stone-dark mb-6"
+                                className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-stone-dark mb-4"
                             >
                                 Artisan <span className="text-brand-blue">Tempe Chips</span>
                             </motion.h2>
                             <motion.p
                                 {...fadeIn}
                                 transition={{ delay: 0.2 }}
-                                className="text-lg text-stone-dark/60 leading-relaxed"
+                                className="text-lg text-stone-dark/60 leading-relaxed max-w-lg"
                             >
-                                Premium Indonesian tempe chips crafted with heritage techniques and bold, authentic flavors for the global palate.
+                                Premium Indonesian tempe chips crafted with heritage techniques and bold, authentic flavors.
                             </motion.p>
                         </div>
 
@@ -366,14 +370,14 @@ const Home = () => {
                                 to="/products"
                                 className="group flex items-center gap-3 px-8 py-4 rounded-full bg-white border border-stone-border hover:bg-brand-blue hover:border-brand-blue transition-all duration-300 shadow-sm"
                             >
-                                <span className="text-stone-dark font-medium group-hover:text-white transition-colors">View Full Catalog</span>
+                                <span className="text-stone-dark font-medium group-hover:text-white transition-colors">Full Catalog</span>
                                 <ArrowRight className="w-4 h-4 text-stone-dark group-hover:translate-x-1 group-hover:text-white transition-all" />
                             </Link>
                         </motion.div>
                     </div>
 
-                    {/* Product Cards Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {/* Product Cards Grid - Updated with Mobile Horizontal Scroll & Compact Aspect Ratio */}
+                    <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-6 px-6 md:grid md:grid-cols-3 gap-10 pb-12 md:pb-0">
                         {PRODUCTS.slice(0, 3).map((product, idx) => (
                             <motion.div
                                 key={product.id}
@@ -381,77 +385,73 @@ const Home = () => {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.6, delay: idx * 0.1 }}
+                                className="min-w-[280px] snap-center md:min-w-0"
                             >
                                 <Link
                                     to={`/products/${product.id}`}
-                                    className="group relative block aspect-square rounded-[2.5rem] overflow-hidden bg-white border border-stone-border hover:border-brand-gold transition-all duration-500 shadow-xl hover:shadow-2xl"
+                                    className="group relative block aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-white border border-stone-border hover:border-brand-gold transition-all duration-500 shadow-xl hover:shadow-2xl h-full"
                                 >
-                                    {/* Image Container with Breathing Room — Optimized for compact height */}
-                                    <div className="absolute inset-x-0 top-0 bottom-24 p-8 flex items-center justify-center bg-stone-50/30">
+                                    {/* Image Container — Compact focus */}
+                                    <div className="absolute inset-x-0 top-0 bottom-20 p-8 flex items-center justify-center bg-stone-50/20">
                                         <img
                                             src={product.image}
                                             alt={product.name}
-                                            className="max-w-full max-h-full object-contain transition-transform duration-1000 group-hover:scale-105 drop-shadow-xl"
+                                            className="max-w-full max-h-full object-contain transition-transform duration-1000 group-hover:scale-110 drop-shadow-2xl"
                                         />
                                     </div>
 
-                                    {/* Gradient Overlay - Soft Bottom Gradient for Text Readability */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-stone-dark/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500"></div>
+                                    {/* Gradient Overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-stone-dark/90 via-stone-dark/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500"></div>
 
-                                    {/* Top Badges - using brand colors */}
-                                    <div className="absolute top-8 left-8 flex items-center gap-3">
+                                    {/* Badges */}
+                                    <div className="absolute top-6 left-6 flex items-center gap-2">
                                         {product.tag && (
-                                            <span className="px-4 py-1.5 rounded-full bg-brand-gold text-black text-[10px] font-bold uppercase tracking-wider shadow-lg">
+                                            <span className="px-3 py-1 rounded-full bg-brand-gold text-black text-[9px] font-black uppercase tracking-widest shadow-lg">
                                                 {product.tag}
                                             </span>
                                         )}
-                                        {idx === 1 && (
-                                            <span className="px-4 py-1.5 rounded-full bg-brand-blue text-white text-[10px] font-bold uppercase tracking-wider shadow-lg border border-white/10">
-                                                Premium
-                                            </span>
-                                        )}
                                     </div>
 
-                                    {/* Circle Arrow Icon - updated to brand blue */}
-                                    <div className="absolute top-8 right-8 w-12 h-12 rounded-full bg-brand-blue/20 backdrop-blur-md border border-brand-blue/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                                        <ArrowRight className="w-5 h-5 text-brand-gold -rotate-45" />
+                                    {/* Icon */}
+                                    <div className="absolute top-6 right-6 w-10 h-10 rounded-full bg-brand-blue/30 backdrop-blur-md border border-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                                        <ArrowRight className="w-4 h-4 text-brand-gold -rotate-45" />
                                     </div>
 
-                                    {/* Content Overlay — Tightened for compact aspect ratio */}
+                                    {/* Content Overlay — Tighter padding for compactness */}
                                     <div className="absolute bottom-0 left-0 w-full p-6 z-20">
-                                        <h3 className="text-2xl font-bold text-white mb-0 group-hover:text-brand-gold transition-colors duration-300">
+                                        <h3 className="text-xl md:text-2xl font-bold text-white mb-0 group-hover:text-brand-gold transition-colors duration-300 leading-tight">
                                             {product.name}
                                         </h3>
-                                        <p className="text-brand-gold-light text-[10px] font-medium mb-1 group-hover:mb-4 transition-all duration-500 opacity-90 uppercase tracking-wide">
+                                        <p className="text-brand-gold-light text-[9px] font-bold mb-1 opacity-90 uppercase tracking-widest">
                                             {product.grade}
                                         </p>
 
-                                        {/* Hidden Details */}
-                                        <div className="opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 flex items-center gap-6 pt-3 border-t border-white/20">
+                                        {/* Simplified Details */}
+                                        <div className="opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 pt-3 border-t border-white/10 flex justify-between">
                                             <div>
-                                                <p className="text-[10px] uppercase tracking-widest text-brand-gold/60 mb-1 font-bold">Origin</p>
-                                                <p className="text-sm font-semibold text-white/90">{product.origin}</p>
+                                                <span className="text-[10px] font-semibold text-white/50 block">Origin</span>
+                                                <span className="text-xs font-bold text-white/90">{product.origin}</span>
                                             </div>
-                                            <div>
-                                                <p className="text-[10px] uppercase tracking-widest text-brand-gold/60 mb-1 font-bold">MOQ</p>
-                                                <p className="text-sm font-semibold text-white/90">{product.moq}</p>
+                                            <div className="text-right">
+                                                <span className="text-[10px] font-semibold text-white/50 block">MOQ</span>
+                                                <span className="text-xs font-bold text-white/90">{product.moq}</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* Hover Border Glow - updated to brand blue */}
+                                    {/* Brand Blue Shine on Hover */}
                                     <div className="absolute inset-0 bg-brand-blue/0 group-hover:bg-brand-blue/5 transition-all duration-500 pointer-events-none"></div>
                                 </Link>
                             </motion.div>
                         ))}
                     </div>
                 </div>
-            </section >
+            </section>
 
-            {/* How We Craft — Process Journey Section */}
-            < section id="process" className="py-16 md:py-24 bg-stone-light relative overflow-hidden bg-mesh-subtle" >
+            {/* How We Craft — Process Journey Section (Brand Cream Background) */}
+            <section id="process" className="py-16 md:py-24 bg-brand-cream relative overflow-hidden bg-mesh-subtle">
                 {/* Vibrant Background Accents (Low Opacity) */}
-                < div className="absolute top-0 right-0 md:w-1/2 w-full h-full bg-[radial-gradient(circle_at_80%_20%,_rgba(38,84,161,0.05)_0%,_transparent_50%)] pointer-events-none" ></div >
+                <div className="absolute top-0 right-0 md:w-1/2 w-full h-full bg-[radial-gradient(circle_at_80%_20%,_rgba(38,84,161,0.05)_0%,_transparent_50%)] pointer-events-none"></div>
                 <div className="absolute bottom-0 left-0 md:w-1/2 w-full h-full bg-[radial-gradient(circle_at_20%_80%,_rgba(218,165,32,0.05)_0%,_transparent_50%)] pointer-events-none"></div>
 
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -472,18 +472,18 @@ const Home = () => {
                     </div>
 
                     <div className="relative">
-                        {/* Connecting Path Animation */}
-                        <div className="hidden md:block absolute top-[64px] left-[12.5%] right-[12.5%] h-[2px] bg-stone-border/30">
-                            <motion.div
-                                initial={{ width: "0%" }}
-                                whileInView={{ width: "100%" }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 2, ease: "easeInOut", delay: 0.5 }}
-                                className="h-full bg-gradient-to-r from-brand-blue via-brand-gold to-brand-blue shadow-[0_0_15px_rgba(218,165,32,0.4)]"
-                            />
-                        </div>
+                        <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-6 px-6 md:mx-0 md:px-0 md:grid md:grid-cols-4 gap-12 relative items-start overflow-y-hidden">
+                            {/* Connecting Path Animation - Bolder and properly scaled for wider spacing */}
+                            <div className="absolute top-[56px] left-[140px] w-[calc((280px+3rem)*3)] md:left-[12.5%] md:right-[12.5%] md:w-auto h-[4px] bg-stone-border/40 z-0">
+                                <motion.div
+                                    initial={{ width: "0%" }}
+                                    whileInView={{ width: "100%" }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 2, ease: "easeInOut", delay: 0.5 }}
+                                    className="h-full bg-gradient-to-r from-brand-blue via-brand-gold to-brand-blue shadow-[0_0_20px_rgba(255,237,0,0.6)]"
+                                />
+                            </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 relative">
                             {[
                                 { step: "01", title: "Premium Soybeans", desc: "Locally sourced non-GMO soybeans for the freshest quality.", icon: Sprout, color: "bg-green-500/10" },
                                 { step: "02", title: "Natural Fermentation", desc: "Traditional 48-hour slow fermentation process.", icon: Microscope, color: "bg-blue-500/10" },
@@ -496,20 +496,20 @@ const Home = () => {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 0.6, delay: 0.3 + (idx * 0.15) }}
-                                    className="relative group pt-4"
+                                    className="relative group pt-4 min-w-[280px] snap-center md:min-w-0"
                                 >
                                     {/* Icon Container with Glass Effect */}
                                     <div className="relative z-10 mb-4 md:mb-8 flex justify-center">
                                         <motion.div
                                             whileHover={{ scale: 1.1, rotate: 5 }}
-                                            className="w-16 h-16 md:w-24 md:h-24 rounded-[1.2rem] md:rounded-[2rem] bg-white border border-stone-border shadow-soft flex items-center justify-center relative overflow-hidden group-hover:border-brand-gold/50 transition-all duration-500"
+                                            className="w-24 h-24 rounded-[2rem] bg-white border border-stone-border shadow-soft flex items-center justify-center relative overflow-hidden group-hover:border-brand-gold/50 transition-all duration-500"
                                         >
                                             <div className={`absolute inset-0 ${item.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
-                                            <item.icon className="w-7 h-7 md:w-10 md:h-10 text-brand-blue relative z-10 group-hover:scale-110 transition-transform duration-500" />
+                                            <item.icon className="w-10 h-10 text-brand-blue relative z-10 group-hover:text-brand-cyan group-hover:scale-110 transition-all duration-500" />
                                         </motion.div>
 
                                         {/* Step Indicator Badge */}
-                                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-7 h-7 md:w-10 md:h-10 rounded-full bg-stone-dark text-white text-[8px] md:text-[10px] font-bold flex items-center justify-center border-2 md:border-4 border-stone-light shadow-xl z-20">
+                                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-stone-dark text-white text-[10px] font-bold flex items-center justify-center border-4 border-stone-light shadow-xl z-20">
                                             {item.step}
                                         </div>
                                     </div>
@@ -530,11 +530,11 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
-            </section >
+            </section>
 
 
             <CTA />
-        </div >
+        </div>
     );
 };
 

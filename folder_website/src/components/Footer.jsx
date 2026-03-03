@@ -7,7 +7,7 @@ import { COMPANY_INFO } from '../data/products';
  */
 const Footer = () => {
     return (
-        <footer className="bg-white pt-20 pb-4 border-t border-stone-border/30 relative overflow-hidden">
+        <footer className="bg-brand-cream pt-20 pb-4 border-t border-brand-gold/20 relative overflow-hidden">
             {/* Subtle Brand Mesh Fragment */}
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-brand-gold/5 blur-[100px] rounded-full -mr-20 -mb-20 pointer-events-none"></div>
             <div className="absolute top-0 left-0 w-64 h-64 bg-brand-blue/5 blur-[80px] rounded-full -ml-32 -mt-32 pointer-events-none"></div>
@@ -27,18 +27,18 @@ const Footer = () => {
                         <div>
                             <h4 className="font-bold text-stone-dark mb-8 text-[10px] uppercase tracking-[0.3em]">Company</h4>
                             <ul className="space-y-4">
-                                <li><Link to="/about" className="text-stone-dark/60 text-sm hover:text-brand-blue transition-all duration-300 flex items-center gap-2 group/link"><div className="w-1 h-1 bg-brand-gold rounded-full opacity-0 group-hover/link:opacity-100 transition-opacity" /> About</Link></li>
-                                <li><Link to="/products" className="text-stone-dark/60 text-sm hover:text-brand-blue transition-all duration-300 flex items-center gap-2 group/link"><div className="w-1 h-1 bg-brand-gold rounded-full opacity-0 group-hover/link:opacity-100 transition-opacity" /> Products</Link></li>
-                                <li><Link to="/gallery" className="text-stone-dark/60 text-sm hover:text-brand-blue transition-all duration-300 flex items-center gap-2 group/link"><div className="w-1 h-1 bg-brand-gold rounded-full opacity-0 group-hover/link:opacity-100 transition-opacity" /> Gallery</Link></li>
-                                <li><Link to="/contact" className="text-stone-dark/60 text-sm hover:text-brand-blue transition-all duration-300 flex items-center gap-2 group/link"><div className="w-1 h-1 bg-brand-gold rounded-full opacity-0 group-hover/link:opacity-100 transition-opacity" /> Contact</Link></li>
+                                <li><Link to="/about" className="text-stone-dark/70 text-sm hover:text-brand-cyan transition-all duration-300 flex items-center gap-2 group/link"><div className="w-1 h-1 bg-brand-gold rounded-full opacity-0 group-hover/link:opacity-100 transition-opacity" /> About</Link></li>
+                                <li><Link to="/products" className="text-stone-dark/70 text-sm hover:text-brand-cyan transition-all duration-300 flex items-center gap-2 group/link"><div className="w-1 h-1 bg-brand-gold rounded-full opacity-0 group-hover/link:opacity-100 transition-opacity" /> Products</Link></li>
+                                <li><Link to="/gallery" className="text-stone-dark/70 text-sm hover:text-brand-cyan transition-all duration-300 flex items-center gap-2 group/link"><div className="w-1 h-1 bg-brand-gold rounded-full opacity-0 group-hover/link:opacity-100 transition-opacity" /> Gallery</Link></li>
+                                <li><Link to="/contact" className="text-stone-dark/70 text-sm hover:text-brand-cyan transition-all duration-300 flex items-center gap-2 group/link"><div className="w-1 h-1 bg-brand-gold rounded-full opacity-0 group-hover/link:opacity-100 transition-opacity" /> Contact</Link></li>
                             </ul>
                         </div>
                         <div>
                             <h4 className="font-bold text-stone-dark mb-8 text-[10px] uppercase tracking-[0.3em]">Inquiries</h4>
                             <ul className="space-y-4">
-                                <li><a href="https://wa.me/6281287990370" target="_blank" rel="noopener noreferrer" className="text-stone-dark/60 text-sm hover:text-brand-blue transition-all duration-300">Sales Department</a></li>
-                                <li><a href="https://wa.me/6282142205147" target="_blank" rel="noopener noreferrer" className="text-stone-dark/60 text-sm hover:text-brand-blue transition-all duration-300">Global Partnerships</a></li>
-                                <li><Link to="/certificates" className="text-stone-dark/60 text-sm hover:text-brand-blue transition-all duration-300">Certifications</Link></li>
+                                <li><a href="https://wa.me/6281287990370" target="_blank" rel="noopener noreferrer" className="text-stone-dark/70 text-sm hover:text-brand-cyan transition-all duration-300">Sales Department</a></li>
+                                <li><a href="https://wa.me/6282142205147" target="_blank" rel="noopener noreferrer" className="text-stone-dark/70 text-sm hover:text-brand-cyan transition-all duration-300">Global Partnerships</a></li>
+                                <li><Link to="/certificates" className="text-stone-dark/70 text-sm hover:text-brand-cyan transition-all duration-300">Certifications</Link></li>
                             </ul>
                         </div>
                         <div>

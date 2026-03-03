@@ -10,7 +10,7 @@ const ARTICLES = [
     {
         id: 1,
         title: "Traditional Fermentation: The Secret to Pakuaty's Crunch",
-        content: "Our fermentation process is a labor of love that spans generations. We start with carefully selected non-GMO soybeans, which are soaked and then inoculated with a traditional starter culture. The critical phase is the 48-hour slow fermentation in a temperature-controlled environment. This allows the mycelium to fully bind the soybeans, creating a dense, protein-rich 'cake' that forms the base of our chips.\n\nThis patient approach is what differentiates Pakuaty. While industrial methods try to speed up this process, we believe that true flavor and the perfect 'crunch' can only be achieved by respecting nature's timeline. The result is a snack that isn't just delicious, but deeply rooted in Indonesian heritage.",
+        content: "Our fermentation process is a labor of love that spans generations. We start with carefully selected non-GMO soybeans, which are soaked and then inoculated with a traditional starter culture. The critical phase is the 48-hour slow fermentation in a temperature-controlled environment. This allows the mycelium to fully bind the soybeans, creating a dense, protein-rich 'cake' that forms the base of our chips.\\n\\nThis patient approach is what differentiates Pakuaty. While industrial methods try to speed up this process, we believe that true flavor and the perfect 'crunch' can only be achieved by respecting nature's timeline. The result is a snack that isn't just delicious, but deeply rooted in Indonesian heritage.",
         date: "Jan 15, 2026",
         author: "Heritage Master",
         category: "Process",

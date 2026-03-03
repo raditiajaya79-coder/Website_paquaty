@@ -71,7 +71,7 @@ const Events = () => {
     ];
 
     return (
-        <div className="bg-neutral-bone min-h-screen pt-32 pb-24 relative overflow-hidden">
+        <div className="bg-brand-cream min-h-screen pt-32 pb-24 relative overflow-hidden">
             <Helmet>
                 <title>{generatePageTitle('Events & Stories')}</title>
                 <meta name="description" content="Stay updated with Pakuaty's latest events, heritage stories, and export milestones." />
@@ -111,7 +111,7 @@ const Events = () => {
                             transition={{ duration: 0.6, delay: idx * 0.1 }}
                             className="group cursor-pointer"
                         >
-                            <div className="relative aspect-[16/10] rounded-[2rem] overflow-hidden mb-8 shadow-xl bg-stone-100 group">
+                            <div className="relative aspect-[16/10] rounded-[2rem] overflow-hidden mb-8 shadow-xl bg-white group">
                                 <img
                                     src={article.image}
                                     alt={article.title}
@@ -148,7 +148,7 @@ const Events = () => {
 
                                 <Link
                                     to={`/events/${article.id}`}
-                                    className="pt-4 flex items-center gap-2 text-brand-gold-dark font-bold text-xs uppercase tracking-widest group-hover:gap-4 transition-all duration-300"
+                                    className="pt-4 flex items-center gap-2 text-brand-cyan font-bold text-xs uppercase tracking-widest group-hover:gap-4 transition-all duration-300"
                                 >
                                     Read Full Story
                                     <ArrowRight className="w-4 h-4" />
