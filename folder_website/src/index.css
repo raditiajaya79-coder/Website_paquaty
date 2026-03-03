@@ -1,14 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-blue: #2654A1;
-  --color-brand-gold: #DAA520;
-  --color-brand-gold-light: #E8B84B;
-  --color-stone-dark: #1C1917;
-  --color-stone-light: #FAFAF9;
-  --color-stone-mid: #F5F5F4;
-  --color-stone-border: #E7E5E4;
-  --shadow-soft: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+  /* === BRAND COLORS — Kuning Tua Pekat + Blue Accent === */
+  --color-brand-blue: #1B3A5C; /* Deep Navy Blue — aksen biru hidup */
+  --color-brand-blue-light: #2A5A8C; /* Blue aksen terang untuk hover */
+  --color-brand-gold: #FFED00; /* Pure Vivid Yellow — kuning murni cerah persis swatch user */
+  --color-brand-gold-dark: #A18C00; /* Darker Gold/Brown — untuk teks kontras di atas kuning */
+  --color-brand-gold-light: #FFF9B0; /* Kuning muda cerah — highlight */
+  --color-brand-gold-vivid: #FFFF00; /* Kuning paling murni — untuk pop maksimal */
+
+  /* === NEUTRAL / STONE TONES — Balanced Foundation === */
+  --color-stone-dark: #1A1206; /* Near-black dengan undertone warm */
+  --color-stone-light: #FFF176; /* Golden Yellow — Untuk aksen section/brand */
+  --color-neutral-bone: #F8F5F0; /* Off-white sophisticated — Background utama website */
+  --color-stone-mid: #FFE93A; /* Kuning lebih tua — section alternate */
+  --color-stone-border: #E6D320; /* Border kuning tua — senada background */
+
+  /* === SHADOWS — Golden glow === */
+  --shadow-luminous: 0 0 50px rgba(237, 190, 0, 0.4);
+  --shadow-gold-soft: 0 4px 20px rgba(237, 190, 0, 0.2);
 }
 
 @layer base {
@@ -17,8 +27,15 @@
   }
 
   body {
-    @apply bg-stone-light text-stone-dark antialiased;
+    @apply text-stone-dark antialiased;
     font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--color-neutral-bone);
+    background-image: 
+    radial-gradient(at 15% 15%, rgba(255, 237, 0, 0.15) 0px, transparent 65%),
+    radial-gradient(at 85% 15%, rgba(230, 211, 32, 0.1) 0px, transparent 65%),
+    radial-gradient(at 85% 85%, rgba(255, 237, 0, 0.15) 0px, transparent 65%),
+    radial-gradient(at 15% 85%, rgba(230, 211, 32, 0.1) 0px, transparent 65%);
+    background-attachment: fixed;
   }
 
   /* Selection colors — brand blue */
@@ -44,5 +61,23 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  /* Sophisticated textured background for sections */
+  .bg-mesh-subtle {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bg-mesh-subtle::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: 
+      radial-gradient(circle at 15% 25%, rgba(255, 237, 0, 0.2) 0%, transparent 60%),
+      radial-gradient(circle at 85% 75%, rgba(230, 211, 32, 0.15) 0%, transparent 60%),
+      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 80%);
+    z-index: 0;
   }
 }

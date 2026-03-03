@@ -13,16 +13,17 @@ const Gallery = () => {
     };
 
     const images = [
-        { id: 1, src: "/images/keripik tempe original pakuaty.jpg", size: "col-span-1 row-span-1", title: "Original Heritage" },
-        { id: 2, src: "/images/keirpik tempe balado pakuaty.jpg", size: "md:col-span-2 md:row-span-1", title: "Spicy Balado Selection" },
-        { id: 3, src: "/images/keripik tempe bbq pakuaty.jpg", size: "col-span-1 row-span-2", title: "Smoky BBQ Series" },
-        { id: 4, src: "/images/keripik tempe keju pakuaty.jpg", size: "col-span-1 row-span-1", title: "Premium Cheese" },
-        { id: 5, src: "/images/keripik tempe sapi pakuaty.jpg", size: "col-span-1 row-span-1", title: "Roasted Beef Special" },
-        { id: 6, src: "/images/keripik jamur pakuaty.jpg", size: "md:col-span-2 md:row-span-1", title: "Crispy Mushroom Edition" },
+        { id: 1, src: "/images/keripik tempe original pakuaty.jpg", span: "md:col-span-8", aspect: "aspect-[1.5/1] md:aspect-[2/1]", title: "Heritage Fermentation", category: "Process" },
+        { id: 2, src: "/images/keirpik tempe balado pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square", title: "Spicy Infusion", category: "Flavor" },
+        { id: 3, src: "/images/keripik tempe bbq pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square", title: "Smoky Perfection", category: "Quality" },
+        { id: 4, src: "/images/keripik tempe keju pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square", title: "Golden Grating", category: "Detail" },
+        { id: 5, src: "/images/keripik tempe sapi pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square", title: "Roasted Excellence", category: "Export" },
+        { id: 6, src: "/images/keripik jamur pakuaty.jpg", span: "md:col-span-6", aspect: "aspect-video", title: "Crunch Anatomy", category: "Detail" },
+        { id: 7, src: "/images/FOTO ALL KERIPIK TEMPE.jpg", span: "md:col-span-6", aspect: "aspect-video", title: "The Collection", category: "Brand" },
     ];
 
     return (
-        <div className="bg-stone-light min-h-screen pt-32 pb-24">
+        <div className="bg-neutral-bone min-h-screen pt-32 pb-24 relative overflow-hidden">
             <Helmet>
                 <title>{generatePageTitle('Visual Gallery')}</title>
                 <meta name="description" content="Explore the visual journey of Pakuaty's premium tempe chips." />
@@ -41,7 +42,7 @@ const Gallery = () => {
                         transition={{ delay: 0.1 }}
                         className="text-5xl md:text-7xl font-medium tracking-tight text-stone-dark mb-6"
                     >
-                        Our <span className="text-brand-gold italic">Gallery</span>
+                        Our <span className="text-brand-blue italic">Gallery</span>
                     </motion.h1>
                     <motion.p
                         {...fadeIn}
@@ -52,36 +53,47 @@ const Gallery = () => {
                     </motion.p>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-6 relative">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
                     {images.map((img, idx) => (
                         <motion.div
                             key={img.id}
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.8, delay: idx * 0.1 }}
-                            className={`relative group overflow-hidden rounded-[2.5rem] shadow-lg bg-stone-200 flex items-center justify-center ${img.size}`}
+                            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: idx * 0.1 }}
+                            className={`relative group overflow-hidden rounded-[3rem] shadow-xl bg-white border border-stone-border/30 transform-gpu ${img.span} ${img.aspect}`}
                         >
-                            <div className="absolute inset-0 bg-gradient-to-br from-stone-300 to-stone-200 opacity-50 transition-transform duration-1000 group-hover:scale-110"></div>
-                            <div className="relative z-10 text-stone-400 font-bold tracking-tighter text-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-700 select-none">
-                                GALLERY
+                            {/* Image Container with Inner Padding for "Gallery Frame" effect */}
+                            <div className="absolute inset-0 p-4 transition-all duration-700 group-hover:p-0">
+                                <img
+                                    src={img.src}
+                                    alt={img.title}
+                                    className="w-full h-full object-cover rounded-[2.2rem] transition-all duration-1000 group-hover:rounded-none group-hover:scale-105"
+                                />
                             </div>
 
-                            {/* Overlay */}
-                            <div className="absolute inset-0 bg-stone-dark/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col items-center justify-center text-center p-6 backdrop-blur-[2px]">
+                            {/* Glassmorphism Category Badge */}
+                            <div className="absolute top-8 left-8 z-20">
+                                <span className="px-4 py-1.5 bg-white/90 backdrop-blur-xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] text-brand-blue shadow-xl border border-white/20">
+                                    {img.category}
+                                </span>
+                            </div>
+
+                            {/* Luxury Dark Overlay with Title */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-stone-dark/90 via-stone-dark/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-10 pointer-events-none">
                                 <motion.div
                                     initial={{ y: 20, opacity: 0 }}
                                     whileHover={{ y: 0, opacity: 1 }}
-                                    className="flex flex-col items-center gap-4"
+                                    className="space-y-2"
                                 >
-                                    <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center">
-                                        <Maximize2 className="w-5 h-5 text-white" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-white font-bold text-lg mb-1">{img.title}</h3>
-                                        <p className="text-brand-gold-light text-xs font-medium uppercase tracking-widest font-sans">Premium Selection</p>
-                                    </div>
+                                    <h3 className="text-white text-3xl font-medium tracking-tight translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-100">{img.title}</h3>
+                                    <div className="w-12 h-0.5 bg-brand-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-700 delay-200 origin-left"></div>
                                 </motion.div>
+                            </div>
+
+                            {/* Click Indicator */}
+                            <div className="absolute top-8 right-8 w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 scale-75 group-hover:scale-100">
+                                <Maximize2 className="w-5 h-5 text-white" />
                             </div>
                         </motion.div>
                     ))}

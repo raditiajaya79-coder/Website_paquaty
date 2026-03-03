@@ -1,5 +1,6 @@
 // MainLayout.jsx — Wrapper utama untuk layout website
 import { Outlet } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
 
@@ -11,17 +12,22 @@ import Footer from '../components/Footer.jsx';
 const MainLayout = () => {
     return (
         // Flexbox container untuk memastikan footer tetap di bawah jika konten sedikit
-        <div className="flex flex-col min-h-screen bg-white text-slate-900">
+        <div className="flex flex-col min-h-screen bg-neutral-bone text-stone-dark">
             {/* Komponen Navigasi Atas */}
             <Navbar />
 
             {/* 
-        Main Content Area
-        flex-grow: supaya memenuhi sisa ruang agar footer terdorong ke bawah
+        Main Content Area with Premium Transitions
       */}
             <main className="flex-grow">
-                {/* Outlet: Komponen ini akan digantikan oleh halaman (Home, About, dll) */}
-                <Outlet />
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                >
+                    <Outlet />
+                </motion.div>
             </main>
 
             {/* Komponen Informasi Bawah */}

@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, ArrowRight, User, Tag } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { generatePageTitle } from '../utils/seo';
 
 const Events = () => {
@@ -15,35 +16,62 @@ const Events = () => {
     const articles = [
         {
             id: 1,
-            title: "The Heritage of Kediri: Crafting the Perfect Tempe",
-            excerpt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sedenim omnis iste natus error sit voluptatem accusantium doloremque laudantium.",
-            date: "Oct 24, 2025",
-            author: "Pakuaty Heritage Team",
-            category: "Heritage",
+            title: "Traditional Fermentation: The Secret to Pakuaty's Crunch",
+            excerpt: "Discover the ancient heritage behind our 48-hour fermentation process that creates the unique texture and deep flavor profile of our artisan tempe.",
+            date: "Jan 15, 2026",
+            author: "Heritage Master",
+            category: "Process",
             image: "/images/keripik tempe original pakuaty.jpg"
         },
         {
             id: 2,
-            title: "Expanding to Global Markets: Our Recent Export Milestone",
-            excerpt: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores.",
-            date: "Nov 12, 2025",
-            author: "Trade Department",
+            title: "Pakuaty Expands to Middle Eastern Markets",
+            excerpt: "Our recent partnership with major retailers in Dubai marks a significant milestone in our journey to bring Indonesian flavors to the global stage.",
+            date: "Feb 02, 2026",
+            author: "Trade Dept",
             category: "Export",
             image: "/images/keirpik tempe balado pakuaty.jpg"
         },
         {
             id: 3,
-            title: "Innovation in Snacks: New Flavors Coming Soon",
-            excerpt: "Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit.",
-            date: "Dec 05, 2025",
-            author: "R&D Team",
+            title: "Designing the Future: The Evolution of Our Packaging",
+            excerpt: "Explore the design philosophy behind our new premium holographic packaging that balances modern aesthetics with traditional Indonesian motifs.",
+            date: "Feb 18, 2026",
+            author: "Design Team",
             category: "Innovation",
-            image: "/images/keripik tempe bbq pakuaty.jpg"
+            image: "/images/logo pakuaty tagline.png"
+        },
+        {
+            id: 4,
+            title: "Sourcing Excellence: Meeting Our Local Soybean Farmers",
+            excerpt: "We visit the heart of East Java to meet the families who grow the non-GMO soybeans that form the foundation of every Pakuaty tempe chip.",
+            date: "Feb 25, 2026",
+            author: "Sourcing Team",
+            category: "Community",
+            image: "/images/keripik tempe sapi pakuaty.jpg"
+        },
+        {
+            id: 5,
+            title: "The Health Benefits of Fermented Snacks",
+            excerpt: "Scientific insights into why our traditional fermentation process makes tempe chips a superior snack choice for health-conscious consumers.",
+            date: "Mar 01, 2026",
+            author: "Health Expert",
+            category: "Wellness",
+            image: "/images/keripik jamur pakuaty.jpg"
+        },
+        {
+            id: 6,
+            title: "Upcoming Event: Indonesian Food Expo 2026",
+            excerpt: "Join us in Jakarta this coming April as we showcase our latest flavor innovations and heritage craftsmanship at the national food exhibition.",
+            date: "Mar 10, 2026",
+            author: "PR Team",
+            category: "Event",
+            image: "/images/FOTO ALL KERIPIK TEMPE.jpg"
         }
     ];
 
     return (
-        <div className="bg-stone-light min-h-screen pt-32 pb-24">
+        <div className="bg-neutral-bone min-h-screen pt-32 pb-24 relative overflow-hidden">
             <Helmet>
                 <title>{generatePageTitle('Events & Stories')}</title>
                 <meta name="description" content="Stay updated with Pakuaty's latest events, heritage stories, and export milestones." />
@@ -62,7 +90,7 @@ const Events = () => {
                         transition={{ delay: 0.1 }}
                         className="text-5xl md:text-7xl font-medium tracking-tight text-stone-dark mb-6"
                     >
-                        Events & <span className="text-brand-gold italic">Stories</span>
+                        Events & <span className="text-brand-blue italic">Stories</span>
                     </motion.h1>
                     <motion.p
                         {...fadeIn}
@@ -83,12 +111,15 @@ const Events = () => {
                             transition={{ duration: 0.6, delay: idx * 0.1 }}
                             className="group cursor-pointer"
                         >
-                            <div className="relative aspect-[16/10] rounded-[2rem] overflow-hidden mb-8 shadow-xl bg-stone-200 flex items-center justify-center group">
-                                <div className="absolute inset-0 bg-gradient-to-br from-stone-300 to-stone-200 opacity-50 transition-transform duration-700 group-hover:scale-110"></div>
-                                <div className="relative z-10 text-stone-400 font-bold tracking-tighter text-4xl opacity-20 group-hover:opacity-40 transition-opacity duration-700 select-none">
-                                    PAKUATY
-                                </div>
-                                <div className="absolute top-6 left-6">
+                            <div className="relative aspect-[16/10] rounded-[2rem] overflow-hidden mb-8 shadow-xl bg-stone-100 group">
+                                <img
+                                    src={article.image}
+                                    alt={article.title}
+                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-stone-dark/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                                <div className="absolute top-6 left-6 z-10">
                                     <span className="px-4 py-1.5 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-wider text-brand-blue shadow-lg">
                                         {article.category}
                                     </span>
@@ -98,11 +129,11 @@ const Events = () => {
                             <div className="space-y-4">
                                 <div className="flex items-center gap-6 text-[10px] font-bold uppercase tracking-widest text-[#78716C]">
                                     <div className="flex items-center gap-2">
-                                        <Calendar className="w-3 h-3 text-brand-gold" />
+                                        <Calendar className="w-3 h-3 text-brand-gold-dark" />
                                         {article.date}
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <User className="w-3 h-3 text-brand-gold" />
+                                        <User className="w-3 h-3 text-brand-gold-dark" />
                                         {article.author}
                                     </div>
                                 </div>
@@ -115,10 +146,13 @@ const Events = () => {
                                     {article.excerpt}
                                 </p>
 
-                                <div className="pt-4 flex items-center gap-2 text-brand-gold font-bold text-xs uppercase tracking-widest group-hover:gap-4 transition-all duration-300">
+                                <Link
+                                    to={`/events/${article.id}`}
+                                    className="pt-4 flex items-center gap-2 text-brand-gold-dark font-bold text-xs uppercase tracking-widest group-hover:gap-4 transition-all duration-300"
+                                >
                                     Read Full Story
                                     <ArrowRight className="w-4 h-4" />
-                                </div>
+                                </Link>
                             </div>
                         </motion.article>
                     ))}
