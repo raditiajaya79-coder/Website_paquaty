@@ -3,25 +3,8 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 // Icon: ArrowRight (tombol navigasi), Sprout/Microscope/Container/Store (section proses)
 import { ArrowRight, Sprout, Microscope, Container, Store } from 'lucide-react';
-import { PRODUCTS } from '../data/products';
+import { api } from '../utils/api'; // Utilitas API backend
 import CTA from '../components/CTA';
-
-// Data Hero yang stabil (Dipindahkan ke luar agar tidak re-render/re-reference)
-// Data stabil — di luar komponen agar tidak trigger re-render
-const HERO_FLAVORS = [
-    "Original",
-    "Balado",
-    "BBQ",
-    "Keju",
-    "Sapi Panggang"
-];
-
-const heroItems = PRODUCTS
-    .filter(p => HERO_FLAVORS.includes(p.name))
-    .map(p => ({
-        src: p.image,
-        name: p.name
-    }));
 
 const Home = () => {
     // Session Management: Only show intro once per session
@@ -29,16 +12,52 @@ const Home = () => {
     const [isRevealed, setIsRevealed] = useState(hasPlayedIntro === 'true');
     const [activeIndex, setActiveIndex] = useState(2);
 
-    // Logic: Autoplay interval (Selalu aktif)
+    // State untuk data dari API
+    const [heroItems, setHeroItems] = useState([]);
+    const [featuredProducts, setFeaturedProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch data dari API
     useEffect(() => {
-        if (!isRevealed) return;
+        const fetchHomeData = async () => {
+            try {
+                const products = await api.get('/products');
+
+                // Filter untuk Hero (yang punya isHero true atau flavor tertentu)
+                const heroFlavors = ["Original", "Balado", "BBQ", "Keju", "Sapi Panggang"];
+                const filteredHero = products
+                    .filter(p => p.isHero || heroFlavors.includes(p.name))
+                    .map(p => ({
+                        id: p.id,
+                        src: p.image,
+                        name: p.name
+                    }));
+
+                setHeroItems(filteredHero.length > 0 ? filteredHero : products.slice(0, 5).map(p => ({ id: p.id, src: p.image, name: p.name })));
+
+                // Produk unggulan (terlaris atau 3 pertama)
+                const featured = products.filter(p => p.isBestseller).slice(0, 3);
+                setFeaturedProducts(featured.length > 0 ? featured : products.slice(0, 3));
+
+            } catch (error) {
+                console.error('Gagal memuat data home:', error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchHomeData();
+    }, []);
+
+    // Logic: Autoplay interval (Selalu aktif jika data ada)
+    useEffect(() => {
+        if (!isRevealed || heroItems.length === 0) return;
 
         const interval = setInterval(() => {
             setActiveIndex((prev) => (prev + 1) % heroItems.length);
         }, 4000);
 
         return () => clearInterval(interval);
-    }, [isRevealed]);
+    }, [isRevealed, heroItems.length]);
 
     useEffect(() => {
         if (hasPlayedIntro) return; // Skip if already played
@@ -57,8 +76,6 @@ const Home = () => {
         viewport: { once: true },
         transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] }
     };
-
-
 
     return (
         <div className="bg-brand-cream text-stone-dark">
@@ -140,7 +157,7 @@ const Home = () => {
                         {heroItems.map((item, idx) => {
                             const isActive = activeIndex === idx;
 
-                            // Perhitungan posisi & lebar mutlak (Absolute) untuk 5 SLICES
+                            // Perhitungan posisi & lebar mutlak (Absolute) untuk SLICES
                             const widthPercent = isActive ? 44 : 14;
 
                             let leftPercent = 0;
@@ -282,7 +299,7 @@ const Home = () => {
                         </div>
                     </motion.div>
 
-                    {/* Stage 2 Content (Overlays) — High-end Amber Studio Lighting (No more washed-out white) */}
+                    {/* Stage 2 Content (Overlays) */}
                     <div className="absolute inset-0 z-30 flex items-center justify-center bg-[radial-gradient(circle_at_center,_rgba(212,196,133,0.15)_0%,_rgba(180,160,100,0.05)_100%)] pointer-events-none">
 
                         <div className="max-w-7xl mx-auto px-6 text-center pointer-events-auto">
@@ -293,7 +310,7 @@ const Home = () => {
                             >
                                 <h2 className="text-brand-gold font-black tracking-[0.5em] uppercase text-[9px] md:text-xs mb-4 px-10">Premium Tempe Chips</h2>
                                 <div className="relative inline-block transform-gpu">
-                                    {/* Ambient Isolation Glow — Migrated from blur to high-performance radial gradient */}
+                                    {/* Ambient Isolation Glow */}
                                     <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.25)_0%,transparent_70%)] scale-150 -z-10" />
 
                                     <h1 className="lg:text-[8.5rem] md:text-7xl text-4xl font-bold text-white tracking-tight leading-[0.82] mb-6 drop-shadow-[0_10px_25px_rgba(27,58,92,0.5)]">
@@ -321,7 +338,7 @@ const Home = () => {
                 </motion.div>
             </section>
 
-            {/* Brand Badge Strip — Standalone Divider Section (Brand Cream Background) */}
+            {/* Brand Badge Strip */}
             <div className="relative z-10 bg-brand-cream py-3 md:py-8 border-b border-brand-gold/10">
                 <div className="max-w-7xl mx-auto px-4 md:px-6">
                     <div className="flex flex-wrap justify-center md:justify-between items-center gap-4 md:gap-10 opacity-30 grayscale hover:grayscale-0 transition-all duration-1000">
@@ -332,19 +349,12 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Artisan Tempe Chips section — White Background (25% distribution) */}
+            {/* Artisan Tempe Chips section */}
             <section id="products" className="relative py-16 md:py-24 bg-white overflow-hidden">
-                {/* Background Watermark — Adds high-end editorial depth */}
+                {/* Background Watermark */}
                 <div className="absolute inset-0 flex items-center justify-center select-none pointer-events-none opacity-[0.03] overflow-hidden">
                     <span className="text-[25vw] font-black tracking-tighter text-stone-dark leading-none -rotate-12 translate-y-20">ARTISAN</span>
                 </div>
-
-                {/* Multi-Color Vibrant Decorative Elements */}
-                <div className="absolute top-0 right-0 w-[850px] h-[850px] opacity-25 bg-[radial-gradient(circle,rgba(38,84,161,0.2)_0%,transparent_70%)] translate-x-1/3 -translate-y-1/3 pointer-events-none animate-pulse duration-[8000ms]"></div>
-                <div className="absolute bottom-0 left-0 w-[700px] h-[700px] opacity-25 bg-[radial-gradient(circle,rgba(255,237,0,0.25)_0%,transparent_70%)] -translate-x-1/4 translate-y-1/4 pointer-events-none animate-pulse duration-[10000ms]"></div>
-
-                {/* Subtle Radial Mesh Gradient for Color Blending */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,_rgba(255,237,0,0.08)_0%,_transparent_50%),radial-gradient(circle_at_20%_80%,_rgba(38,84,161,0.08)_0%,_transparent_50%)] pointer-events-none"></div>
 
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
                     {/* Section Header */}
@@ -376,9 +386,9 @@ const Home = () => {
                         </motion.div>
                     </div>
 
-                    {/* Product Cards Grid - Updated with Mobile Horizontal Scroll & Compact Aspect Ratio */}
+                    {/* Product Cards Grid */}
                     <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-6 px-6 md:grid md:grid-cols-3 gap-10 pb-12 md:pb-0">
-                        {PRODUCTS.slice(0, 3).map((product, idx) => (
+                        {featuredProducts.map((product, idx) => (
                             <motion.div
                                 key={product.id}
                                 initial={{ opacity: 0, y: 30 }}
@@ -391,7 +401,7 @@ const Home = () => {
                                     to={`/products/${product.id}`}
                                     className="group relative block aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-white border border-stone-border hover:border-brand-gold transition-all duration-500 shadow-xl hover:shadow-2xl h-full"
                                 >
-                                    {/* Image Container — Compact focus */}
+                                    {/* Image Container */}
                                     <div className="absolute inset-x-0 top-0 bottom-20 p-8 flex items-center justify-center bg-stone-50/20">
                                         <img
                                             src={product.image}
@@ -412,12 +422,7 @@ const Home = () => {
                                         )}
                                     </div>
 
-                                    {/* Icon */}
-                                    <div className="absolute top-6 right-6 w-10 h-10 rounded-full bg-brand-blue/30 backdrop-blur-md border border-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                                        <ArrowRight className="w-4 h-4 text-brand-gold -rotate-45" />
-                                    </div>
-
-                                    {/* Content Overlay — Tighter padding for compactness */}
+                                    {/* Content Overlay */}
                                     <div className="absolute bottom-0 left-0 w-full p-6 z-20">
                                         <h3 className="text-xl md:text-2xl font-bold text-white mb-0 group-hover:text-brand-gold transition-colors duration-300 leading-tight">
                                             {product.name}
@@ -438,9 +443,6 @@ const Home = () => {
                                             </div>
                                         </div>
                                     </div>
-
-                                    {/* Brand Blue Shine on Hover */}
-                                    <div className="absolute inset-0 bg-brand-blue/0 group-hover:bg-brand-blue/5 transition-all duration-500 pointer-events-none"></div>
                                 </Link>
                             </motion.div>
                         ))}
@@ -448,12 +450,8 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* How We Craft — Process Journey Section (Brand Cream Background) */}
+            {/* How We Craft process section */}
             <section id="process" className="py-16 md:py-24 bg-brand-cream relative overflow-hidden bg-mesh-subtle">
-                {/* Vibrant Background Accents (Low Opacity) */}
-                <div className="absolute top-0 right-0 md:w-1/2 w-full h-full bg-[radial-gradient(circle_at_80%_20%,_rgba(38,84,161,0.05)_0%,_transparent_50%)] pointer-events-none"></div>
-                <div className="absolute bottom-0 left-0 md:w-1/2 w-full h-full bg-[radial-gradient(circle_at_20%_80%,_rgba(218,165,32,0.05)_0%,_transparent_50%)] pointer-events-none"></div>
-
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
                     <div className="text-center mb-24">
                         <motion.span
@@ -473,7 +471,7 @@ const Home = () => {
 
                     <div className="relative">
                         <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory -mx-6 px-6 md:mx-0 md:px-0 md:grid md:grid-cols-4 gap-12 relative items-start overflow-y-hidden">
-                            {/* Connecting Path Animation - Bolder and properly scaled for wider spacing */}
+                            {/* Connecting Path Animation */}
                             <div className="absolute top-[56px] left-[140px] w-[calc((280px+3rem)*3)] md:left-[12.5%] md:right-[12.5%] md:w-auto h-[4px] bg-stone-border/40 z-0">
                                 <motion.div
                                     initial={{ width: "0%" }}
@@ -498,7 +496,6 @@ const Home = () => {
                                     transition={{ duration: 0.6, delay: 0.3 + (idx * 0.15) }}
                                     className="relative group pt-4 min-w-[280px] snap-center md:min-w-0"
                                 >
-                                    {/* Icon Container with Glass Effect */}
                                     <div className="relative z-10 mb-4 md:mb-8 flex justify-center">
                                         <motion.div
                                             whileHover={{ scale: 1.1, rotate: 5 }}
@@ -507,8 +504,6 @@ const Home = () => {
                                             <div className={`absolute inset-0 ${item.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
                                             <item.icon className="w-10 h-10 text-brand-blue relative z-10 group-hover:text-brand-cyan group-hover:scale-110 transition-all duration-500" />
                                         </motion.div>
-
-                                        {/* Step Indicator Badge */}
                                         <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-stone-dark text-white text-[10px] font-bold flex items-center justify-center border-4 border-stone-light shadow-xl z-20">
                                             {item.step}
                                         </div>
@@ -522,16 +517,12 @@ const Home = () => {
                                             {item.desc}
                                         </p>
                                     </div>
-
-                                    {/* Subtle Animated Glow on Hover */}
-                                    <div className="absolute -inset-4 bg-brand-blue/0 group-hover:bg-brand-blue/[0.02] rounded-[3rem] -z-10 transition-all duration-700 blur-xl"></div>
                                 </motion.div>
                             ))}
                         </div>
                     </div>
                 </div>
             </section>
-
 
             <CTA />
         </div>

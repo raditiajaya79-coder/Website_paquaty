@@ -1,34 +1,82 @@
 // ProductDetail.jsx — Halaman detail produk individual
-// Menampilkan gambar, deskripsi, harga, dan opsi packaging per produk
-import { useState } from 'react';
+// Data diambil dari backend API /api/products/:id
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { ArrowLeft, CheckCircle2, ShieldCheck, Globe2, MessageCircle, FileText, Package, MapPin } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
-import { PRODUCTS, COMPANY_INFO } from '../data/products';
+import { COMPANY_INFO } from '../data/products'; // Info perusahaan (statis)
+import { api } from '../utils/api'; // Utilitas API backend
 
 /**
- * ProductDetail — Komponen halaman detail produk
- * Mengambil data produk dari PRODUCTS array berdasarkan ID di URL
+ * ProductDetail — Halaman detail produk
+ * Mengambil data produk dari API berdasarkan ID di URL
  * Layout compact seperti marketplace (Tokopedia/Shopee style)
  */
 const ProductDetail = () => {
     // Ambil parameter ID dari URL (misal /products/1)
     const { id } = useParams();
 
-    // Cari produk yang cocok berdasarkan ID
-    const product = PRODUCTS.find(p => p.id === parseInt(id));
+    const [product, setProduct] = useState(null); // State data produk dari API
+    const [loading, setLoading] = useState(true); // State loading
+    const [selectedPackaging, setSelectedPackaging] = useState(null); // State pilihan kemasan
 
-    // State untuk pilihan kemasan (default: opsi pertama)
-    const [selectedPackaging, setSelectedPackaging] = useState(product?.packagingOptions?.[0] || { label: "50 Gram", value: "50g" });
+    // Ambil detail produk dari backend
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const data = await api.get(`/products/${id}`); // GET /api/products/:id
+                setProduct(data); // Simpan data produk
 
-    // Konfigurasi animasi fade-in untuk motion components
+                // Set default packaging ke opsi pertama
+                if (data.packagingOptions && data.packagingOptions.length > 0) {
+                    setSelectedPackaging(data.packagingOptions[0]);
+                } else {
+                    setSelectedPackaging({ label: "50 Gram", value: "50g" });
+                }
+            } catch (error) {
+                console.error('Gagal memuat detail produk:', error.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProduct();
+    }, [id]); // Re-fetch jika ID berubah
+
+    // Konfigurasi animasi
     const fadeIn = {
         initial: { opacity: 0, y: 20 },
         animate: { opacity: 1, y: 0 },
         transition: { duration: 0.6 }
     };
+
+    /**
+     * formatPrice — Format angka ke format Rupiah Indonesia
+     */
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat('id-ID').format(price);
+    };
+
+    // Loading state — tampilkan skeleton
+    if (loading) {
+        return (
+            <div className="bg-neutral-bone min-h-screen pt-24 pb-16">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="mb-8 h-4 bg-stone-200 rounded w-40 animate-pulse"></div>
+                    <div className="grid lg:grid-cols-2 gap-12">
+                        <div className="aspect-square bg-white rounded-[2.5rem] animate-pulse"></div>
+                        <div className="space-y-4">
+                            <div className="h-4 bg-stone-200 rounded w-32 animate-pulse"></div>
+                            <div className="h-10 bg-stone-200 rounded w-48 animate-pulse"></div>
+                            <div className="h-8 bg-stone-200 rounded w-36 animate-pulse"></div>
+                            <div className="h-32 bg-stone-200 rounded animate-pulse"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     // Tampilan fallback jika produk tidak ditemukan
     if (!product) {
@@ -48,18 +96,15 @@ const ProductDetail = () => {
         window.open(`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
-    /**
-     * formatPrice — Format angka ke format Rupiah Indonesia
-     * Contoh: 12000 → "12.000"
-     */
-    const formatPrice = (price) => {
-        return new Intl.NumberFormat('id-ID').format(price);
-    };
-
     // Hitung persentase diskon jika ada originalPrice
     const discountPercent = product.originalPrice && product.price
         ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
         : 0;
+
+    // Parse packagingOptions jika diterima sebagai string JSON
+    const packagingOptions = Array.isArray(product.packagingOptions)
+        ? product.packagingOptions
+        : [];
 
     return (
         <>
@@ -86,7 +131,7 @@ const ProductDetail = () => {
                             transition={{ delay: 0.1 }}
                             className="relative rounded-[2.5rem] overflow-hidden bg-white border border-stone-border shadow-xl"
                         >
-                            {/* Image Container with Breathing Room to fix "Kesempitan" — Using detailImage for packaging photo */}
+                            {/* Image Container — Using detailImage for packaging photo */}
                             <div className="w-full aspect-square p-12 flex items-center justify-center bg-stone-50/50">
                                 <img
                                     src={product.detailImage || product.image}
@@ -159,20 +204,20 @@ const ProductDetail = () => {
                                 {/* Packaging aktif */}
                                 <span className="flex items-center gap-1.5">
                                     <Package className="w-3.5 h-3.5 text-brand-blue" />
-                                    {selectedPackaging.label}
+                                    {selectedPackaging?.label || '50 Gram'}
                                 </span>
                             </div>
 
-                            {/* Pilih Kemasan — hanya tampil jika >1 opsi */}
-                            {product.packagingOptions.length > 1 && (
+                            {/* Pilih Kemasan — hanya tampil jika > 1 opsi */}
+                            {packagingOptions.length > 1 && (
                                 <div className="mb-6">
                                     <p className="text-xs text-[#78716C] uppercase font-bold tracking-widest mb-3">Pilih Kemasan</p>
                                     <div className="flex flex-wrap gap-2">
-                                        {product.packagingOptions.map(opt => (
+                                        {packagingOptions.map(opt => (
                                             <button
                                                 key={opt.value}
                                                 onClick={() => setSelectedPackaging(opt)}
-                                                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all border ${selectedPackaging.value === opt.value
+                                                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all border ${selectedPackaging?.value === opt.value
                                                     ? 'bg-brand-blue border-brand-blue text-white shadow-md'
                                                     : 'bg-white border-stone-border text-stone-dark hover:border-brand-blue/40'
                                                     }`}

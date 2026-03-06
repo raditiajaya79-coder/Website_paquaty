@@ -1,164 +1,142 @@
-import React from 'react';
+// Events.jsx — Halaman artikel & berita
+// Data diambil dari backend API /api/articles
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, ArrowRight, User, Tag } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
+import { api } from '../utils/api'; // Utilitas API backend
 
+/**
+ * Events — Halaman daftar artikel/berita
+ * Data diambil dari database via API /api/articles
+ */
 const Events = () => {
+    const [articles, setArticles] = useState([]); // State daftar artikel dari API
+    const [loading, setLoading] = useState(true); // State loading
+
+    // Ambil semua artikel dari backend
+    useEffect(() => {
+        const fetchArticles = async () => {
+            try {
+                const data = await api.get('/articles'); // GET /api/articles
+                setArticles(data); // Simpan ke state
+            } catch (error) {
+                console.error('Gagal memuat artikel:', error.message);
+            } finally {
+                setLoading(false); // Matikan loading
+            }
+        };
+        fetchArticles();
+    }, []);
+
+    // Konfigurasi animasi
     const fadeIn = {
-        initial: { opacity: 0, y: 20 },
+        initial: { opacity: 0, y: 30 },
         whileInView: { opacity: 1, y: 0 },
         viewport: { once: true },
-        transition: { duration: 0.8 }
+        transition: { duration: 1, ease: [0.22, 1, 0.36, 1] }
     };
 
-    const articles = [
-        {
-            id: 1,
-            title: "Traditional Fermentation: The Secret to Pakuaty's Crunch",
-            excerpt: "Discover the ancient heritage behind our 48-hour fermentation process that creates the unique texture and deep flavor profile of our artisan tempe.",
-            date: "Jan 15, 2026",
-            author: "Heritage Master",
-            category: "Process",
-            image: "/images/keripik tempe original pakuaty.jpg"
-        },
-        {
-            id: 2,
-            title: "Pakuaty Expands to Middle Eastern Markets",
-            excerpt: "Our recent partnership with major retailers in Dubai marks a significant milestone in our journey to bring Indonesian flavors to the global stage.",
-            date: "Feb 02, 2026",
-            author: "Trade Dept",
-            category: "Export",
-            image: "/images/keirpik tempe balado pakuaty.jpg"
-        },
-        {
-            id: 3,
-            title: "Designing the Future: The Evolution of Our Packaging",
-            excerpt: "Explore the design philosophy behind our new premium holographic packaging that balances modern aesthetics with traditional Indonesian motifs.",
-            date: "Feb 18, 2026",
-            author: "Design Team",
-            category: "Innovation",
-            image: "/images/logo pakuaty tagline.png"
-        },
-        {
-            id: 4,
-            title: "Sourcing Excellence: Meeting Our Local Soybean Farmers",
-            excerpt: "We visit the heart of East Java to meet the families who grow the non-GMO soybeans that form the foundation of every Pakuaty tempe chip.",
-            date: "Feb 25, 2026",
-            author: "Sourcing Team",
-            category: "Community",
-            image: "/images/keripik tempe sapi pakuaty.jpg"
-        },
-        {
-            id: 5,
-            title: "The Health Benefits of Fermented Snacks",
-            excerpt: "Scientific insights into why our traditional fermentation process makes tempe chips a superior snack choice for health-conscious consumers.",
-            date: "Mar 01, 2026",
-            author: "Health Expert",
-            category: "Wellness",
-            image: "/images/keripik jamur pakuaty.jpg"
-        },
-        {
-            id: 6,
-            title: "Upcoming Event: Indonesian Food Expo 2026",
-            excerpt: "Join us in Jakarta this coming April as we showcase our latest flavor innovations and heritage craftsmanship at the national food exhibition.",
-            date: "Mar 10, 2026",
-            author: "PR Team",
-            category: "Event",
-            image: "/images/FOTO ALL KERIPIK TEMPE.jpg"
-        }
-    ];
-
     return (
-        <div className="bg-brand-cream min-h-screen pt-32 pb-24 relative overflow-hidden">
+        <>
             <Helmet>
-                <title>{generatePageTitle('Events & Stories')}</title>
-                <meta name="description" content="Stay updated with Pakuaty's latest events, heritage stories, and export milestones." />
+                <title>{generatePageTitle('Stories & Insights')}</title>
+                <meta name="description" content="Discover the stories behind Pakuaty's artisan tempe chips. From heritage fermentation processes to global export journeys." />
             </Helmet>
 
-            <div className="max-w-7xl mx-auto px-6">
-                <header className="mb-20 text-center">
-                    <motion.span
-                        {...fadeIn}
-                        className="text-brand-blue font-bold tracking-[0.3em] uppercase text-xs mb-4 block underline decoration-brand-blue/20 decoration-2 underline-offset-8"
-                    >
-                        Latest Updates
-                    </motion.span>
-                    <motion.h1
-                        {...fadeIn}
-                        transition={{ delay: 0.1 }}
-                        className="text-5xl md:text-7xl font-medium tracking-tight text-stone-dark mb-6"
-                    >
-                        Events & <span className="text-brand-blue italic">Stories</span>
-                    </motion.h1>
-                    <motion.p
-                        {...fadeIn}
-                        transition={{ delay: 0.2 }}
-                        className="text-lg text-stone-dark/60 max-w-2xl mx-auto"
-                    >
-                        Discover the journey behind our artisan tempe chips and stay updated with our latest global ventures.
-                    </motion.p>
-                </header>
+            <div className="bg-neutral-bone min-h-screen pt-24 pb-16 md:py-32">
+                <div className="max-w-7xl mx-auto px-6">
+                    {/* Header */}
+                    <motion.div {...fadeIn} className="text-center mb-16 md:mb-24">
+                        <span className="text-brand-blue font-medium tracking-[0.4em] uppercase text-xs mb-6 block">Our Stories</span>
+                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-medium text-stone-dark tracking-tight mb-8">
+                            Stories & <span className="text-brand-blue">Insights</span>
+                        </h1>
+                        <p className="text-lg md:text-xl text-[#57534E] font-light leading-relaxed max-w-2xl mx-auto">
+                            From our fermentation heritage to the global stage — discover the world of artisan tempe craftsmanship.
+                        </p>
+                    </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                    {articles.map((article, idx) => (
-                        <motion.article
-                            key={article.id}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: idx * 0.1 }}
-                            className="group cursor-pointer"
-                        >
-                            <div className="relative aspect-[16/10] rounded-[2rem] overflow-hidden mb-8 shadow-xl bg-white group">
-                                <img
-                                    src={article.image}
-                                    alt={article.title}
-                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-stone-dark/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                                <div className="absolute top-6 left-6 z-10">
-                                    <span className="px-4 py-1.5 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-wider text-brand-blue shadow-lg">
-                                        {article.category}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-6 text-[10px] font-bold uppercase tracking-widest text-[#78716C]">
-                                    <div className="flex items-center gap-2">
-                                        <Calendar className="w-3 h-3 text-brand-gold-dark" />
-                                        {article.date}
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <User className="w-3 h-3 text-brand-gold-dark" />
-                                        {article.author}
+                    {/* Loading state */}
+                    {loading ? (
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {[1, 2, 3].map(i => (
+                                <div key={i} className="bg-white rounded-[2rem] overflow-hidden animate-pulse">
+                                    <div className="aspect-[3/2] bg-stone-100"></div>
+                                    <div className="p-6 space-y-3">
+                                        <div className="h-3 bg-stone-100 rounded w-1/3"></div>
+                                        <div className="h-5 bg-stone-100 rounded w-3/4"></div>
+                                        <div className="h-4 bg-stone-100 rounded w-full"></div>
                                     </div>
                                 </div>
+                            ))}
+                        </div>
+                    ) : (
+                        /* Grid artikel */
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {articles.map((article) => (
+                                <Link to={`/events/${article.id}`} key={article.id} className="block group">
+                                    <motion.div
+                                        {...fadeIn}
+                                        className="bg-white rounded-[2rem] border border-stone-border overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-700"
+                                    >
+                                        {/* Gambar artikel */}
+                                        <div className="aspect-[3/2] overflow-hidden relative">
+                                            <img
+                                                src={article.image}
+                                                alt={article.title}
+                                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                                            />
+                                            {/* Badge kategori */}
+                                            {article.category && (
+                                                <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-[10px] font-bold bg-brand-gold text-stone-dark shadow-md uppercase tracking-wider">
+                                                    {article.category}
+                                                </span>
+                                            )}
+                                        </div>
 
-                                <h2 className="text-2xl font-bold text-stone-dark group-hover:text-brand-blue transition-colors duration-300 leading-tight">
-                                    {article.title}
-                                </h2>
+                                        {/* Konten card */}
+                                        <div className="p-6">
+                                            {/* Meta: tanggal + author */}
+                                            <div className="flex items-center gap-3 text-xs text-[#78716C] mb-3">
+                                                <span>{article.date}</span>
+                                                <span className="w-1 h-1 bg-[#D6D3D1] rounded-full"></span>
+                                                <span>{article.author}</span>
+                                            </div>
 
-                                <p className="text-[#57534E] leading-relaxed line-clamp-3 font-light">
-                                    {article.excerpt}
-                                </p>
+                                            {/* Judul */}
+                                            <h3 className="text-lg font-semibold text-stone-dark mb-2 line-clamp-2 group-hover:text-brand-blue transition-colors">
+                                                {article.title}
+                                            </h3>
 
-                                <Link
-                                    to={`/events/${article.id}`}
-                                    className="pt-4 flex items-center gap-2 text-brand-cyan font-bold text-xs uppercase tracking-widest group-hover:gap-4 transition-all duration-300"
-                                >
-                                    Read Full Story
-                                    <ArrowRight className="w-4 h-4" />
+                                            {/* Excerpt */}
+                                            <p className="text-sm text-[#57534E] line-clamp-3 mb-4 leading-relaxed">
+                                                {article.excerpt}
+                                            </p>
+
+                                            {/* Read more */}
+                                            <div className="flex items-center gap-2 text-brand-blue text-sm font-semibold group-hover:gap-3 transition-all">
+                                                Read More
+                                                <ArrowRight className="w-4 h-4" />
+                                            </div>
+                                        </div>
+                                    </motion.div>
                                 </Link>
-                            </div>
-                        </motion.article>
-                    ))}
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Empty state */}
+                    {!loading && articles.length === 0 && (
+                        <div className="text-center py-20 text-[#78716C]">
+                            <p className="text-xl">Belum ada artikel yang diterbitkan.</p>
+                        </div>
+                    )}
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
