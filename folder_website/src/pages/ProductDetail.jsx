@@ -1,48 +1,28 @@
-// ProductDetail.jsx — Halaman detail produk individual
-// Data diambil dari backend API /api/products/:id
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { ArrowLeft, CheckCircle2, ShieldCheck, Globe2, MessageCircle, FileText, Package, MapPin } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
-import { COMPANY_INFO } from '../data/products'; // Info perusahaan (statis)
-import { api } from '../utils/api'; // Utilitas API backend
+import { PRODUCTS, COMPANY_INFO } from '../data/products';
+import { useLanguage } from '../context/LanguageContext';
 
 /**
  * ProductDetail — Halaman detail produk
- * Mengambil data produk dari API berdasarkan ID di URL
- * Layout compact seperti marketplace (Tokopedia/Shopee style)
+ * Menampilkan rincian produk berdasarkan ID yang dipilih.
+ * Layout compact dan fungsional dengan dukungan multi-bahasa.
  */
 const ProductDetail = () => {
-    // Ambil parameter ID dari URL (misal /products/1)
+    const { t, lang } = useLanguage();
     const { id } = useParams();
 
-    const [product, setProduct] = useState(null); // State data produk dari API
-    const [loading, setLoading] = useState(true); // State loading
-    const [selectedPackaging, setSelectedPackaging] = useState(null); // State pilihan kemasan
+    // Mencari produk dari data statis berdasarkan ID di URL
+    const product = PRODUCTS.find(p => p.id === parseInt(id));
 
-    // Ambil detail produk dari backend
-    useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const data = await api.get(`/products/${id}`); // GET /api/products/:id
-                setProduct(data); // Simpan data produk
-
-                // Set default packaging ke opsi pertama
-                if (data.packagingOptions && data.packagingOptions.length > 0) {
-                    setSelectedPackaging(data.packagingOptions[0]);
-                } else {
-                    setSelectedPackaging({ label: "50 Gram", value: "50g" });
-                }
-            } catch (error) {
-                console.error('Gagal memuat detail produk:', error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProduct();
-    }, [id]); // Re-fetch jika ID berubah
+    // State untuk pilihan kemasan, default ke opsi pertama
+    const [selectedPackaging, setSelectedPackaging] = useState(
+        product?.packagingOptions?.[0] || { label: "50 Gram", value: "50g" }
+    );
 
     // Konfigurasi animasi
     const fadeIn = {
@@ -58,26 +38,6 @@ const ProductDetail = () => {
         return new Intl.NumberFormat('id-ID').format(price);
     };
 
-    // Loading state — tampilkan skeleton
-    if (loading) {
-        return (
-            <div className="bg-neutral-bone min-h-screen pt-24 pb-16">
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="mb-8 h-4 bg-stone-200 rounded w-40 animate-pulse"></div>
-                    <div className="grid lg:grid-cols-2 gap-12">
-                        <div className="aspect-square bg-white rounded-[2.5rem] animate-pulse"></div>
-                        <div className="space-y-4">
-                            <div className="h-4 bg-stone-200 rounded w-32 animate-pulse"></div>
-                            <div className="h-10 bg-stone-200 rounded w-48 animate-pulse"></div>
-                            <div className="h-8 bg-stone-200 rounded w-36 animate-pulse"></div>
-                            <div className="h-32 bg-stone-200 rounded animate-pulse"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
     // Tampilan fallback jika produk tidak ditemukan
     if (!product) {
         return (
@@ -92,7 +52,10 @@ const ProductDetail = () => {
      * handleWhatsAppOrder — Buka WhatsApp dengan pesan pre-filled untuk order
      */
     const handleWhatsAppOrder = () => {
-        const message = `Halo ${COMPANY_INFO.name}, saya tertarik dengan produk Keripik Tempe Pakuaty rasa ${product.name} (${selectedPackaging.label}). Mohon info harga dan ketersediaan.`;
+        const productName = t(`product.${product.id}.name`);
+        const message = lang === 'id'
+            ? `Halo ${COMPANY_INFO.name}, saya tertarik dengan produk Keripik Tempe Pakuaty rasa ${productName} (${selectedPackaging.label}). Mohon info harga dan ketersediaan.`
+            : `Hello ${COMPANY_INFO.name}, I am interested in Pakuaty Tempe Chips ${productName} flavor (${selectedPackaging.label}). Please provide information on price and availability.`;
         window.open(`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
@@ -101,51 +64,46 @@ const ProductDetail = () => {
         ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
         : 0;
 
-    // Parse packagingOptions jika diterima sebagai string JSON
-    const packagingOptions = Array.isArray(product.packagingOptions)
-        ? product.packagingOptions
-        : [];
+    const packagingOptions = product.packagingOptions || [];
 
     return (
         <>
             {/* SEO metadata */}
             <Helmet>
-                <title>{generatePageTitle(`${product.name} — Keripik Tempe Pakuaty`)}</title>
-                <meta name="description" content={`Keripik Tempe Pakuaty rasa ${product.name}. ${product.grade}. Harga Rp ${formatPrice(product.price || 0)}.`} />
+                <title>{generatePageTitle(`${t(`product.${product.id}.name`)} — Keripik Tempe Pakuaty`)}</title>
+                <meta name="description" content={`${t(`product.${product.id}.name`)}. ${t(`product.${product.id}.grade`)}. Harga Rp ${formatPrice(product.price || 0)}.`} />
             </Helmet>
 
             <div className="bg-neutral-bone min-h-screen pt-24 pb-16 md:pb-20 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6">
-                    {/* Tombol kembali ke halaman produk */}
+                    {/* Tombol kembali */}
                     <motion.div {...fadeIn} className="mb-8">
                         <Link to="/products" className="inline-flex items-center gap-2 text-[#78716C] hover:text-brand-blue transition-all text-xs font-bold tracking-widest uppercase">
                             <ArrowLeft className="w-4 h-4" />
-                            Return to Collection
+                            {t('product.detail.back')}
                         </Link>
                     </motion.div>
 
-                    {/* Layout 2 kolom: gambar (kiri) + detail (kanan) */}
+                    {/* Layout 2 kolom */}
                     <div className="grid lg:grid-cols-2 gap-12 items-start">
                         <motion.div
                             {...fadeIn}
                             transition={{ delay: 0.1 }}
                             className="relative rounded-[2.5rem] overflow-hidden bg-white border border-stone-border shadow-xl"
                         >
-                            {/* Image Container — Using detailImage for packaging photo */}
+                            {/* Image Container */}
                             <div className="w-full aspect-square p-12 flex items-center justify-center bg-stone-50/50">
                                 <img
                                     src={product.detailImage || product.image}
-                                    alt={product.name}
+                                    alt={t(`product.${product.id}.name`)}
                                     className="max-w-full max-h-full object-contain drop-shadow-2xl"
                                 />
                             </div>
-                            {/* Badge Quality Assured */}
                             <div className="absolute top-8 left-8">
                                 <span className="px-4 py-1.5 bg-stone-dark/80 backdrop-blur-xl text-white text-[10px] font-bold rounded-full uppercase tracking-[0.15em] border border-white/10">
                                     Quality Assured
                                 </span>
                             </div>
-                            {/* Badge diskon (jika ada) */}
                             {discountPercent > 0 && (
                                 <div className="absolute top-8 right-8">
                                     <span className="px-3 py-1.5 bg-red-500 text-white text-[11px] font-bold rounded-full shadow-lg">
@@ -155,35 +113,29 @@ const ProductDetail = () => {
                             )}
                         </motion.div>
 
-                        {/* === KOLOM KANAN: Detail Produk === */}
+                        {/* Rincian Produk */}
                         <motion.div {...fadeIn} transition={{ delay: 0.2 }} className="lg:sticky lg:top-32">
-                            {/* Label sub-brand */}
                             <span className="text-brand-blue font-bold tracking-[0.3em] uppercase text-xs mb-3 block">
                                 Keripik Tempe Pakuaty
                             </span>
 
-                            {/* Nama produk */}
                             <h1 className="text-3xl md:text-5xl font-serif font-medium text-stone-dark tracking-tight mb-1 leading-[1.1]">
-                                {product.name}
+                                {t(`product.${product.id}.name`)}
                             </h1>
 
-                            {/* Grade / subtitle */}
-                            <p className="text-base text-[#78716C] font-light mb-5 italic">{product.grade}</p>
+                            <p className="text-base text-[#78716C] font-light mb-5 italic">{t(`product.${product.id}.grade`)}</p>
 
-                            {/* === HARGA — Marketplace style: compact, inline === */}
+                            {/* Harga */}
                             {product.price && (
                                 <div className="flex items-center gap-3 mb-5">
-                                    {/* Harga aktual */}
                                     <span className="text-2xl font-bold text-brand-blue">
                                         Rp{formatPrice(product.price)}
                                     </span>
-                                    {/* Harga asli dicoret */}
                                     {product.originalPrice && product.originalPrice > product.price && (
                                         <span className="text-sm text-[#A8A29E] line-through">
                                             Rp{formatPrice(product.originalPrice)}
                                         </span>
                                     )}
-                                    {/* Badge diskon kecil */}
                                     {discountPercent > 0 && (
                                         <span className="text-[11px] font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded">
                                             {discountPercent}%
@@ -192,26 +144,23 @@ const ProductDetail = () => {
                                 </div>
                             )}
 
-                            {/* Info singkat: origin + packaging — inline horizontal */}
+                            {/* Info singkat */}
                             <div className="flex flex-wrap items-center gap-4 mb-6 text-sm text-[#57534E]">
-                                {/* Origin */}
                                 <span className="flex items-center gap-1.5">
                                     <MapPin className="w-3.5 h-3.5 text-brand-blue" />
                                     {product.origin}
                                 </span>
-                                {/* Divider */}
                                 <span className="w-1 h-1 bg-[#D6D3D1] rounded-full"></span>
-                                {/* Packaging aktif */}
                                 <span className="flex items-center gap-1.5">
                                     <Package className="w-3.5 h-3.5 text-brand-blue" />
                                     {selectedPackaging?.label || '50 Gram'}
                                 </span>
                             </div>
 
-                            {/* Pilih Kemasan — hanya tampil jika > 1 opsi */}
+                            {/* Pilih Kemasan */}
                             {packagingOptions.length > 1 && (
                                 <div className="mb-6">
-                                    <p className="text-xs text-[#78716C] uppercase font-bold tracking-widest mb-3">Pilih Kemasan</p>
+                                    <p className="text-xs text-[#78716C] uppercase font-bold tracking-widest mb-3">{t('product.detail.options')}</p>
                                     <div className="flex flex-wrap gap-2">
                                         {packagingOptions.map(opt => (
                                             <button
@@ -229,32 +178,23 @@ const ProductDetail = () => {
                                 </div>
                             )}
 
-                            {/* Separator tipis */}
                             <div className="border-t border-stone-border mb-6"></div>
 
-                            {/* === DESKRIPSI PRODUK === */}
+                            {/* Deskripsi */}
                             <div className="mb-6">
-                                <h3 className="text-xs font-bold text-stone-dark uppercase tracking-widest mb-3">Deskripsi Produk</h3>
-                                {product.description ? (
-                                    // Deskripsi dari data produk dengan whitespace-pre-line untuk line break
-                                    <p className="text-sm text-[#57534E] leading-[1.8] whitespace-pre-line">
-                                        {product.description}
-                                    </p>
-                                ) : (
-                                    // Fallback untuk produk tanpa deskripsi
-                                    <p className="text-sm text-[#57534E] leading-relaxed">
-                                        Premium {product.name} dari {COMPANY_INFO.name}. Setiap batch melalui quality control ketat untuk menjamin standar kualitas terbaik.
-                                    </p>
-                                )}
+                                <h3 className="text-xs font-bold text-stone-dark uppercase tracking-widest mb-3">{lang === 'id' ? 'Deskripsi Produk' : 'Product Description'}</h3>
+                                <p className="text-sm text-[#57534E] leading-[1.8] whitespace-pre-line">
+                                    {t(`product.${product.id}.desc`)}
+                                </p>
                             </div>
 
-                            {/* Badge fitur — compact horizontal */}
+                            {/* Fitur */}
                             <div className="grid grid-cols-2 gap-3 mb-8">
                                 {[
-                                    { icon: CheckCircle2, text: "International Standards" },
-                                    { icon: ShieldCheck, text: "Verified Quality" },
-                                    { icon: Globe2, text: "Global Logistics" },
-                                    { icon: FileText, text: "Full Documentation" }
+                                    { icon: CheckCircle2, text: lang === 'id' ? "Standar Internasional" : "International Standards" },
+                                    { icon: ShieldCheck, text: lang === 'id' ? "Kualitas Terverifikasi" : "Verified Quality" },
+                                    { icon: Globe2, text: lang === 'id' ? "Logistik Global" : "Global Logistics" },
+                                    { icon: FileText, text: lang === 'id' ? "Dokumentasi Lengkap" : "Full Documentation" }
                                 ].map((feat, i) => (
                                     <div key={i} className="flex items-center gap-2 text-xs font-semibold text-[#57534E]">
                                         <feat.icon className="w-4 h-4 text-brand-blue shrink-0" />
@@ -263,18 +203,16 @@ const ProductDetail = () => {
                                 ))}
                             </div>
 
-                            {/* === TOMBOL ORDER === */}
+                            {/* Tombol Order */}
                             <div className="flex flex-col gap-3">
-                                {/* Tombol WhatsApp */}
                                 <button
                                     onClick={handleWhatsAppOrder}
                                     className="w-full py-4 bg-stone-dark text-white rounded-2xl font-bold text-sm tracking-wider uppercase hover:bg-brand-blue transition-all shadow-xl hover:shadow-brand-blue/20 flex items-center justify-center gap-2"
                                 >
-                                    PESAN SEKARANG
+                                    {t('product.detail.order')}
                                     <MessageCircle className="w-4 h-4" />
                                 </button>
-                                {/* Keterangan */}
-                                <p className="text-center text-[10px] text-[#78716C]">Terhubung langsung ke {COMPANY_INFO.name} via WhatsApp</p>
+                                <p className="text-center text-[10px] text-[#78716C]">{lang === 'id' ? `Terhubung langsung ke ${COMPANY_INFO.name} via WhatsApp` : `Connect directly to ${COMPANY_INFO.name} via WhatsApp`}</p>
                             </div>
                         </motion.div>
                     </div>

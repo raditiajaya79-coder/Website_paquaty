@@ -3,7 +3,10 @@ import { motion } from 'framer-motion';
 import { MapPin, Mail, Phone, Send, Clock } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
 
+import { useLanguage } from '../context/LanguageContext';
+
 const Contact = () => {
+    const { t } = useLanguage();
     const fadeIn = {
         initial: { opacity: 0, y: 20 },
         whileInView: { opacity: 1, y: 0 },
@@ -14,19 +17,19 @@ const Contact = () => {
     return (
         <>
             <Helmet>
-                <title>{generatePageTitle('Contact Our Team')}</title>
-                <meta name="description" content="Get in touch with Pakuaty for wholesale inquiries and partnership opportunities." />
+                <title>{generatePageTitle(t('seo.contact_title'))}</title>
+                <meta name="description" content={t('seo.contact_desc')} />
             </Helmet>
 
             <div className="bg-neutral-bone min-h-screen pt-24 pb-16 md:py-32 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6">
                     <motion.div {...fadeIn} className="text-center mb-16 md:mb-28">
-                        <span className="text-brand-blue font-bold tracking-[0.4em] uppercase text-xs mb-6 block underline decoration-brand-blue/20 decoration-2 underline-offset-8">Inquiry & Support</span>
+                        <span className="text-brand-blue font-bold tracking-[0.4em] uppercase text-xs mb-6 block underline decoration-brand-blue/20 decoration-2 underline-offset-8">{t('contact.header_label')}</span>
                         <h1 className="text-4xl md:text-6xl lg:text-7xl font-medium text-stone-dark tracking-tight mb-8 leading-tight">
-                            Start a <span className="text-brand-blue italic">Partnership</span>
+                            {t('contact.header_title')}<span className="text-brand-blue italic">{t('contact.header_title_accent')}</span>
                         </h1>
                         <p className="text-lg md:text-xl text-[#57534E] font-light leading-relaxed max-w-2xl mx-auto">
-                            Whether you're looking for a reliable supply chain partner or have questions about our origin sourcing, our team is here to help.
+                            {t('contact.header_desc')}
                         </p>
                     </motion.div>
 
@@ -38,7 +41,7 @@ const Contact = () => {
                                         <MapPin className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h4 className="text-lg font-medium text-stone-dark mb-2">Our Office</h4>
+                                        <h4 className="text-lg font-medium text-stone-dark mb-2">{t('contact.office_title')}</h4>
                                         <p className="text-[#78716C] font-light leading-relaxed">
                                             Jl. Veteran No.15 B<br />
                                             Kota Kediri 64114<br />
@@ -52,7 +55,7 @@ const Contact = () => {
                                         <Mail className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h4 className="text-lg font-medium text-stone-dark mb-2">Email</h4>
+                                        <h4 className="text-lg font-medium text-stone-dark mb-2">{t('contact.email_title')}</h4>
                                         <p className="text-[#78716C] font-light leading-relaxed">
                                             bala.aditi.pakuaty@gmail.com
                                         </p>
@@ -64,7 +67,7 @@ const Contact = () => {
                                         <Phone className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h4 className="text-lg font-medium text-stone-dark mb-2">WhatsApp</h4>
+                                        <h4 className="text-lg font-medium text-stone-dark mb-2">{t('contact.whatsapp_title')}</h4>
                                         <p className="text-[#78716C] font-light leading-relaxed">
                                             +62 812-8799-0370<br />
                                             +62 821-4220-5147
@@ -77,18 +80,18 @@ const Contact = () => {
                                         <div className="w-10 h-10 bg-brand-gold rounded-full flex items-center justify-center">
                                             <Clock className="w-5 h-5 text-stone-dark" />
                                         </div>
-                                        <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-stone-dark/60">Global Office Hours</span>
+                                        <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-stone-dark/60">{t('contact.hours_label')}</span>
                                     </div>
                                     <div className="space-y-2">
                                         <p className="text-stone-dark font-medium flex justify-between">
-                                            <span>Monday — Friday</span>
+                                            <span>{t('contact.monday_friday')}</span>
                                             <span className="text-brand-blue">09:00 - 18:00</span>
                                         </p>
                                         <p className="text-stone-dark font-medium flex justify-between">
-                                            <span>Saturday</span>
+                                            <span>{t('contact.saturday')}</span>
                                             <span className="text-brand-blue">09:00 - 13:00</span>
                                         </p>
-                                        <p className="text-[10px] text-stone-dark/40 font-bold uppercase tracking-wider pt-4 border-t border-stone-border/30">Western Indonesia Time (GMT+7)</p>
+                                        <p className="text-[10px] text-stone-dark/40 font-bold uppercase tracking-wider pt-4 border-t border-stone-border/30">{t('contact.time_zone')}</p>
                                     </div>
                                 </div>
                             </div>
@@ -100,24 +103,24 @@ const Contact = () => {
                             className="bg-white p-8 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] border border-stone-border shadow-2xl relative"
                         >
                             <div className="absolute top-0 right-0 w-32 h-32 bg-brand-blue/5 blur-3xl rounded-full"></div>
-                            <h3 className="text-2xl md:text-3xl font-medium tracking-tight text-stone-dark mb-10">Inquiry Desk</h3>
+                            <h3 className="text-2xl md:text-3xl font-medium tracking-tight text-stone-dark mb-10">{t('contact.form_title')}</h3>
                             <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
                                 <div className="grid md:grid-cols-2 gap-8">
                                     <div className="space-y-3">
-                                        <label className="block text-[10px] font-bold text-stone-dark/40 uppercase tracking-[0.2em] px-1">Full Name</label>
+                                        <label className="block text-[10px] font-bold text-stone-dark/40 uppercase tracking-[0.2em] px-1">{t('contact.form_name')}</label>
                                         <input type="text" className="w-full px-6 py-4 bg-neutral-50/50 border border-stone-border rounded-2xl focus:outline-none focus:border-brand-blue focus:bg-white transition-all text-stone-dark placeholder:text-stone-300 font-medium" placeholder="John Doe" />
                                     </div>
                                     <div className="space-y-3">
-                                        <label className="block text-[10px] font-bold text-stone-dark/40 uppercase tracking-[0.2em] px-1">Email Address</label>
+                                        <label className="block text-[10px] font-bold text-stone-dark/40 uppercase tracking-[0.2em] px-1">{t('contact.form_email')}</label>
                                         <input type="email" className="w-full px-6 py-4 bg-neutral-50/50 border border-stone-border rounded-2xl focus:outline-none focus:border-brand-blue focus:bg-white transition-all text-stone-dark placeholder:text-stone-300 font-medium" placeholder="john@company.com" />
                                     </div>
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="block text-[10px] font-bold text-stone-dark/40 uppercase tracking-[0.2em] px-1">Message</label>
-                                    <textarea rows="4" className="w-full px-6 py-4 bg-neutral-50/50 border border-stone-border rounded-2xl focus:outline-none focus:border-brand-blue focus:bg-white transition-all text-stone-dark placeholder:text-stone-300 font-medium leading-relaxed" placeholder="Tell us about your global sourcing needs..."></textarea>
+                                    <label className="block text-[10px] font-bold text-stone-dark/40 uppercase tracking-[0.2em] px-1">{t('contact.form_message')}</label>
+                                    <textarea rows="4" className="w-full px-6 py-4 bg-neutral-50/50 border border-stone-border rounded-2xl focus:outline-none focus:border-brand-blue focus:bg-white transition-all text-stone-dark placeholder:text-stone-300 font-medium leading-relaxed" placeholder={t('contact.form_message_placeholder')}></textarea>
                                 </div>
                                 <button className="w-full py-5 bg-stone-dark text-white rounded-[1.5rem] font-bold text-xs uppercase tracking-[0.2em] hover:bg-brand-blue transition-all shadow-xl shadow-stone-dark/10 hover:shadow-brand-blue/30 flex items-center justify-center gap-4 active:scale-95 group/btn">
-                                    Send Inquiry
+                                    {t('contact.form_submit')}
                                     <Send className="w-4 h-4 transition-transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1" />
                                 </button>
                             </form>

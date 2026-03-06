@@ -10,7 +10,14 @@ import { COMPANY_INFO, FOUNDER } from '../data/products';
  * About — Halaman "Tentang Kami"
  * Berisi: header, filosofi nama perusahaan, pesan dari founder, core values, closing
  */
+import { useLanguage } from '../context/LanguageContext';
+
+/**
+ * About — Halaman "Tentang Kami"
+ * Berisi: header, filosofi nama perusahaan, pesan dari founder, core values, closing
+ */
 const About = () => {
+    const { t } = useLanguage();
     // Konfigurasi animasi fade-in
     const fadeIn = {
         initial: { opacity: 0, y: 30 },
@@ -23,8 +30,8 @@ const About = () => {
         <>
             {/* SEO metadata */}
             <Helmet>
-                <title>{generatePageTitle('Tentang Kami')}</title>
-                <meta name="description" content={`Learn the story of PT Bala Aditi Pakuaty. Discover how we're transforming Indonesian heritage into a global premium tempe chip brand, rooted in tradition and designed for the world.`} />
+                <title>{generatePageTitle(t('seo.about_title'))}</title>
+                <meta name="description" content={t('seo.about_desc')} />
             </Helmet>
 
             <div className="bg-brand-cream min-h-screen pt-24 pb-16 md:py-32">
@@ -35,19 +42,19 @@ const About = () => {
                     {/* ========================== */}
                     <motion.header {...fadeIn} className="text-center mb-16 md:mb-24 max-w-3xl mx-auto">
                         {/* Label kategori halaman */}
-                        <span className="text-brand-blue font-medium tracking-[0.4em] uppercase text-xs mb-6 block">Tentang Kami</span>
+                        <span className="text-brand-blue font-medium tracking-[0.4em] uppercase text-xs mb-6 block">{t('about.header_label')}</span>
                         {/* Headline utama */}
                         <h1 className="text-4xl md:text-6xl lg:text-7xl font-medium text-stone-dark tracking-tight mb-8 leading-tight">
-                            Warisan Cita Rasa, <br />
-                            <span className="text-brand-blue">Visi untuk Dunia.</span>
+                            {t('about.header_title_part1')} <br />
+                            <span className="text-brand-blue">{t('about.header_title_part2')}</span>
                         </h1>
                         {/* Deskripsi singkat perusahaan */}
                         <p className="text-xl text-[#57534E] font-light leading-relaxed mb-6">
-                            Pakuaty adalah brand keripik tempe premium Indonesia di bawah PT. Bala Aditi Pakuaty. Kami mentransformasi protein fermentasi tradisional menjadi produk camilan berkelas dunia, siap ekspor.
+                            {t('about.header_desc')}
                         </p>
                         {/* Tagline */}
                         <p className="text-lg text-brand-blue/60 font-medium italic">
-                            Berakar dari kearifan Indonesia. Dirancang untuk pasar internasional.
+                            {t('about.header_tagline')}
                         </p>
                     </motion.header>
 
@@ -63,14 +70,14 @@ const About = () => {
 
                             <div className="relative z-10">
                                 {/* Label section */}
-                                <span className="text-brand-gold font-medium tracking-[0.4em] uppercase text-xs mb-8 block">Filosofi Perusahaan</span>
+                                <span className="text-brand-gold font-medium tracking-[0.4em] uppercase text-xs mb-8 block">{t('about.philosophy_label')}</span>
                                 {/* Judul section */}
                                 <h2 className="text-3xl md:text-5xl font-medium text-white tracking-tight mb-6">
-                                    PT. <span className="text-brand-gold">Bala Aditi Pakuaty</span>
+                                    PT. <span className="text-brand-gold">{t('about.philosophy_title')}</span>
                                 </h2>
                                 {/* Penjelasan umum filosofi */}
                                 <p className="text-neutral-400 leading-relaxed mb-12 max-w-3xl">
-                                    Terdapat makna filosofis dibalik nama perusahaan kami. Nama tersebut berasal dari bahasa Sansekerta yang merupakan bahasa leluhur kami.
+                                    {t('about.philosophy_desc')}
                                 </p>
 
                                 {/* Grid 3 kolom: penjelasan tiap kata */}
@@ -79,13 +86,13 @@ const About = () => {
                                     <div className="border-l-2 border-brand-gold/30 pl-6">
                                         <div className="flex items-center gap-3 mb-4">
                                             <Users className="w-6 h-6 text-brand-gold" />
-                                            <h3 className="text-xl font-semibold text-white">Bala</h3>
+                                            <h3 className="text-xl font-semibold text-white">{t('about.bala_title')}</h3>
                                         </div>
                                         {/* Arti dalam bahasa Sansekerta */}
-                                        <p className="text-sm text-brand-gold font-medium mb-3 italic">Sansekerta — "Pasukan" atau "Tim"</p>
+                                        <p className="text-sm text-brand-gold font-medium mb-3 italic">{t('about.bala_sub')}</p>
                                         {/* Penjelasan makna */}
                                         <p className="text-neutral-400 leading-relaxed">
-                                            Bermakna sebuah pasukan atau tim, menggambarkan semangat kolaboratif dari setiap individu dalam perusahaan, yang bersatu sebagai satu tim untuk menciptakan produk yang akan dikenal dan disukai di seluruh dunia.
+                                            {t('about.bala_desc')}
                                         </p>
                                     </div>
 
@@ -93,11 +100,11 @@ const About = () => {
                                     <div className="border-l-2 border-brand-gold/30 pl-6">
                                         <div className="flex items-center gap-3 mb-4">
                                             <Globe className="w-6 h-6 text-brand-gold" />
-                                            <h3 className="text-xl font-semibold text-white">Aditi</h3>
+                                            <h3 className="text-xl font-semibold text-white">{t('about.aditi_title')}</h3>
                                         </div>
-                                        <p className="text-sm text-brand-gold font-medium mb-3 italic">Sansekerta — "Mendunia" atau "Tanpa Batas"</p>
+                                        <p className="text-sm text-brand-gold font-medium mb-3 italic">{t('about.aditi_sub')}</p>
                                         <p className="text-neutral-400 leading-relaxed">
-                                            Bermakna mendunia atau mencapai seluruh dunia, mewakili visi kami untuk menghadirkan cita rasa dan keberlanjutan yang mencapai ke seluruh penjuru dunia.
+                                            {t('about.aditi_desc')}
                                         </p>
                                     </div>
 
@@ -105,11 +112,11 @@ const About = () => {
                                     <div className="border-l-2 border-brand-gold/30 pl-6">
                                         <div className="flex items-center gap-3 mb-4">
                                             <Heart className="w-6 h-6 text-brand-gold" />
-                                            <h3 className="text-xl font-semibold text-white">Pakuaty</h3>
+                                            <h3 className="text-xl font-semibold text-white">{t('about.pakuaty_title')}</h3>
                                         </div>
-                                        <p className="text-sm text-brand-gold font-medium mb-3 italic">"Pakunya Hati"</p>
+                                        <p className="text-sm text-brand-gold font-medium mb-3 italic">{t('about.pakuaty_sub')}</p>
                                         <p className="text-neutral-400 leading-relaxed">
-                                            Nama merek kami yang merupakan singkatan dari "Pakunya Hati". Hal ini untuk memunculkan sugesti bahwa pelanggan akan tepaku hatinya pada produk kami dan "tidak berpindah ke lain hati" atau berpindah ke produk lain.
+                                            {t('about.pakuaty_desc')}
                                         </p>
                                     </div>
                                 </div>
@@ -143,26 +150,18 @@ const About = () => {
                                 {/* Icon quote decorative */}
                                 <Quote className="w-12 h-12 text-brand-blue/20 mb-6" />
                                 {/* Label section */}
-                                <span className="text-brand-blue font-bold tracking-[0.3em] uppercase text-xs mb-4 block">Pesan dari Founder</span>
+                                <span className="text-brand-blue font-bold tracking-[0.3em] uppercase text-xs mb-4 block">{t('about.founder_label')}</span>
                                 {/* Paragraf pesan utama dari founder — konten dari user */}
                                 <div className="space-y-4 text-[#57534E] text-base leading-relaxed font-light">
-                                    <p>
-                                        Selamat datang di PT Bala Aditi Pakuaty, rumah bagi keripik tempe Pakuaty yang memikat hati dan mengekspresikan semangat tim kami untuk menyebarkan kelezatan, cita rasa khas Indonesia ke seluruh penjuru dunia.
-                                    </p>
-                                    <p>
-                                        Nama 'Bala Aditi Pakuaty' berasal dari bahasa Sansekerta yang memiliki makna yang dalam. 'Bala' yang berarti pasukan atau tim, menggambarkan semangat kolaboratif dari setiap individu dalam perusahaan. Sedangkan 'Aditi', yang berarti mendunia, mewakili visi kami untuk menghadirkan cita rasa dan keberlanjutan yang mencapai ke seluruh penjuru dunia.
-                                    </p>
-                                    <p>
-                                        Dan nama merek 'Pakuaty' bukanlah semata-mata sebuah kata, tetapi merupakan cerminan dari komitmen kami. 'Pakuaty' adalah singkatan dari 'pakunya hati', yang memiliki makna bahwa kami berupaya untuk memukau, memikat hati dan menciptakan produk yang mengikat hati pelanggan, sehingga mereka tidak akan berpindah ke lain hati.
-                                    </p>
-                                    <p>
-                                        Dengan fondasi yang kuat ini, kami mengundang Anda semua untuk bergabung dalam perjalanan kami untuk menciptakan dunia di mana makanan yang bercitarasa khas Indonesia, bernutrisi, dan berkelanjutan adalah norma.
-                                    </p>
+                                    <p>{t('about.founder_p1')}</p>
+                                    <p>{t('about.founder_p2')}</p>
+                                    <p>{t('about.founder_p3')}</p>
+                                    <p>{t('about.founder_p4')}</p>
                                 </div>
                                 {/* Tanda tangan founder */}
                                 <div className="mt-8 pt-8 border-t border-brand-blue/10">
                                     <p className="text-stone-dark font-semibold text-lg">{FOUNDER.name}</p>
-                                    <p className="text-sm text-stone-dark/60">Founder, PT. Bala Aditi Pakuaty</p>
+                                    <p className="text-sm text-stone-dark/60">{FOUNDER.title}, PT. Bala Aditi Pakuaty</p>
                                 </div>
                             </motion.div>
                         </div>
@@ -172,8 +171,8 @@ const About = () => {
                     {/* CORE VALUES — Nilai Inti */}
                     {/* ======================== */}
                     <motion.div {...fadeIn} className="text-center mb-16">
-                        <span className="text-brand-blue font-medium tracking-[0.4em] uppercase text-xs mb-4 block">Yang Menggerakkan Kami</span>
-                        <h2 className="text-4xl md:text-5xl font-medium text-stone-dark tracking-tight">Nilai Inti Kami</h2>
+                        <span className="text-brand-blue font-medium tracking-[0.4em] uppercase text-xs mb-4 block">{t('about.values_label')}</span>
+                        <h2 className="text-4xl md:text-5xl font-medium text-stone-dark tracking-tight">{t('about.values_title')}</h2>
                     </motion.div>
 
                     {/* Grid/Flex container for core values */}
@@ -181,18 +180,18 @@ const About = () => {
                         {[
                             {
                                 icon: Lightbulb,
-                                title: "Teknologi Tempe",
-                                desc: "Kami melihat tempe bukan hanya sebagai makanan, tetapi sebagai proses fermentasi berusia berabad-abad."
+                                title: t('about.value1_title'),
+                                desc: t('about.value1_desc')
                             },
                             {
                                 icon: Globe,
-                                title: "Adaptasi Global",
-                                desc: "Visi kami adalah memberdayakan bangsa lain untuk menggunakan kacang lokal mereka dengan keahlian fermentasi Indonesia."
+                                title: t('about.value2_title'),
+                                desc: t('about.value2_desc')
                             },
                             {
                                 icon: Sprout,
-                                title: "Kearifan Indonesia",
-                                desc: "Menghormati teknik 'ragi' tradisional sambil mengembangkannya menjadi solusi global berteknologi tinggi."
+                                title: t('about.value3_title'),
+                                desc: t('about.value3_desc')
                             }
                         ].map((pillar, idx) => (
                             <motion.div
@@ -214,11 +213,11 @@ const About = () => {
                     <motion.div {...fadeIn} className="text-center max-w-3xl mx-auto">
                         <div className="bg-brand-blue border border-brand-blue/10 rounded-[2.5rem] p-10 md:p-16 shadow-2xl">
                             <h2 className="text-3xl md:text-4xl font-medium text-white tracking-tight mb-6">
-                                Bersama, kita hadirkan <span className="text-brand-gold">cita rasa</span>.<br />
-                                Bersama, kita bangun <span className="text-brand-gold">dunia yang lebih baik</span>.
+                                {t('about.closing_title')} <span className="text-brand-gold">{t('about.closing_title_accent')}</span>.<br />
+                                {t('about.closing_title2')} <span className="text-brand-gold">{t('about.closing_title2_accent')}</span>.
                             </h2>
                             <p className="text-lg text-stone-200 font-light leading-relaxed">
-                                Marilah kita bersama-sama membangun masa depan yang lebih cerah untuk industri makanan global dan kesejahteraan umat manusia.
+                                {t('about.closing_desc')}
                             </p>
                         </div>
                     </motion.div>

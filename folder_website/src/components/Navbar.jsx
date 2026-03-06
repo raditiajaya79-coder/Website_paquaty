@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ArrowRight, Menu, X } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 /**
  * Navbar — Template style with brand accents
  * Dynamic transparency on Home page
  */
 const Navbar = () => {
+    const { lang, switchLang, t } = useLanguage();
     const location = useLocation();
     const isHome = location.pathname === '/';
     const [isScrolled, setIsScrolled] = useState(false);
@@ -64,12 +66,12 @@ const Navbar = () => {
                 {/* Navbar links — urutan: Product, About, Gallery, Certificate, Events, Contact */}
                 <div className="hidden md:flex items-center gap-10">
                     {[
-                        { name: "Products", path: "/products" },
-                        { name: "About", path: "/about" },
-                        { name: "Gallery", path: "/gallery" },
-                        { name: "Certificate", path: "/certificates" },
-                        { name: "Events", path: "/events" },
-                        { name: "Contact", path: "/contact" }
+                        { name: t('nav.products'), path: "/products" },
+                        { name: t('nav.about'), path: "/about" },
+                        { name: t('nav.gallery'), path: "/gallery" },
+                        { name: t('nav.certificates'), path: "/certificates" },
+                        { name: t('nav.events'), path: "/events" },
+                        { name: t('nav.contact'), path: "/contact" }
                     ].map((link) => (
                         <NavLink key={link.path} to={link.path} className={activeStyle}>
                             {({ isActive }) => (
@@ -88,17 +90,39 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <button className={`hidden md:flex items-center gap-2 px-7 py-3 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-xl active:scale-95 ${isTransparent
+                    {/* Language Switcher */}
+                    <div className={`flex items-center gap-1 p-1 rounded-full transition-all duration-500 border-2 ${isTransparent ? 'bg-white/5 border-white/10' : 'bg-stone-50 border-stone-border/30'}`}>
+                        <button
+                            onClick={() => switchLang('en')}
+                            className={`px-3 py-1.5 rounded-full text-[9px] font-black tracking-widest transition-all duration-300 ${lang === 'en'
+                                ? 'bg-brand-gold text-stone-dark shadow-sm'
+                                : (isTransparent ? 'text-white/40 hover:text-white' : 'text-stone-dark/40 hover:text-stone-dark')
+                                }`}
+                        >
+                            EN
+                        </button>
+                        <button
+                            onClick={() => switchLang('id')}
+                            className={`px-3 py-1.5 rounded-full text-[9px] font-black tracking-widest transition-all duration-300 ${lang === 'id'
+                                ? 'bg-brand-gold text-stone-dark shadow-sm'
+                                : (isTransparent ? 'text-white/40 hover:text-white' : 'text-stone-dark/40 hover:text-stone-dark')
+                                }`}
+                        >
+                            ID
+                        </button>
+                    </div>
+
+                    <button className={`hidden lg:flex items-center gap-2 px-7 py-3 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-xl active:scale-95 ${isTransparent
                         ? 'bg-white/10 text-white backdrop-blur-md border border-white/20 hover:bg-brand-cyan hover:text-white hover:border-brand-cyan'
                         : 'bg-brand-blue text-white hover:bg-brand-cyan hover:shadow-brand-cyan/30 shadow-brand-blue/10'
                         }`}>
-                        Partner with us
+                        {t('nav.partner')}
                         <ArrowRight className="w-4 h-4" />
                     </button>
 
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className={`md:hidden z-50 p-2 transition-all duration-500 rounded-full ${isMenuOpen ? 'bg-white/10 text-brand-gold rotate-90 shadow-[0_0_20px_rgba(255,237,0,0.2)]' : (isTransparent ? 'text-white' : 'text-stone-dark')}`}
+                        className={`md:hidden z-50 p-2 transition-all duration-500 rounded-full ${isMenuOpen ? 'bg-white/10 text-brand-gold rotate-90 shadow-[0_0_20_rgba(255,237,0,0.2)]' : (isTransparent ? 'text-white' : 'text-stone-dark')}`}
                     >
                         {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </button>
@@ -120,12 +144,12 @@ const Navbar = () => {
             >
                 <div className="flex flex-col gap-2 relative z-10">
                     {[
-                        { name: "Products", path: "/products" },
-                        { name: "About Us", path: "/about" },
-                        { name: "Gallery", path: "/gallery" },
-                        { name: "Certificates", path: "/certificates" },
-                        { name: "Events", path: "/events" },
-                        { name: "Contact Us", path: "/contact" }
+                        { name: t('nav.products'), path: "/products" },
+                        { name: t('nav.about'), path: "/about" },
+                        { name: t('nav.gallery'), path: "/gallery" },
+                        { name: t('nav.certificates'), path: "/certificates" },
+                        { name: t('nav.events'), path: "/events" },
+                        { name: t('nav.contact'), path: "/contact" }
                     ].map((link, idx) => (
                         <motion.div
                             key={link.path}
@@ -144,23 +168,31 @@ const Navbar = () => {
                     ))}
                 </div>
 
+                <div className="mt-4 flex justify-center gap-4 py-3 bg-stone-50/50 rounded-xl mb-4">
+                    <button
+                        onClick={() => switchLang('en')}
+                        className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${lang === 'en' ? 'bg-brand-gold text-stone-dark shadow-sm' : 'text-stone-dark/30'}`}
+                    >
+                        EN
+                    </button>
+                    <button
+                        onClick={() => switchLang('id')}
+                        className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${lang === 'id' ? 'bg-brand-gold text-stone-dark shadow-sm' : 'text-stone-dark/30'}`}
+                    >
+                        ID
+                    </button>
+                </div>
+
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: isMenuOpen ? 1 : 0 }}
                     transition={{ delay: 0.25 }}
                     className="mt-4 relative z-10"
                 >
-                    <div className="h-[1px] w-full bg-stone-dark/10 mb-4" />
                     <button className="w-full py-3 bg-brand-gold text-stone-dark rounded-full font-black text-[7px] uppercase tracking-[0.15em] flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-transform">
                         Connect
                         <ArrowRight className="w-3 h-3" />
                     </button>
-
-                    <div className="mt-4 flex justify-center gap-5 text-stone-dark/40">
-                        {["IG", "FB", "LI"].map(social => (
-                            <span key={social} className="text-[7px] font-black tracking-widest hover:text-brand-blue transition-colors cursor-pointer">{social}</span>
-                        ))}
-                    </div>
                 </motion.div>
             </motion.div >
         </nav >
