@@ -1,18 +1,17 @@
-// Products.jsx — Halaman katalog semua produk
-// Menampilkan grid semua varian Keripik Tempe Pakuaty dengan harga
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { PRODUCTS, COMPANY_INFO } from '../data/products';
 import { generatePageTitle } from '../utils/seo';
+import { useLanguage } from '../context/LanguageContext';
 
 /**
- * Products — Halaman katalog produk
- * Menampilkan semua varian keripik tempe dalam grid card
- * Setiap card menampilkan: gambar, nama, grade, harga, dan origin
+ * Products — Halaman katalog semua produk
+ * Menampilkan grid semua varian Keripik Tempe Pakuaty dengan harga
  */
 const Products = () => {
+    const { t } = useLanguage();
     // Konfigurasi animasi fade-in untuk motion components
     const fadeIn = {
         initial: { opacity: 0, y: 20 },
@@ -33,20 +32,20 @@ const Products = () => {
         <>
             {/* SEO metadata — title dan description untuk halaman katalog */}
             <Helmet>
-                <title>{generatePageTitle('Our Products')}</title>
-                <meta name="description" content={`Discover the authentic taste of Indonesia. Explore our range of premium, export-quality tempe chips at ${COMPANY_INFO.name}. Crafted with heritage, powered by innovation.`} />
+                <title>{generatePageTitle(t('seo.products_title'))}</title>
+                <meta name="description" content={t('seo.home_desc')} />
             </Helmet>
 
             <div className="bg-neutral-bone min-h-screen pt-24 pb-16 md:py-32 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
                     {/* Header section — judul dan deskripsi halaman */}
                     <motion.div {...fadeIn} className="text-center mb-16 md:mb-24">
-                        <span className="text-brand-blue font-medium tracking-[0.4em] uppercase text-xs mb-6 block">Our Flavors</span>
+                        <span className="text-brand-blue font-medium tracking-[0.4em] uppercase text-xs mb-6 block">{t('products.header_label')}</span>
                         <h1 className="text-4xl md:text-6xl lg:text-7xl font-medium text-stone-dark tracking-tight mb-8 leading-tight">
-                            Every Crunch <span className="text-brand-blue">Tells a Story</span>
+                            {t('products.header_title')}<span className="text-brand-blue">{t('products.header_title_accent')}</span>
                         </h1>
                         <p className="text-lg md:text-xl text-[#57534E] font-light leading-relaxed max-w-2xl mx-auto">
-                            From classic original to bold spicy balado — each flavor is crafted from premium fermented tempe and the finest Indonesian spices.
+                            {t('products.header_desc')}
                         </p>
                     </motion.div>
 
@@ -64,7 +63,7 @@ const Products = () => {
                                         {/* Image — refined zoom for elegant gallery feel */}
                                         <img
                                             src={product.image}
-                                            alt={product.name}
+                                            alt={t(`product.${product.id}.name`)}
                                             className="max-w-full max-h-full object-contain transition-transform duration-1000 group-hover:scale-105 drop-shadow-2xl"
                                         />
 
@@ -79,8 +78,8 @@ const Products = () => {
                                     {/* Konten card: nama, grade, harga, origin */}
                                     <div className="p-6">
                                         {/* Nama varian dan grade */}
-                                        <h3 className="text-xl font-semibold text-stone-dark mb-1">{product.name}</h3>
-                                        <p className="text-brand-gold-dark text-sm font-medium mb-3">{product.grade}</p>
+                                        <h3 className="text-xl font-semibold text-stone-dark mb-1">{t(`product.${product.id}.name`)}</h3>
+                                        <p className="text-brand-gold-dark text-sm font-medium mb-3">{t(`product.${product.id}.grade`)}</p>
 
                                         {/* Section harga — tampilkan harga coret + harga aktual */}
                                         {product.price && (
@@ -98,7 +97,7 @@ const Products = () => {
                                                     )}
                                                 </div>
                                                 {/* Keterangan ukuran kemasan */}
-                                                <p className="text-xs text-[#78716C] mt-1">/ 50 gram</p>
+                                                <p className="text-xs text-[#78716C] mt-1">/ {t('products.price_gram')}</p>
                                             </div>
                                         )}
 
@@ -106,7 +105,7 @@ const Products = () => {
                                         <div className="flex justify-between items-center pt-4 border-t border-stone-border">
                                             <div>
                                                 {/* Label origin */}
-                                                <p className="text-[10px] text-[#78716C] uppercase tracking-widest mb-1">Origin</p>
+                                                <p className="text-[10px] text-[#78716C] uppercase tracking-widest mb-1">{t('products.origin')}</p>
                                                 <p className="text-sm font-medium text-stone-dark">{product.origin}</p>
                                             </div>
                                             {/* Arrow icon — visual cue untuk klik ke detail */}

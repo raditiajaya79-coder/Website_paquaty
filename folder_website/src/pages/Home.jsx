@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Sprout, Microscope, Container, Store } from 'lucide-react';
 import { PRODUCTS } from '../data/products';
 import CTA from '../components/CTA';
+import { useLanguage } from '../context/LanguageContext';
 
 // Data Hero yang stabil (Dipindahkan ke luar agar tidak re-render/re-reference)
 // Data stabil — di luar komponen agar tidak trigger re-render
@@ -24,6 +25,7 @@ const heroItems = PRODUCTS
     }));
 
 const Home = () => {
+    const { t } = useLanguage();
     // Session Management: Only show intro once per session
     const hasPlayedIntro = sessionStorage.getItem('pakuaty_intro_played');
     const [isRevealed, setIsRevealed] = useState(hasPlayedIntro === 'true');
@@ -291,28 +293,27 @@ const Home = () => {
                                 animate={{ opacity: isRevealed ? 1 : 0, y: isRevealed ? 0 : 30 }}
                                 transition={{ duration: 1.5, delay: 1, ease: [0.22, 1, 0.36, 1] }}
                             >
-                                <h2 className="text-brand-gold font-black tracking-[0.5em] uppercase text-[9px] md:text-xs mb-4 px-10">Premium Tempe Chips</h2>
+                                <h2 className="text-brand-gold font-black tracking-[0.5em] uppercase text-[9px] md:text-xs mb-4 px-10">{t('hero.subtitle_part1')}</h2>
                                 <div className="relative inline-block transform-gpu">
                                     {/* Ambient Isolation Glow — Migrated from blur to high-performance radial gradient */}
                                     <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.25)_0%,transparent_70%)] scale-150 -z-10" />
 
                                     <h1 className="lg:text-[8.5rem] md:text-7xl text-4xl font-bold text-white tracking-tight leading-[0.82] mb-6 drop-shadow-[0_10px_25px_rgba(27,58,92,0.5)]">
-                                        Crunch the <br />
-                                        <span className="text-brand-gold drop-shadow-[0_5px_15px_rgba(0,0,0,0.2)]">Culture.</span>
+                                        {t('hero.title_part1')} <br />
+                                        <span className="text-brand-gold drop-shadow-[0_5px_15px_rgba(0,0,0,0.2)]">{t('hero.title_part2')}</span>
                                     </h1>
                                 </div>
                                 <p className="max-w-xl mx-auto text-white md:text-2xl text-lg mb-8 leading-relaxed font-semibold drop-shadow-[0_2px_10px_rgba(27,58,92,0.3)]">
-                                    Premium Indonesian Tempe Chips crafted with heritage, <br className="hidden md:block" />
-                                    powered by innovation.
+                                    {t('hero.subtitle_part2')}
                                 </p>
 
                                 <div className="flex flex-col md:flex-row items-center justify-center gap-3 text-white px-6 md:px-0">
                                     <Link to="/products" className="w-full md:w-auto bg-brand-gold text-stone-dark px-8 py-3.5 md:px-12 md:py-5 rounded-full text-base md:text-lg font-extrabold hover:bg-white hover:scale-105 hover:shadow-[0_20px_40px_rgba(255,237,0,0.3)] transition-all duration-700 shadow-2xl flex items-center justify-center gap-2 group pointer-events-auto">
-                                        Explore Flavors
+                                        {t('hero.explore')}
                                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                     </Link>
                                     <button className="w-full md:w-auto bg-white/5 backdrop-blur-md border border-white/20 text-white px-8 py-3.5 md:px-12 md:py-5 rounded-full text-base md:text-lg font-bold hover:bg-white/10 hover:border-white/40 transition-all pointer-events-auto shadow-xl">
-                                        Watch Story
+                                        {t('hero.story')}
                                     </button>
                                 </div>
                             </motion.div>
@@ -354,14 +355,14 @@ const Home = () => {
                                 {...fadeIn}
                                 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-stone-dark mb-4"
                             >
-                                Artisan <span className="text-brand-blue">Tempe Chips</span>
+                                {t('products.artisan')} <span className="text-brand-blue">{t('products.chips')}</span>
                             </motion.h2>
                             <motion.p
                                 {...fadeIn}
                                 transition={{ delay: 0.2 }}
                                 className="text-lg text-stone-dark/60 leading-relaxed max-w-lg"
                             >
-                                Premium Indonesian tempe chips crafted with heritage techniques and bold, authentic flavors.
+                                {t('products.desc')}
                             </motion.p>
                         </div>
 
@@ -370,7 +371,7 @@ const Home = () => {
                                 to="/products"
                                 className="group flex items-center gap-3 px-8 py-4 rounded-full bg-white border border-stone-border hover:bg-brand-blue hover:border-brand-blue transition-all duration-300 shadow-sm"
                             >
-                                <span className="text-stone-dark font-medium group-hover:text-white transition-colors">Full Catalog</span>
+                                <span className="text-stone-dark font-medium group-hover:text-white transition-colors">{t('products.catalog')}</span>
                                 <ArrowRight className="w-4 h-4 text-stone-dark group-hover:translate-x-1 group-hover:text-white transition-all" />
                             </Link>
                         </motion.div>
@@ -420,10 +421,10 @@ const Home = () => {
                                     {/* Content Overlay — Tighter padding for compactness */}
                                     <div className="absolute bottom-0 left-0 w-full p-6 z-20">
                                         <h3 className="text-xl md:text-2xl font-bold text-white mb-0 group-hover:text-brand-gold transition-colors duration-300 leading-tight">
-                                            {product.name}
+                                            {t(`product.${product.id}.name`)}
                                         </h3>
                                         <p className="text-brand-gold-light text-[9px] font-bold mb-1 opacity-90 uppercase tracking-widest">
-                                            {product.grade}
+                                            {t(`product.${product.id}.grade`)}
                                         </p>
 
                                         {/* Simplified Details */}
@@ -460,14 +461,14 @@ const Home = () => {
                             {...fadeIn}
                             className="text-brand-blue font-bold tracking-[0.3em] uppercase text-xs mb-4 block underline decoration-brand-blue/20 decoration-2 underline-offset-8"
                         >
-                            Our Heritage Process
+                            {t('process.badge')}
                         </motion.span>
                         <motion.h2
                             {...fadeIn}
                             transition={{ delay: 0.1 }}
                             className="lg:text-6xl md:text-5xl text-4xl font-medium tracking-tight text-stone-dark"
                         >
-                            From Soybean to <span className="text-brand-blue italic">Crunch</span>
+                            {t('process.title_part1')} <span className="text-brand-blue italic">{t('process.title_part2')}</span>
                         </motion.h2>
                     </div>
 
@@ -485,10 +486,10 @@ const Home = () => {
                             </div>
 
                             {[
-                                { step: "01", title: "Premium Soybeans", desc: "Locally sourced non-GMO soybeans for the freshest quality.", icon: Sprout, color: "bg-green-500/10" },
-                                { step: "02", title: "Natural Fermentation", desc: "Traditional 48-hour slow fermentation process.", icon: Microscope, color: "bg-blue-500/10" },
-                                { step: "03", title: "Bold Seasoning", desc: "Hand-seasoned with signature heritage spice blends.", icon: Container, color: "bg-orange-500/10" },
-                                { step: "04", title: "Export Ready", desc: "Vacuum-sealed to ensure international export quality.", icon: Store, color: "bg-brand-gold/10" },
+                                { step: "01", title: t('process.step1_title'), desc: t('process.step1_desc'), icon: Sprout, color: "bg-green-500/10" },
+                                { step: "02", title: t('process.step2_title'), desc: t('process.step2_desc'), icon: Microscope, color: "bg-blue-500/10" },
+                                { step: "03", title: t('process.step3_title'), desc: t('process.step3_desc'), icon: Container, color: "bg-orange-500/10" },
+                                { step: "04", title: t('process.step4_title'), desc: t('process.step4_desc'), icon: Store, color: "bg-brand-gold/10" },
                             ].map((item, idx) => (
                                 <motion.div
                                     key={idx}

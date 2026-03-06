@@ -1,5 +1,3 @@
-// ProductDetail.jsx — Halaman detail produk individual
-// Menampilkan gambar, deskripsi, harga, dan opsi packaging per produk
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -7,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, CheckCircle2, ShieldCheck, Globe2, MessageCircle, FileText, Package, MapPin } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
 import { PRODUCTS, COMPANY_INFO } from '../data/products';
+import { useLanguage } from '../context/LanguageContext';
 
 /**
  * ProductDetail — Komponen halaman detail produk
@@ -14,6 +13,7 @@ import { PRODUCTS, COMPANY_INFO } from '../data/products';
  * Layout compact seperti marketplace (Tokopedia/Shopee style)
  */
 const ProductDetail = () => {
+    const { t, lang } = useLanguage();
     // Ambil parameter ID dari URL (misal /products/1)
     const { id } = useParams();
 
@@ -44,7 +44,10 @@ const ProductDetail = () => {
      * handleWhatsAppOrder — Buka WhatsApp dengan pesan pre-filled untuk order
      */
     const handleWhatsAppOrder = () => {
-        const message = `Halo ${COMPANY_INFO.name}, saya tertarik dengan produk Keripik Tempe Pakuaty rasa ${product.name} (${selectedPackaging.label}). Mohon info harga dan ketersediaan.`;
+        const productName = t(`product.${product.id}.name`);
+        const message = lang === 'id'
+            ? `Halo ${COMPANY_INFO.name}, saya tertarik dengan produk Keripik Tempe Pakuaty rasa ${productName} (${selectedPackaging.label}). Mohon info harga dan ketersediaan.`
+            : `Hello ${COMPANY_INFO.name}, I am interested in Pakuaty Tempe Chips ${productName} flavor (${selectedPackaging.label}). Please provide information on price and availability.`;
         window.open(`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
@@ -65,8 +68,8 @@ const ProductDetail = () => {
         <>
             {/* SEO metadata */}
             <Helmet>
-                <title>{generatePageTitle(`${product.name} — Keripik Tempe Pakuaty`)}</title>
-                <meta name="description" content={`Keripik Tempe Pakuaty rasa ${product.name}. ${product.grade}. Harga Rp ${formatPrice(product.price || 0)}.`} />
+                <title>{generatePageTitle(`${t(`product.${product.id}.name`)} — Keripik Tempe Pakuaty`)}</title>
+                <meta name="description" content={`${t(`product.${product.id}.name`)}. ${t(`product.${product.id}.grade`)}. Harga Rp ${formatPrice(product.price || 0)}.`} />
             </Helmet>
 
             <div className="bg-neutral-bone min-h-screen pt-24 pb-16 md:pb-20 relative overflow-hidden">
@@ -75,7 +78,7 @@ const ProductDetail = () => {
                     <motion.div {...fadeIn} className="mb-8">
                         <Link to="/products" className="inline-flex items-center gap-2 text-[#78716C] hover:text-brand-blue transition-all text-xs font-bold tracking-widest uppercase">
                             <ArrowLeft className="w-4 h-4" />
-                            Return to Collection
+                            {t('product.detail.back')}
                         </Link>
                     </motion.div>
 
@@ -90,7 +93,7 @@ const ProductDetail = () => {
                             <div className="w-full aspect-square p-12 flex items-center justify-center bg-stone-50/50">
                                 <img
                                     src={product.detailImage || product.image}
-                                    alt={product.name}
+                                    alt={t(`product.${product.id}.name`)}
                                     className="max-w-full max-h-full object-contain drop-shadow-2xl"
                                 />
                             </div>
@@ -119,11 +122,11 @@ const ProductDetail = () => {
 
                             {/* Nama produk */}
                             <h1 className="text-3xl md:text-5xl font-serif font-medium text-stone-dark tracking-tight mb-1 leading-[1.1]">
-                                {product.name}
+                                {t(`product.${product.id}.name`)}
                             </h1>
 
                             {/* Grade / subtitle */}
-                            <p className="text-base text-[#78716C] font-light mb-5 italic">{product.grade}</p>
+                            <p className="text-base text-[#78716C] font-light mb-5 italic">{t(`product.${product.id}.grade`)}</p>
 
                             {/* === HARGA — Marketplace style: compact, inline === */}
                             {product.price && (
@@ -166,7 +169,7 @@ const ProductDetail = () => {
                             {/* Pilih Kemasan — hanya tampil jika >1 opsi */}
                             {product.packagingOptions.length > 1 && (
                                 <div className="mb-6">
-                                    <p className="text-xs text-[#78716C] uppercase font-bold tracking-widest mb-3">Pilih Kemasan</p>
+                                    <p className="text-xs text-[#78716C] uppercase font-bold tracking-widest mb-3">{t('product.detail.options')}</p>
                                     <div className="flex flex-wrap gap-2">
                                         {product.packagingOptions.map(opt => (
                                             <button
@@ -189,16 +192,16 @@ const ProductDetail = () => {
 
                             {/* === DESKRIPSI PRODUK === */}
                             <div className="mb-6">
-                                <h3 className="text-xs font-bold text-stone-dark uppercase tracking-widest mb-3">Deskripsi Produk</h3>
-                                {product.description ? (
+                                <h3 className="text-xs font-bold text-stone-dark uppercase tracking-widest mb-3">{lang === 'id' ? 'Deskripsi Produk' : 'Product Description'}</h3>
+                                {product.id ? (
                                     // Deskripsi dari data produk dengan whitespace-pre-line untuk line break
                                     <p className="text-sm text-[#57534E] leading-[1.8] whitespace-pre-line">
-                                        {product.description}
+                                        {t(`product.${product.id}.desc`)}
                                     </p>
                                 ) : (
-                                    // Fallback untuk produk tanpa deskripsi
+                                    // Fallback (should not happen with actual products)
                                     <p className="text-sm text-[#57534E] leading-relaxed">
-                                        Premium {product.name} dari {COMPANY_INFO.name}. Setiap batch melalui quality control ketat untuk menjamin standar kualitas terbaik.
+                                        Premium {t(`product.${product.id}.name`)} from {COMPANY_INFO.name}.
                                     </p>
                                 )}
                             </div>
@@ -206,10 +209,10 @@ const ProductDetail = () => {
                             {/* Badge fitur — compact horizontal */}
                             <div className="grid grid-cols-2 gap-3 mb-8">
                                 {[
-                                    { icon: CheckCircle2, text: "International Standards" },
-                                    { icon: ShieldCheck, text: "Verified Quality" },
-                                    { icon: Globe2, text: "Global Logistics" },
-                                    { icon: FileText, text: "Full Documentation" }
+                                    { icon: CheckCircle2, text: lang === 'id' ? "Standar Internasional" : "International Standards" },
+                                    { icon: ShieldCheck, text: lang === 'id' ? "Kualitas Terverifikasi" : "Verified Quality" },
+                                    { icon: Globe2, text: lang === 'id' ? "Logistik Global" : "Global Logistics" },
+                                    { icon: FileText, text: lang === 'id' ? "Dokumentasi Lengkap" : "Full Documentation" }
                                 ].map((feat, i) => (
                                     <div key={i} className="flex items-center gap-2 text-xs font-semibold text-[#57534E]">
                                         <feat.icon className="w-4 h-4 text-brand-blue shrink-0" />
@@ -225,11 +228,11 @@ const ProductDetail = () => {
                                     onClick={handleWhatsAppOrder}
                                     className="w-full py-4 bg-stone-dark text-white rounded-2xl font-bold text-sm tracking-wider uppercase hover:bg-brand-blue transition-all shadow-xl hover:shadow-brand-blue/20 flex items-center justify-center gap-2"
                                 >
-                                    PESAN SEKARANG
+                                    {t('product.detail.order')}
                                     <MessageCircle className="w-4 h-4" />
                                 </button>
                                 {/* Keterangan */}
-                                <p className="text-center text-[10px] text-[#78716C]">Terhubung langsung ke {COMPANY_INFO.name} via WhatsApp</p>
+                                <p className="text-center text-[10px] text-[#78716C]">{lang === 'id' ? `Terhubung langsung ke ${COMPANY_INFO.name} via WhatsApp` : `Connect directly to ${COMPANY_INFO.name} via WhatsApp`}</p>
                             </div>
                         </motion.div>
                     </div>

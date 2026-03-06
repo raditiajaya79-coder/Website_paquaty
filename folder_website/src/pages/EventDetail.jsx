@@ -1,27 +1,19 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Helmet } from 'react-helmet-async';
-import { ArrowLeft, Calendar, User, Tag, Share2 } from 'lucide-react';
-import { generatePageTitle } from '../utils/seo';
-
-// Mock data (matching Events.jsx)
-const ARTICLES = [
-    {
-        id: 1,
-        title: "Traditional Fermentation: The Secret to Pakuaty's Crunch",
-        content: "Our fermentation process is a labor of love that spans generations. We start with carefully selected non-GMO soybeans, which are soaked and then inoculated with a traditional starter culture. The critical phase is the 48-hour slow fermentation in a temperature-controlled environment. This allows the mycelium to fully bind the soybeans, creating a dense, protein-rich 'cake' that forms the base of our chips.\\n\\nThis patient approach is what differentiates Pakuaty. While industrial methods try to speed up this process, we believe that true flavor and the perfect 'crunch' can only be achieved by respecting nature's timeline. The result is a snack that isn't just delicious, but deeply rooted in Indonesian heritage.",
-        date: "Jan 15, 2026",
-        author: "Heritage Master",
-        category: "Process",
-        image: "/images/keripik tempe original pakuaty.jpg"
-    }
-    // ...other articles will fallback to a generic template for this dummy implementation
-];
+const ARTICLE_IMAGES = {
+    1: "/images/keripik tempe original pakuaty.jpg",
+    2: "/images/keirpik tempe balado pakuaty.jpg",
+    3: "/images/logo pakuaty tagline.png",
+    4: "/images/keripik tempe sapi pakuaty.jpg",
+    5: "/images/keripik jamur pakuaty.jpg",
+    6: "/images/FOTO ALL KERIPIK TEMPE.jpg"
+};
 
 const EventDetail = () => {
     const { id } = useParams();
-    const article = ARTICLES.find(a => a.id === parseInt(id)) || ARTICLES[0];
+    const { t } = useLanguage();
+
+    // We use the ID to pull localized content
+    const articleId = parseInt(id) || 1;
+    const image = ARTICLE_IMAGES[articleId] || ARTICLE_IMAGES[1];
 
     const fadeIn = {
         initial: { opacity: 0, y: 20 },
@@ -32,37 +24,37 @@ const EventDetail = () => {
     return (
         <div className="bg-neutral-bone min-h-screen pt-32 pb-24">
             <Helmet>
-                <title>{generatePageTitle(article.title)}</title>
+                <title>{generatePageTitle(t(`article.${articleId}.title`))}</title>
             </Helmet>
 
             <div className="max-w-4xl mx-auto px-6">
                 <motion.div {...fadeIn} className="mb-12">
                     <Link to="/events" className="inline-flex items-center gap-2 text-stone-dark/60 hover:text-brand-blue transition-all text-xs font-bold tracking-widest uppercase">
                         <ArrowLeft className="w-4 h-4" />
-                        Back to Stories
+                        {t('article.detail.back')}
                     </Link>
                 </motion.div>
 
                 <motion.header {...fadeIn} transition={{ delay: 0.1 }} className="mb-12">
                     <div className="flex items-center gap-4 mb-6">
                         <span className="px-4 py-1.5 bg-brand-blue/10 text-brand-blue rounded-full text-[10px] font-bold uppercase tracking-widest">
-                            {article.category}
+                            {t(`article.${articleId}.cat`)}
                         </span>
                         <div className="h-px flex-1 bg-stone-border/30"></div>
                     </div>
 
                     <h1 className="text-4xl md:text-6xl font-medium tracking-tight text-stone-dark mb-8 leading-[1.1]">
-                        {article.title}
+                        {t(`article.${articleId}.title`)}
                     </h1>
 
                     <div className="flex flex-wrap items-center gap-8 text-xs font-bold uppercase tracking-widest text-stone-dark/60">
                         <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4 text-brand-gold" />
-                            {article.date}
+                            {t(`article.${articleId}.date`)}
                         </div>
                         <div className="flex items-center gap-2">
                             <User className="w-4 h-4 text-brand-gold" />
-                            {article.author}
+                            {t(`article.${articleId}.author`)}
                         </div>
                     </div>
                 </motion.header>
@@ -72,7 +64,7 @@ const EventDetail = () => {
                     transition={{ delay: 0.2 }}
                     className="relative aspect-[21/10] rounded-[3rem] overflow-hidden mb-16 shadow-2xl"
                 >
-                    <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
+                    <img src={image} alt={t(`article.${articleId}.title`)} className="w-full h-full object-cover" />
                 </motion.div>
 
                 <motion.div
@@ -81,10 +73,10 @@ const EventDetail = () => {
                     className="prose prose-stone max-w-none"
                 >
                     <p className="text-xl text-stone-dark/80 leading-relaxed mb-8 font-light italic">
-                        {article.excerpt || "At Pakuaty, we believe that every bite should tell a story of craftsmanship, dedication, and the rich culinary landscape of Indonesia."}
+                        {t(`article.${articleId}.excerpt`)}
                     </p>
                     <div className="text-lg text-stone-dark/70 leading-[1.8] whitespace-pre-line space-y-6">
-                        {article.content || "Full story content coming soon. We are currently documenting our journey to bring you closer to the heart of Pakuaty's heritage."}
+                        {t(`article.${articleId}.content`)}
                     </div>
                 </motion.div>
 

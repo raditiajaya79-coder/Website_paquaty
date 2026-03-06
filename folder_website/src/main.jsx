@@ -10,14 +10,18 @@ import App from './App.jsx';
 // Global CSS — Tailwind CSS + custom styles
 import './index.css';
 
+import { LanguageProvider } from './context/LanguageContext.jsx';
+
 // Mount React app ke DOM element #root di index.html
 createRoot(document.getElementById('root')).render(
     // StrictMode — mendeteksi masalah potensial saat development
     <StrictMode>
         <HelmetProvider>
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>
+            <LanguageProvider>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+            </LanguageProvider>
         </HelmetProvider>
     </StrictMode>
 );

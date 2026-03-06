@@ -4,7 +4,10 @@ import { Helmet } from 'react-helmet-async';
 import { generatePageTitle } from '../utils/seo';
 import { Maximize2, Instagram } from 'lucide-react';
 
+import { useLanguage } from '../context/LanguageContext';
+
 const Gallery = () => {
+    const { t } = useLanguage();
     const fadeIn = {
         initial: { opacity: 0, y: 20 },
         whileInView: { opacity: 1, y: 0 },
@@ -13,20 +16,20 @@ const Gallery = () => {
     };
 
     const images = [
-        { id: 1, src: "/images/keripik tempe original pakuaty.jpg", span: "md:col-span-8", aspect: "aspect-[1.5/1] md:aspect-[2/1]", title: "Heritage Fermentation", category: "Process" },
-        { id: 2, src: "/images/keirpik tempe balado pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square", title: "Spicy Infusion", category: "Flavor" },
-        { id: 3, src: "/images/keripik tempe bbq pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square", title: "Smoky Perfection", category: "Quality" },
-        { id: 4, src: "/images/keripik tempe keju pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square", title: "Golden Grating", category: "Detail" },
-        { id: 5, src: "/images/keripik tempe sapi pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square", title: "Roasted Excellence", category: "Export" },
-        { id: 6, src: "/images/keripik jamur pakuaty.jpg", span: "md:col-span-6", aspect: "aspect-video", title: "Crunch Anatomy", category: "Detail" },
-        { id: 7, src: "/images/FOTO ALL KERIPIK TEMPE.jpg", span: "md:col-span-6", aspect: "aspect-video", title: "The Collection", category: "Brand" },
+        { id: 1, src: "/images/keripik tempe original pakuaty.jpg", span: "md:col-span-8", aspect: "aspect-[1.5/1] md:aspect-[2/1]" },
+        { id: 2, src: "/images/keirpik tempe balado pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square" },
+        { id: 3, src: "/images/keripik tempe bbq pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square" },
+        { id: 4, src: "/images/keripik tempe keju pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square" },
+        { id: 5, src: "/images/keripik tempe sapi pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square" },
+        { id: 6, src: "/images/keripik jamur pakuaty.jpg", span: "md:col-span-6", aspect: "aspect-video" },
+        { id: 7, src: "/images/FOTO ALL KERIPIK TEMPE.jpg", span: "md:col-span-6", aspect: "aspect-video" },
     ];
 
     return (
         <div className="bg-brand-cream min-h-screen pt-32 pb-24 relative overflow-hidden">
             <Helmet>
-                <title>{generatePageTitle('Visual Gallery')}</title>
-                <meta name="description" content="Explore the visual journey of Pakuaty's premium tempe chips." />
+                <title>{generatePageTitle(t('seo.gallery_title'))}</title>
+                <meta name="description" content={t('seo.gallery_desc')} />
             </Helmet>
 
             <div className="max-w-7xl mx-auto px-6">
@@ -35,21 +38,21 @@ const Gallery = () => {
                         {...fadeIn}
                         className="text-brand-blue font-bold tracking-[0.3em] uppercase text-xs mb-4 block underline decoration-brand-blue/20 decoration-2 underline-offset-8"
                     >
-                        Visual Narrative
+                        {t('gallery.header_label')}
                     </motion.span>
                     <motion.h1
                         {...fadeIn}
                         transition={{ delay: 0.1 }}
                         className="text-5xl md:text-7xl font-medium tracking-tight text-stone-dark mb-6"
                     >
-                        Our <span className="text-brand-blue italic">Gallery</span>
+                        {t('gallery.header_title')}<span className="text-brand-blue italic">{t('gallery.header_title_accent')}</span>
                     </motion.h1>
                     <motion.p
                         {...fadeIn}
                         transition={{ delay: 0.2 }}
                         className="text-lg text-stone-dark/60 max-w-2xl mx-auto"
                     >
-                        A curated collection of our finest products and the heritage behind every crunch.
+                        {t('gallery.header_desc')}
                     </motion.p>
                 </header>
 
@@ -67,7 +70,7 @@ const Gallery = () => {
                             <div className="absolute inset-0 p-4 transition-all duration-700 group-hover:p-0">
                                 <img
                                     src={img.src}
-                                    alt={img.title}
+                                    alt={t(`gallery.item${img.id}.title`)}
                                     className="w-full h-full object-cover rounded-[2.2rem] transition-all duration-1000 group-hover:rounded-none group-hover:scale-105"
                                 />
                             </div>
@@ -75,7 +78,7 @@ const Gallery = () => {
                             {/* Glassmorphism Category Badge */}
                             <div className="absolute top-8 left-8 z-20">
                                 <span className="px-4 py-1.5 bg-white/90 backdrop-blur-xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] text-brand-blue shadow-xl border border-white/20">
-                                    {img.category}
+                                    {t(`gallery.item${img.id}.cat`)}
                                 </span>
                             </div>
 
@@ -86,7 +89,7 @@ const Gallery = () => {
                                     whileHover={{ y: 0, opacity: 1 }}
                                     className="space-y-2"
                                 >
-                                    <h3 className="text-white text-3xl font-medium tracking-tight translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-100">{img.title}</h3>
+                                    <h3 className="text-white text-3xl font-medium tracking-tight translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-100">{t(`gallery.item${img.id}.title`)}</h3>
                                     <div className="w-12 h-0.5 bg-brand-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-700 delay-200 origin-left"></div>
                                 </motion.div>
                             </div>
@@ -105,8 +108,8 @@ const Gallery = () => {
                     className="mt-20 p-12 bg-white rounded-[3.5rem] border border-brand-gold/20 shadow-soft flex flex-col md:flex-row items-center justify-between gap-8"
                 >
                     <div className="max-w-md text-center md:text-left">
-                        <h3 className="text-3xl font-serif font-medium text-stone-dark mb-4">Follow Our Journey</h3>
-                        <p className="text-[#78716C]">Stay connected for daily updates, behind-the-scenes content, and new product launches on our social channels.</p>
+                        <h3 className="text-3xl font-serif font-medium text-stone-dark mb-4">{t('gallery.follow_title')}</h3>
+                        <p className="text-[#78716C]">{t('gallery.follow_desc')}</p>
                     </div>
                     <a
                         href="https://instagram.com"
@@ -115,7 +118,7 @@ const Gallery = () => {
                         className="flex items-center gap-3 px-10 py-5 bg-brand-blue text-white rounded-full font-bold text-sm tracking-widest uppercase hover:bg-brand-cyan transition-all shadow-xl active:scale-95"
                     >
                         <Instagram className="w-5 h-5" />
-                        Explore on Instagram
+                        {t('gallery.follow_cta')}
                     </a>
                 </motion.div>
             </div>
