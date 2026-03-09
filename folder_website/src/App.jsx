@@ -7,6 +7,7 @@ import { AnimatePresence } from 'framer-motion';
 import MainLayout from './layouts/MainLayout.jsx';
 // Layout — wrapper untuk halaman admin (sidebar + proteksi akses)
 import AdminLayout from './layouts/AdminLayout.jsx';
+import { AdminProvider } from './context/AdminContext.jsx';
 
 // Pages — setiap halaman website publik
 import Home from './pages/Home.jsx';
@@ -28,6 +29,7 @@ import ManageGalleries from './pages/admin/ManageGalleries.jsx';
 import ManageCertificates from './pages/admin/ManageCertificates.jsx';
 import ManageEvents from './pages/admin/ManageEvents.jsx';
 import ManageContacts from './pages/admin/ManageContacts.jsx';
+import ManageAnnouncement from './pages/admin/ManageAnnouncement.jsx';
 import ManageProfile from './pages/admin/ManageProfile.jsx';
 
 /**
@@ -64,7 +66,8 @@ function App() {
 
                     {/* Halaman artikel/event — URL: /events */}
                     <Route path="/events" element={<Events />} />
-                    <Route path="/events/:id" element={<EventDetail />} />
+                    <Route path="/events/article/:id" element={<EventDetail />} />
+                    <Route path="/events/event/:id" element={<EventDetail />} />
 
                     {/* Halaman galeri — URL: /gallery */}
                     <Route path="/gallery" element={<Gallery />} />
@@ -74,38 +77,43 @@ function App() {
                 </Route>
 
                 {/* 
-            Route Admin — Login (tanpa layout, halaman full-screen)
+            Route Admin — Dibungkus AdminProvider agar state login merata
           */}
-                <Route path="/admin/login" element={<Login />} />
+                <Route element={<AdminProvider />}>
+                    <Route path="/admin/login" element={<Login />} />
 
-                {/* 
-            Route Admin — Dashboard dengan AdminLayout wrapper
-            AdminLayout menyediakan Sidebar dan proteksi JWT
-          */}
-                <Route path="/admin" element={<AdminLayout />}>
-                    {/* Dashboard utama — URL: /admin */}
-                    <Route index element={<DashboardHome />} />
+                    {/* 
+                Route Dashboard dengan AdminLayout wrapper
+                AdminLayout menyediakan Sidebar dan proteksi JWT
+              */}
+                    <Route path="/admin" element={<AdminLayout />}>
+                        {/* Dashboard utama — URL: /admin */}
+                        <Route index element={<DashboardHome />} />
 
-                    {/* Manajemen Produk — URL: /admin/products */}
-                    <Route path="products" element={<ManageProducts />} />
+                        {/* Manajemen Produk — URL: /admin/products */}
+                        <Route path="products" element={<ManageProducts />} />
 
-                    {/* Manajemen Artikel — URL: /admin/articles */}
-                    <Route path="articles" element={<ManageArticles />} />
+                        {/* Manajemen Artikel — URL: /admin/articles */}
+                        <Route path="articles" element={<ManageArticles />} />
 
-                    {/* Manajemen Galeri — URL: /admin/gallery */}
-                    <Route path="gallery" element={<ManageGalleries />} />
+                        {/* Manajemen Galeri — URL: /admin/gallery */}
+                        <Route path="gallery" element={<ManageGalleries />} />
 
-                    {/* Manajemen Sertifikat — URL: /admin/certificates */}
-                    <Route path="certificates" element={<ManageCertificates />} />
+                        {/* Manajemen Sertifikat — URL: /admin/certificates */}
+                        <Route path="certificates" element={<ManageCertificates />} />
 
-                    {/* Manajemen Event — URL: /admin/events */}
-                    <Route path="events" element={<ManageEvents />} />
+                        {/* Manajemen Event — URL: /admin/events */}
+                        <Route path="events" element={<ManageEvents />} />
 
-                    {/* Manajemen Kontak — URL: /admin/contacts */}
-                    <Route path="contacts" element={<ManageContacts />} />
+                        {/* Manajemen Kontak — URL: /admin/contacts */}
+                        <Route path="contacts" element={<ManageContacts />} />
 
-                    {/* Manajemen Profil — URL: /admin/profile */}
-                    <Route path="profile" element={<ManageProfile />} />
+                        {/* Manajemen Pengumuman — URL: /admin/announcement */}
+                        <Route path="announcement" element={<ManageAnnouncement />} />
+
+                        {/* Manajemen Profil — URL: /admin/profile */}
+                        <Route path="profile" element={<ManageProfile />} />
+                    </Route>
                 </Route>
             </Routes>
         </AnimatePresence>

@@ -1,143 +1,89 @@
-import React, { useState } from 'react'; // React hooks
-import { useNavigate } from 'react-router-dom'; // Navigasi
-import { motion } from 'framer-motion'; // Animasi
-import { Lock, User, ArrowRight, Coffee } from 'lucide-react'; // Ikon
-import { api, setToken } from '../../utils/api'; // Utilitas API + manajemen token
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Lock, User, ArrowRight, Coffee } from 'lucide-react';
+import { api, setToken } from '../../utils/api';
+import { useAdmin } from '../../context/AdminContext';
 
 /**
- * Halaman Login Admin dengan desain Premium & Modern.
- * Menggunakan efek pencahayaan (lighting) dan glassmorphism.
- * Login dilakukan via POST ke backend /api/auth/login.
+ * Login — Halaman Login Admin.
+ * Desain compact & premium dengan glassmorphism card.
  */
 const Login = () => {
     const [email, setEmail] = useState(''); // State email
     const [password, setPassword] = useState(''); // State password
-    const [loading, setLoading] = useState(false); // State loading saat proses login
-    const [error, setError] = useState(''); // State pesan error
-    const navigate = useNavigate(); // Hook navigasi
+    const [loading, setLoading] = useState(false); // Loading saat proses login
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { isLoggedIn, setIsLoggedIn, showToast } = useAdmin();
 
-    /**
-     * handleLogin — Mengirim kredensial ke backend untuk autentikasi
-     * Jika berhasil, simpan JWT token dan redirect ke dashboard.
-     */
+    // Redirect jika sudah login
+    useEffect(() => { if (isLoggedIn) navigate('/admin', { replace: true }); }, [isLoggedIn, navigate]);
+
+    /** handleLogin — Kirim kredensial ke backend untuk autentikasi */
     const handleLogin = async (e) => {
-        e.preventDefault(); // Cegah reload halaman
-        setLoading(true); // Tampilkan state loading
-        setError(''); // Reset pesan error
-
+        e.preventDefault();
+        setLoading(true);
         try {
-            // Kirim POST request ke backend dengan email dan password
-            const data = await api.post('/auth/login', { email, password });
-
-            // Simpan JWT token ke localStorage
-            setToken(data.token);
-
-            // Simpan flag login untuk proteksi route di AdminLayout
-            localStorage.setItem('isLoggedIn', 'true');
-
-            // Redirect ke halaman dashboard admin
-            navigate('/admin');
+            const data = await api.post('/auth/login', { email, password }); // POST login
+            setToken(data.token); // Simpan JWT
+            localStorage.setItem('isLoggedIn', 'true'); // Flag login
+            setIsLoggedIn(true); // Update global state
+            showToast("Selamat datang kembali!", "success");
+            const from = location.state?.from?.pathname || "/admin"; // Redirect target
+            navigate(from, { replace: true });
         } catch (err) {
-            // Tampilkan pesan error dari backend atau pesan default
-            setError(err.message || 'Login gagal. Periksa email dan password.');
-        } finally {
-            setLoading(false); // Matikan state loading
-        }
+            showToast(err.message || 'Login gagal. Periksa kredensial Anda.', 'error');
+        } finally { setLoading(false); }
     };
 
     return (
-        <div className="min-h-screen bg-brand-cream flex items-center justify-center p-4 overflow-hidden relative">
-            {/* Dekorasi Ornamen Background (Pendaran Emas) */}
-            <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-brand-gold/10 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-brand-blue/5 rounded-full blur-[100px] translate-x-1/4 translate-y-1/4"></div>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 flex items-center justify-center p-4 overflow-hidden relative">
+            {/* Dekorasi Ornamen Background */}
+            <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-brand-gold/8 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
+            <div className="absolute bottom-0 right-0 w-[350px] h-[350px] bg-brand-blue/5 rounded-full blur-[80px] translate-x-1/4 translate-y-1/4"></div>
 
-            {/* Kontainer Utama Login */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="w-full max-w-md relative z-10"
-            >
-                {/* Logo / Icon Atas */}
-                <div className="text-center mb-8">
-                    <div className="inline-flex p-4 rounded-3xl bg-white shadow-xl shadow-brand-gold/10 mb-4 border border-brand-gold/20">
-                        <Coffee size={40} className="text-brand-gold" />
-                    </div>
-                    <h1 className="text-3xl font-extrabold text-brand-blue">
-                        Pakuaty <span className="text-brand-gold">Admin</span>
-                    </h1>
-                    <p className="text-stone-dark/50 mt-2 font-medium">Selamat datang kembali, silakan masuk.</p>
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="w-full max-w-sm relative z-10">
+                {/* Branding — Logo Resmi Pakuaty */}
+                <div className="text-center mb-8 flex flex-col items-center">
+                    <img
+                        src="/images/pure logo pakuaty.png"
+                        alt="Pakuaty Logo"
+                        className="h-14 w-auto object-contain mb-2"
+                    />
+                    <div className="h-0.5 w-12 bg-brand-gold/20 rounded-full" />
                 </div>
 
-                {/* Card Form */}
-                <div className="bg-white/70 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-2xl shadow-brand-blue/5 border border-white">
-                    <form onSubmit={handleLogin} className="space-y-6">
-                        {/* Pesan Error (tampil jika ada error) */}
-                        {error && (
-                            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-2xl text-sm font-medium text-center">
-                                {error}
-                            </div>
-                        )}
-
-                        {/* Input Email/Username */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-stone-dark/70 ml-1">Username / Email</label>
+                {/* Login Card — glassmorphism */}
+                <div className="bg-white/80 backdrop-blur-xl p-7 rounded-2xl shadow-xl shadow-brand-blue/5 border border-white/80">
+                    <form onSubmit={handleLogin} className="space-y-5">
+                        {/* Email Input */}
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold uppercase tracking-widest text-slate-400 ml-0.5">Username / Email</label>
                             <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-brand-blue/40 group-focus-within:text-brand-blue transition-colors">
-                                    <User size={20} />
-                                </div>
-                                <input
-                                    type="text"
-                                    required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="admin@pakuaty.com"
-                                    disabled={loading}
-                                    className="w-full pl-12 pr-4 py-4 bg-white border border-brand-gold/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold transition-all disabled:opacity-50"
-                                />
+                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-300 group-focus-within:text-brand-blue transition-colors"><User size={16} /></div>
+                                <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="admin@pakuaty.com" disabled={loading} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brand-blue/40 focus:border-brand-blue/30 transition-all text-sm font-medium disabled:opacity-50" />
                             </div>
                         </div>
 
-                        {/* Input Password */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-stone-dark/70 ml-1">Kunci Keamanan</label>
+                        {/* Password Input */}
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-semibold uppercase tracking-widest text-slate-400 ml-0.5">Kunci Keamanan</label>
                             <div className="relative group">
-                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-brand-blue/40 group-focus-within:text-brand-blue transition-colors">
-                                    <Lock size={20} />
-                                </div>
-                                <input
-                                    type="password"
-                                    required
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="••••••••"
-                                    disabled={loading}
-                                    className="w-full pl-12 pr-4 py-4 bg-white border border-brand-gold/10 rounded-2xl focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold transition-all disabled:opacity-50"
-                                />
+                                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-300 group-focus-within:text-brand-blue transition-colors"><Lock size={16} /></div>
+                                <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" disabled={loading} className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-brand-blue/40 focus:border-brand-blue/30 transition-all text-sm font-medium disabled:opacity-50" />
                             </div>
                         </div>
 
-                        {/* Lupa Password Link */}
-                        <div className="text-right">
-                            <a href="#" className="text-xs font-bold text-brand-blue/60 hover:text-brand-blue transition-colors">Lupa kunci keamanan?</a>
-                        </div>
-
-                        {/* Tombol Login */}
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full bg-brand-blue text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 group hover:bg-opacity-90 shadow-lg shadow-brand-blue/20 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
-                        >
-                            <span>{loading ? 'Memproses...' : 'Masuk Sekarang'}</span>
-                            {!loading && <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />}
+                        {/* Submit Button */}
+                        <button type="submit" disabled={loading} className="w-full bg-brand-blue text-white py-3.5 rounded-xl font-bold text-xs uppercase tracking-[0.15em] flex items-center justify-center gap-2.5 group hover:bg-stone-dark shadow-lg shadow-brand-blue/15 transition-all active:scale-[0.98] disabled:opacity-70">
+                            <span>{loading ? 'Memverifikasi...' : 'Masuk Ke Dashboard'}</span>
+                            {!loading && <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />}
                         </button>
                     </form>
                 </div>
 
-                {/* Footer Info */}
-                <p className="text-center mt-8 text-stone-dark/40 text-sm">
-                    &copy; 2026 PT Bala Aditi Pakuaty. Semua Hak Dilindungi.
-                </p>
+                <p className="text-center mt-8 text-slate-300 text-[10px] font-semibold uppercase tracking-widest">&copy; 2026 PT Bala Aditi Pakuaty</p>
             </motion.div>
         </div>
     );

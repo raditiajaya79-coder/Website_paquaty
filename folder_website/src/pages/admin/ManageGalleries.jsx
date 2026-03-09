@@ -1,221 +1,226 @@
-import React, { useState, useEffect } from 'react'; // React hooks
-import { api } from '../../utils/api'; // Utilitas API backend
-import {
-    Plus,
-    Edit2,
-    Trash2,
-    Image as ImageIcon,
-    X,
-    Save,
-    Upload,
-    Calendar,
-    MapPin
-} from 'lucide-react'; // Ikon
-import { motion, AnimatePresence } from 'framer-motion'; // Animasi
+import React, { useState, useEffect } from 'react';
+import { api } from '../../utils/api';
+import { Plus, Edit2, Trash2, Image as ImageIcon, X, Upload, MapPin, Search, Filter, Camera, Clapperboard, Layers } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 /**
  * ManageGalleries — Manajemen Media Galeri untuk Admin.
- * Desain bersih dan fungsional sesuai standar original.
+ * Layout 2 kolom: Grid Visual (Main) + Insights & Kategori (Sidebar).
  */
 const ManageGalleries = () => {
-    const [galleries, setGalleries] = useState([]); // State daftar galeri
-    const [loading, setLoading] = useState(true); // State loading
-    const [isModalOpen, setIsModalOpen] = useState(false); // State modal
-    const [editingItem, setEditingItem] = useState(null); // Item sedang diedit
+    const [galleries, setGalleries] = useState([]); // Daftar galeri
+    const [loading, setLoading] = useState(true); // Loading state
+    const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+    const [editingItem, setEditingItem] = useState(null); // Item diedit
+    const [uploading, setUploading] = useState(false); // Upload state
+    const [searchTerm, setSearchTerm] = useState(''); // State pencarian
+    const [activeCategory, setActiveCategory] = useState('All'); // Filter kategori
 
-    // Initial Form State
-    const initialFormState = {
-        title: '',
-        description: '',
-        image: '',
-        category: 'Production',
-        date: new Date().toISOString().split('T')[0],
-        location: 'Malang'
-    };
-
+    const initialFormState = { title: '', description: '', image: '', category: 'Production', date: new Date().toISOString().split('T')[0], location: 'Malang' };
     const [formData, setFormData] = useState(initialFormState);
 
-    // Ambil data galeri
+    /** fetchGalleries — Ambil data galeri dari API */
     const fetchGalleries = async () => {
         setLoading(true);
-        try {
-            const data = await api.get('/galleries');
-            setGalleries(data);
-        } catch (err) {
-            console.error("Gagal memuat galeri:", err);
-        } finally {
-            setLoading(false);
-        }
+        try { setGalleries(await api.get('/galleries')); } catch (err) { console.error("Gagal memuat:", err); } finally { setLoading(false); }
     };
 
-    useEffect(() => {
-        fetchGalleries();
-    }, []);
+    useEffect(() => { fetchGalleries(); }, []);
 
-    // Handle input
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+    const handleInputChange = (e) => { const { name, value } = e.target; setFormData({ ...formData, [name]: value }); };
 
-    // Handle upload file
-    const [uploading, setUploading] = useState(false);
     const handleFileUpload = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
+        const file = e.target.files[0]; if (!file) return;
         setUploading(true);
-        try {
-            const result = await api.upload(file);
-            const imageUrl = `http://localhost:5000${result.url}`;
-            setFormData(prev => ({ ...prev, image: imageUrl }));
-        } catch (err) {
-            alert("Gagal mengunggah gambar: " + err.message);
-        } finally {
-            setUploading(false);
-        }
+        try { const r = await api.upload(file); setFormData(prev => ({ ...prev, image: `http://localhost:5000${r.url}` })); }
+        catch (err) { alert("Gagal mengunggah: " + err.message); } finally { setUploading(false); }
     };
 
-    // Submit form
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            if (editingItem) {
-                await api.put(`/galleries/${editingItem.id}`, formData);
-            } else {
-                await api.post('/galleries', formData);
-            }
-            setIsModalOpen(false);
-            setFormData(initialFormState);
-            fetchGalleries();
-        } catch (err) {
-            alert("Gagal menyimpan: " + err.message);
-        }
+        try { if (editingItem) { await api.put(`/galleries/${editingItem.id}`, formData); } else { await api.post('/galleries', formData); } setIsModalOpen(false); setFormData(initialFormState); fetchGalleries(); }
+        catch (err) { alert("Gagal menyimpan: " + err.message); }
     };
 
-    // Hapus item
-    const handleDelete = async (id) => {
-        if (window.confirm("Hapus aset media ini?")) {
-            try {
-                await api.delete(`/galleries/${id}`);
-                fetchGalleries();
-            } catch (err) {
-                alert("Gagal menghapus");
-            }
-        }
-    };
+    const handleDelete = async (id) => { if (window.confirm("Hapus media ini?")) { try { await api.delete(`/galleries/${id}`); fetchGalleries(); } catch (err) { alert("Gagal menghapus"); } } };
 
-    // Buka edit modal
     const openEditModal = (item) => {
         setEditingItem(item);
-        setFormData({
-            title: item.title || '',
-            description: item.description || '',
-            image: item.image || '',
-            category: item.category || 'Production',
-            date: item.date || new Date().toISOString().split('T')[0],
-            location: item.location || 'Malang'
-        });
+        setFormData({ title: item.title || '', description: item.description || '', image: item.image || '', category: item.category || 'Production', date: item.date || new Date().toISOString().split('T')[0], location: item.location || 'Malang' });
         setIsModalOpen(true);
     };
 
-    if (loading) return <div className="text-center py-20 font-bold text-stone-dark">Memuat Data Galeri...</div>;
+    // Filter logika
+    const filteredGalleries = galleries.filter(g =>
+        (activeCategory === 'All' || g.category === activeCategory) &&
+        g.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (loading) return <div className="text-center py-24 font-black text-slate-300 text-xs tracking-[0.2em] italic">ACCESSING MEDIA SERVER...</div>;
 
     return (
-        <div className="space-y-6 pb-20">
-            {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-8 rounded-2xl border border-stone-100 shadow-sm">
-                <div>
-                    <h2 className="text-2xl font-extrabold text-stone-dark">Media Galeri</h2>
-                    <p className="text-sm text-stone-dark/50 mt-1">Dokumentasi visual aktivitas PT Bala Aditi Pakuaty.</p>
+        <div className="space-y-4 pb-10">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-brand-blue/5 text-brand-blue rounded-xl flex items-center justify-center border border-brand-blue/10"><ImageIcon size={20} /></div>
+                    <div>
+                        <h2 className="text-lg font-bold text-stone-dark tracking-tight leading-none">Aset Visual Galeri</h2>
+                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Documentary & Media Assets</p>
+                    </div>
                 </div>
-                <button
-                    onClick={() => { setIsModalOpen(true); setEditingItem(null); setFormData(initialFormState); }}
-                    className="bg-brand-blue text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-opacity-90 transition-all shadow-md shadow-brand-blue/10"
-                >
-                    <Plus size={20} /> Tambah Media
-                </button>
+                <div className="flex gap-2">
+                    <div className="relative group">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-blue transition-colors" size={14} />
+                        <input
+                            type="text"
+                            placeholder="Cari media..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-xs font-medium w-48 focus:ring-1 focus:ring-brand-blue/20 transition-all border-dashed"
+                        />
+                    </div>
+                    <button onClick={() => { setIsModalOpen(true); setEditingItem(null); setFormData(initialFormState); }} className="bg-brand-blue text-white px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-stone-dark transition-all shadow-md shadow-brand-blue/15 active:scale-[0.98]">
+                        <Plus size={14} /> Upload Media
+                    </button>
+                </div>
             </div>
 
-            {/* Gallery Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {galleries.length === 0 ? (
-                    <div className="col-span-full py-20 text-center bg-white rounded-2xl border border-dashed border-stone-200">
-                        <ImageIcon className="mx-auto text-stone-200 mb-4" size={48} />
-                        <p className="text-stone-dark/30 font-medium italic">Belum ada media galeri.</p>
+            {/* Layout Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                {/* Right Sidebar: Categories & Stats (3/12) */}
+                <div className="lg:col-span-3 space-y-4 order-last lg:order-none">
+                    {/* Category Switcher */}
+                    <div className="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm">
+                        <h3 className="text-xs font-black text-slate-300 uppercase tracking-widest flex items-center gap-2 mb-4">
+                            <Filter size={15} className="text-brand-blue" /> Segmen Media
+                        </h3>
+                        <div className="flex flex-col gap-1">
+                            {['All', 'Production', 'CSR', 'Event'].map(cat => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setActiveCategory(cat)}
+                                    className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between group ${activeCategory === cat ? 'bg-brand-blue text-white shadow-lg shadow-brand-blue/20' : 'text-slate-500 hover:bg-slate-50'}`}
+                                >
+                                    {cat === 'All' ? 'Tampilkan Semua' : cat}
+                                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${activeCategory === cat ? 'bg-white/20' : 'bg-slate-100 group-hover:bg-slate-200'}`}>
+                                        {cat === 'All' ? galleries.length : galleries.filter(g => g.category === cat).length}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                ) : (
-                    galleries.map((item) => (
-                        <div key={item.id} className="bg-white rounded-2xl border border-stone-100 overflow-hidden shadow-sm hover:shadow-md transition-all group relative aspect-square">
-                            <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
 
-                            {/* Overlay Controls */}
-                            <div className="absolute inset-0 bg-stone-dark/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-6">
-                                <p className="text-white font-bold text-sm mb-1">{item.title}</p>
-                                <p className="text-white/60 text-[10px] uppercase font-bold tracking-widest mb-4 flex items-center gap-2">
-                                    <MapPin size={10} /> {item.location}
-                                </p>
-                                <div className="flex gap-2">
-                                    <button onClick={() => openEditModal(item)} className="p-2 bg-white text-brand-blue rounded-lg hover:bg-brand-blue hover:text-white transition-colors">
-                                        <Edit2 size={16} />
-                                    </button>
-                                    <button onClick={() => handleDelete(item.id)} className="p-2 bg-white text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-colors">
-                                        <Trash2 size={16} />
-                                    </button>
+                    {/* Media Insight */}
+                    <div className="bg-stone-dark rounded-2xl p-6 text-white relative overflow-hidden shadow-lg h-40 flex flex-col justify-center">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-brand-gold/10 blur-3xl -mr-16 -mt-16 rounded-full" />
+                        <div className="relative z-10 space-y-3">
+                            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Visual Database</p>
+                            <p className="text-3xl font-black leading-none">{galleries.length}</p>
+                            <div className="flex gap-4 pt-4 border-t border-white/5">
+                                <div className="flex flex-col">
+                                    <span className="text-[8px] font-black text-white/20 uppercase">Photos</span>
+                                    <span className="text-xs font-bold text-brand-gold">{galleries.length}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[8px] font-black text-white/20 uppercase">Videos</span>
+                                    <span className="text-xs font-bold text-white/40">0</span>
                                 </div>
                             </div>
                         </div>
-                    ))
-                )}
+                    </div>
+
+                    <div className="bg-blue-50/50 p-5 rounded-2xl border border-blue-100/60 flex gap-3">
+                        <Layers size={18} className="text-brand-blue mt-0.5 shrink-0" />
+                        <p className="text-[10px] text-slate-500 leading-relaxed font-bold uppercase tracking-tighter">Media yang diunggah harus memiliki lisensi penuh hak cipta perusahaan.</p>
+                    </div>
+                </div>
+
+                {/* Left Column: Grid (9/12) */}
+                <div className="lg:col-span-9">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
+                        {filteredGalleries.length === 0 ? (
+                            <div className="col-span-full py-24 text-center bg-white rounded-2xl border border-dashed border-slate-200">
+                                <ImageIcon className="mx-auto text-slate-200 mb-4" size={48} />
+                                <p className="text-slate-400 text-sm font-medium">Aset visual tidak ditemukan.</p>
+                            </div>
+                        ) : (
+                            filteredGalleries.map((item) => (
+                                <motion.div
+                                    key={item.id}
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="bg-white rounded-2xl border border-slate-200/60 overflow-hidden shadow-sm hover:shadow-xl transition-all group relative aspect-square"
+                                >
+                                    <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" />
+                                    {/* Glass Overlay Controls */}
+                                    <div className="absolute inset-0 bg-stone-dark/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-between p-4">
+                                        <div className="flex justify-between items-start">
+                                            <span className="bg-brand-gold text-stone-dark text-[8px] font-black px-2 py-0.5 rounded shadow-lg uppercase tracking-widest">{item.category}</span>
+                                            <div className="flex gap-1.5">
+                                                <button onClick={() => openEditModal(item)} className="p-2 bg-white/20 hover:bg-white text-white hover:text-brand-blue rounded-xl backdrop-blur-md transition-all"><Edit2 size={12} /></button>
+                                                <button onClick={() => handleDelete(item.id)} className="p-2 bg-white/20 hover:bg-rose-500 text-white rounded-xl backdrop-blur-md transition-all"><Trash2 size={12} /></button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p className="text-white font-black text-xs leading-tight line-clamp-1">{item.title}</p>
+                                            <p className="text-white/60 text-[9px] font-bold uppercase tracking-widest mt-1 flex items-center gap-1.5"><MapPin size={9} /> {item.location}</p>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))
+                        )}
+                    </div>
+                </div>
             </div>
 
-            {/* Modal Form */}
+            {/* Modal — professional small form */}
             <AnimatePresence>
                 {isModalOpen && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-dark/30 backdrop-blur-sm p-4">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
-                        >
-                            <div className="p-6 border-b border-stone-50 flex items-center justify-between">
-                                <h3 className="text-xl font-bold text-stone-dark">{editingItem ? 'Edit Media' : 'Tambah Media'}</h3>
-                                <button onClick={() => setIsModalOpen(false)} className="text-stone-dark/20 hover:text-stone-dark transition-colors">
-                                    <X size={24} />
-                                </button>
+                    <div className="fixed inset-0 z-[10002] flex items-center justify-center bg-stone-dark/40 backdrop-blur-sm p-4">
+                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-white/10 transition-all">
+                            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-white">
+                                <div>
+                                    <h3 className="text-lg font-black text-stone-dark tracking-tighter uppercase">{editingItem ? 'Edit Asset' : 'New Asset'}</h3>
+                                    <p className="text-[10px] font-bold text-brand-blue mt-1 uppercase tracking-widest group italic">Media server module</p>
+                                </div>
+                                <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-stone-dark transition-all"><X size={18} /></button>
                             </div>
-
-                            <form onSubmit={handleSubmit} className="p-8 space-y-5">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-stone-dark/60 uppercase ml-1">Nama Aktivitas / Judul</label>
-                                    <input required name="title" value={formData.title} onChange={handleInputChange} className="w-full px-4 py-3 bg-stone-50 border border-stone-100 rounded-xl outline-none transition-all" />
+                            <form onSubmit={handleSubmit} className="p-7 space-y-5">
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Label Media</label>
+                                    <input required name="title" value={formData.title} onChange={handleInputChange} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none text-sm font-bold text-stone-dark" placeholder="Judul foto..." />
                                 </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold text-stone-dark/60 uppercase ml-1">Kategori</label>
-                                        <input name="category" value={formData.category} onChange={handleInputChange} className="w-full px-4 py-3 bg-stone-50 border border-stone-100 rounded-xl text-sm" />
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-1.5 relative">
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Kategori</label>
+                                        <select name="category" value={formData.category} onChange={handleInputChange} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-black uppercase appearance-none cursor-pointer text-brand-blue">
+                                            <option value="Production">Production</option>
+                                            <option value="CSR">CSR</option>
+                                            <option value="Event">Event</option>
+                                        </select>
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold text-stone-dark/60 uppercase ml-1">Lokasi</label>
-                                        <input name="location" value={formData.location} onChange={handleInputChange} className="w-full px-4 py-3 bg-stone-50 border border-stone-100 rounded-xl text-sm" />
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Lokasi</label>
+                                        <div className="relative">
+                                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={13} />
+                                            <input name="location" value={formData.location} onChange={handleInputChange} className="w-full pl-10 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold" placeholder="E.g. Malang" />
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-stone-dark/60 uppercase ml-1">Thumbnail Media (URL)</label>
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Visual Asset URL</label>
                                     <div className="flex gap-2">
-                                        <input required name="image" value={formData.image} onChange={handleInputChange} className="flex-1 px-4 py-3 bg-stone-50 border border-stone-100 rounded-xl text-xs outline-none" />
-                                        <label className="cursor-pointer w-12 h-12 bg-brand-blue text-white rounded-xl flex items-center justify-center hover:bg-opacity-90 transition-all flex-shrink-0">
+                                        <input required name="image" value={formData.image} onChange={handleInputChange} className="flex-1 px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-[10px] font-bold outline-none text-slate-400 truncate" />
+                                        <label className="cursor-pointer w-14 bg-brand-blue text-white rounded-2xl flex items-center justify-center hover:bg-stone-dark transition-all shadow-lg">
                                             <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} disabled={uploading} />
-                                            <Upload size={20} className={uploading ? 'animate-bounce' : ''} />
+                                            {uploading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Upload size={18} />}
                                         </label>
                                     </div>
                                 </div>
-
-                                <button type="submit" disabled={uploading} className="w-full py-4 bg-brand-blue text-white rounded-xl font-bold shadow-lg shadow-brand-blue/20 hover:bg-opacity-90 transition-all disabled:opacity-50">
-                                    {uploading ? 'Mengunggah...' : 'Simpan Media'}
+                                <button type="submit" disabled={uploading} className="w-full py-4 bg-brand-blue text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.4em] shadow-xl shadow-brand-blue/20 hover:bg-stone-dark transition-all active:scale-[0.98]">
+                                    {uploading ? 'UPLOADING...' : 'COMMIT MEDIA'}
                                 </button>
                             </form>
                         </motion.div>

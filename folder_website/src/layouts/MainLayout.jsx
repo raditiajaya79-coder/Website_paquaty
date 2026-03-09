@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
+import AnnouncementPopup from '../components/AnnouncementPopup.jsx';
 
 /**
  * MainLayout — Menyediakan struktur global halaman
@@ -13,6 +14,9 @@ const MainLayout = () => {
     return (
         // Flexbox container untuk memastikan footer tetap di bawah jika konten sedikit
         <div className="flex flex-col min-h-screen bg-neutral-bone text-stone-dark">
+            {/* Popup Pengumuman (Opsional & Sekali per sesi) */}
+            <AnnouncementPopup />
+
             {/* Komponen Navigasi Atas */}
             <Navbar />
 

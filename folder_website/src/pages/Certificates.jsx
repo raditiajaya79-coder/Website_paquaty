@@ -1,18 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { ShieldCheck, Award, CheckCircle2, X, Download, FileCheck, Landmark, FileBadge, Check } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
 import { useLanguage } from '../context/LanguageContext';
+import { api } from '../utils/api'; // API untuk fetch data sertifikat dari backend
 
 /**
  * Certificates — Halaman Sertifikasi & Kualitas
- * Menampilkan daftar sertifikasi dan jaminan kualitas produk.
- * Menggunakan data statis dan dukungan multi-bahasa.
+ * Menampilkan sertifikat yang AKTIF saja (isActive === true).
+ * Sertifikat yang dimatikan dari dashboard tidak tampil sama sekali.
+ * Data diambil dari API backend (/api/certificates).
  */
 const Certificates = () => {
     const { t } = useLanguage();
     const [selectedCert, setSelectedCert] = useState(null); // State untuk modal detail (mobile)
+    const [certificates, setCertificates] = useState([]); // Data sertifikat dari API
+    const [loading, setLoading] = useState(true); // Loading state
+
+    // Ikon default berdasarkan index (karena ikon tidak disimpan di database)
+    const iconMap = [ShieldCheck, Check, FileBadge, FileCheck, Landmark];
+    // Warna default berdasarkan index (alternating blue/gold)
+    const colorMap = [
+        { color: "text-brand-blue", bg: "bg-brand-blue/5" },
+        { color: "text-brand-gold-dark", bg: "bg-brand-gold/5" },
+        { color: "text-brand-gold-dark", bg: "bg-brand-gold/5" },
+        { color: "text-brand-blue", bg: "bg-brand-blue/5" },
+        { color: "text-brand-gold-dark", bg: "bg-brand-gold/5" }
+    ];
+    // Span grid default berdasarkan index
+    const spanMap = ["md:col-span-6", "md:col-span-6", "md:col-span-4", "md:col-span-4", "md:col-span-4"];
+
+    // Fetch data sertifikat dari API saat mount
+    useEffect(() => {
+        const fetchCertificates = async () => {
+            try {
+                const data = await api.get('/certificates'); // Ambil semua sertifikat
+                // Filter: hanya tampilkan yang isActive === true (hilang total jika off)
+                const activeCerts = data.filter(cert => cert.isActive !== false);
+                setCertificates(activeCerts); // Set ke state
+            } catch (error) {
+                console.error('Gagal memuat sertifikat:', error.message);
+                setCertificates([]); // Kosongkan jika error
+            } finally {
+                setLoading(false); // Selesai loading
+            }
+        };
+        fetchCertificates();
+    }, []);
 
     // Animasi komponen
     const fadeIn = {
@@ -22,44 +57,36 @@ const Certificates = () => {
         transition: { duration: 1, ease: [0.22, 1, 0.36, 1] }
     };
 
-    // Konfigurasi sertifikat statis (mengikuti pola incoming pull)
-    const certifications = [
-        {
-            id: 1,
-            icon: ShieldCheck,
-            color: "text-brand-blue",
-            bg: "bg-brand-blue/5",
-            span: "md:col-span-6"
-        },
-        {
-            id: 2,
-            icon: Check,
-            color: "text-brand-gold-dark",
-            bg: "bg-brand-gold/5",
-            span: "md:col-span-6"
-        },
-        {
-            id: 3,
-            icon: FileBadge,
-            color: "text-brand-gold-dark",
-            bg: "bg-brand-gold/5",
-            span: "md:col-span-4"
-        },
-        {
-            id: 4,
-            icon: FileCheck,
-            color: "text-brand-blue",
-            bg: "bg-brand-blue/5",
-            span: "md:col-span-4"
-        },
-        {
-            id: 5,
-            icon: Landmark,
-            color: "text-brand-gold-dark",
-            bg: "bg-brand-gold/5",
-            span: "md:col-span-4"
-        }
-    ];
+    // Loading state UI
+    if (loading) {
+        return (
+            <div className="bg-neutral-bone min-h-screen pt-24 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-brand-gold border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-sm font-medium text-stone-dark/40">Memuat Sertifikat...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Jika tidak ada sertifikat aktif, tampilkan pesan kosong
+    if (certificates.length === 0) {
+        return (
+            <>
+                <Helmet>
+                    <title>{generatePageTitle(t('seo.certs_title'))}</title>
+                    <meta name="description" content={t('seo.certs_desc')} />
+                </Helmet>
+                <div className="bg-neutral-bone min-h-screen pt-24 pb-16 flex items-center justify-center">
+                    <div className="text-center">
+                        <ShieldCheck className="mx-auto text-stone-200 mb-6" size={64} />
+                        <h2 className="text-2xl font-bold text-stone-dark/30 mb-2">Belum Ada Sertifikat</h2>
+                        <p className="text-stone-dark/20">Sertifikat akan ditampilkan setelah diaktifkan.</p>
+                    </div>
+                </div>
+            </>
+        );
+    }
 
     return (
         <>
@@ -86,53 +113,64 @@ const Certificates = () => {
                         </p>
                     </motion.div>
 
-                    {/* Certifications Grid */}
+                    {/* Certifications Grid — hanya sertifikat aktif yang ditampilkan */}
                     <div className="grid grid-cols-2 md:grid-cols-12 gap-4 md:gap-8">
-                        {certifications.map((cert, idx) => (
-                            <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: idx * 0.1 }}
-                                onClick={() => {
-                                    if (window.innerWidth < 768) setSelectedCert(cert);
-                                }}
-                                className={`group bg-white rounded-[1.5rem] md:rounded-[3rem] border border-stone-border/30 overflow-hidden hover:shadow-2xl transition-all duration-700 transform-gpu cursor-pointer md:cursor-default ${cert.span}`}
-                            >
-                                <div className="p-3 md:p-6 h-full flex flex-col">
-                                    <div className="bg-white rounded-[1.2rem] md:rounded-[2.2rem] p-5 md:p-10 flex-grow transition-all duration-700 hover:bg-white/50 flex flex-col items-center md:items-start text-center md:text-left">
-                                        <div className={`w-10 h-10 md:w-14 md:h-16 ${cert.bg} rounded-xl md:rounded-2xl border border-stone-border/30 flex items-center justify-center mb-4 md:mb-8 group-hover:scale-110 transition-transform duration-500`}>
-                                            <cert.icon className={`w-5 h-5 md:w-7 md:h-7 ${cert.color}`} />
-                                        </div>
+                        {certificates.map((cert, idx) => {
+                            // Assign ikon, warna, dan span berdasarkan index (looping jika lebih dari 5)
+                            const IconComponent = iconMap[idx % iconMap.length];
+                            const colors = colorMap[idx % colorMap.length];
+                            const span = spanMap[idx % spanMap.length];
 
-                                        <h3 className="text-sm md:text-2xl font-bold text-stone-dark mb-1 md:mb-2 group-hover:text-brand-blue transition-colors line-clamp-1 md:line-clamp-none">
-                                            {t(`cert.${cert.id}.title`)}
-                                        </h3>
-                                        <p className="text-[7px] md:text-[10px] font-bold text-brand-gold-dark uppercase tracking-[0.2em] mb-4">
-                                            {t(`cert.${cert.id}.sub`)}
-                                        </p>
+                            return (
+                                <motion.div
+                                    key={cert.id}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: idx * 0.1 }}
+                                    onClick={() => {
+                                        if (window.innerWidth < 768) setSelectedCert({ ...cert, icon: IconComponent, ...colors }); // Set modal data di mobile
+                                    }}
+                                    className={`group bg-white rounded-[1.5rem] md:rounded-[3rem] border border-stone-border/30 overflow-hidden hover:shadow-2xl transition-all duration-700 transform-gpu cursor-pointer md:cursor-default ${span}`}
+                                >
+                                    <div className="p-3 md:p-6 h-full flex flex-col">
+                                        <div className="bg-white rounded-[1.2rem] md:rounded-[2.2rem] p-5 md:p-10 flex-grow transition-all duration-700 hover:bg-white/50 flex flex-col items-center md:items-start text-center md:text-left">
+                                            {/* Ikon sertifikat */}
+                                            <div className={`w-10 h-10 md:w-14 md:h-16 ${colors.bg} rounded-xl md:rounded-2xl border border-stone-border/30 flex items-center justify-center mb-4 md:mb-8 group-hover:scale-110 transition-transform duration-500`}>
+                                                <IconComponent className={`w-5 h-5 md:w-7 md:h-7 ${colors.color}`} />
+                                            </div>
 
-                                        {/* Hidden on mobile card, shown on desktop */}
-                                        <p className="hidden md:block text-sm text-[#78716C] font-light leading-relaxed mb-8">
-                                            {t(`cert.${cert.id}.desc`)}
-                                        </p>
+                                            {/* Judul sertifikat */}
+                                            <h3 className="text-sm md:text-2xl font-bold text-stone-dark mb-1 md:mb-2 group-hover:text-brand-blue transition-colors line-clamp-1 md:line-clamp-none">
+                                                {cert.title}
+                                            </h3>
+                                            {/* Sub-judul */}
+                                            <p className="text-[7px] md:text-[10px] font-bold text-brand-gold-dark uppercase tracking-[0.2em] mb-4">
+                                                {cert.sub || cert.issuedBy}
+                                            </p>
 
-                                        <div className="mt-auto w-full hidden md:block">
-                                            <button className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-stone-dark/40 group-hover:text-brand-blue transition-colors">
-                                                {t('certs.card_verification')}
-                                                <Download className="w-3 h-3" />
-                                            </button>
-                                        </div>
+                                            {/* Deskripsi — hanya desktop */}
+                                            <p className="hidden md:block text-sm text-[#78716C] font-light leading-relaxed mb-8">
+                                                {cert.description}
+                                            </p>
 
-                                        {/* Mobile Tap Indicator */}
-                                        <div className="md:hidden mt-1">
-                                            <span className="text-[7px] font-bold text-brand-blue/50 uppercase tracking-widest">{t('certs.tap_indicator')}</span>
+                                            {/* Tombol verifikasi — hanya desktop */}
+                                            <div className="mt-auto w-full hidden md:block">
+                                                <button className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-stone-dark/40 group-hover:text-brand-blue transition-colors">
+                                                    {t('certs.card_verification')}
+                                                    <Download className="w-3 h-3" />
+                                                </button>
+                                            </div>
+
+                                            {/* Mobile Tap Indicator */}
+                                            <div className="md:hidden mt-1">
+                                                <span className="text-[7px] font-bold text-brand-blue/50 uppercase tracking-widest">{t('certs.tap_indicator')}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </motion.div>
-                        ))}
+                                </motion.div>
+                            );
+                        })}
                     </div>
 
                     {/* Jaminan Kualitas Badge */}
@@ -200,19 +238,19 @@ const Certificates = () => {
 
                             <div className="flex items-center gap-5 mb-8">
                                 <div className={`w-14 h-16 ${selectedCert.bg} rounded-2xl border border-stone-border/30 flex items-center justify-center shrink-0`}>
-                                    <selectedCert.icon className={`w-7 h-7 ${selectedCert.color}`} />
+                                    {selectedCert.icon && <selectedCert.icon className={`w-7 h-7 ${selectedCert.color}`} />}
                                 </div>
                                 <div>
                                     <h3 className="text-2xl font-bold text-stone-dark leading-tight">
-                                        {t(`cert.${selectedCert.id}.title`)}
+                                        {selectedCert.title}
                                     </h3>
                                     <p className="text-[10px] font-bold text-brand-gold-dark uppercase tracking-[0.2em] mt-1">
-                                        {t(`cert.${selectedCert.id}.sub`)}
+                                        {selectedCert.sub || selectedCert.issuedBy}
                                     </p>
                                 </div>
                             </div>
                             <p className="text-base text-[#78716C] font-light leading-relaxed mb-8">
-                                {t(`cert.${selectedCert.id}.desc`)}
+                                {selectedCert.description}
                             </p>
 
                             <button className="w-full py-4 bg-brand-blue text-white rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-lg hover:bg-stone-dark transition-all active:scale-95">

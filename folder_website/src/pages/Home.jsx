@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 // Icon: ArrowRight (tombol navigasi), Sprout/Microscope/Container/Store (section proses)
 import { ArrowRight, Sprout, Microscope, Container, Store } from 'lucide-react';
-import { api } from '../utils/api'; // Utilitas API backend
+import { PRODUCTS } from '../data/products'; // Data produk statis (HERO PATEN, tidak dari API)
 import CTA from '../components/CTA';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -14,51 +14,34 @@ const Home = () => {
     const [isRevealed, setIsRevealed] = useState(hasPlayedIntro === 'true');
     const [activeIndex, setActiveIndex] = useState(2);
 
-    // State untuk data dari API
-    const [heroItems, setHeroItems] = useState([]);
-    const [featuredProducts, setFeaturedProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // ============================================================
+    // HERO & FEATURED: DATA STATIS (PATEN, TIDAK DARI DASHBOARD)
+    // Jika ingin kembali ke versi API/Dashboard, ganti bagian ini
+    // dengan useEffect fetch dari api.get('/products')
+    // ============================================================
 
-    // Fetch data dari API
-    useEffect(() => {
-        const fetchHomeData = async () => {
-            try {
-                const products = await api.get('/products');
+    // Data hero: 5 varian utama keripik tempe (hardcoded dari products.js)
+    const heroItems = PRODUCTS
+        .filter(p => ["Original", "Balado", "BBQ", "Keju", "Sapi Panggang"].includes(p.name))
+        .map(p => ({
+            id: p.id,
+            src: p.image, // Path gambar dari products.js
+            name: p.name  // Nama varian
+        }));
 
-                // Filter untuk Hero (yang punya isHero true atau flavor tertentu)
-                const heroFlavors = ["Original", "Balado", "BBQ", "Keju", "Sapi Panggang"];
-                const filteredHero = products
-                    .filter(p => p.isHero || heroFlavors.includes(p.name))
-                    .map(p => ({
-                        id: p.id,
-                        src: p.image,
-                        name: p.name
-                    }));
-
-                setHeroItems(filteredHero.length > 0 ? filteredHero : products.slice(0, 5).map(p => ({ id: p.id, src: p.image, name: p.name })));
-
-                // Produk unggulan (terlaris atau 3 pertama)
-                const featured = products.filter(p => p.isBestseller).slice(0, 3);
-                setFeaturedProducts(featured.length > 0 ? featured : products.slice(0, 3));
-
-            } catch (error) {
-                console.error('Gagal memuat data home:', error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchHomeData();
-    }, []);
+    // Featured products: 3 produk pertama (hardcoded)
+    const featuredProducts = PRODUCTS.slice(0, 3);
 
     // Logic: Autoplay interval (Selalu aktif jika data ada)
+    // Autoplay: rotasi otomatis gambar hero setiap 4 detik
     useEffect(() => {
-        if (!isRevealed || heroItems.length === 0) return;
+        if (!isRevealed || heroItems.length === 0) return; // Jangan jalan jika belum reveal atau data kosong
 
         const interval = setInterval(() => {
-            setActiveIndex((prev) => (prev + 1) % heroItems.length);
+            setActiveIndex((prev) => (prev + 1) % heroItems.length); // Geser ke index berikutnya secara circular
         }, 4000);
 
-        return () => clearInterval(interval);
+        return () => clearInterval(interval); // Cleanup interval saat unmount
     }, [isRevealed, heroItems.length]);
 
     useEffect(() => {

@@ -1,0 +1,9 @@
+# Dependencies
+node_modules/
+
+# Environment variables (JANGAN di-push ke Git!)
+.env
+
+# Logs
+*.log
+npm-debug.log*

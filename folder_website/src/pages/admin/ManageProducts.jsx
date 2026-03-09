@@ -1,280 +1,313 @@
-import React, { useState, useEffect } from 'react'; // React hooks
-import { api } from '../../utils/api'; // Utilitas API backend
-import {
-    Plus,
-    Edit2,
-    Trash2,
-    Package,
-    X,
-    Save,
-    Star,
-    Trophy,
-    Info,
-    LayoutGrid,
-    Tag,
-    Upload
-} from 'lucide-react'; // Ikon
-import { motion, AnimatePresence } from 'framer-motion'; // Library animasi
+import React, { useState, useEffect } from 'react';
+import { api } from '../../utils/api';
+import { Plus, Edit2, Trash2, Package, X, Star, Tag, Upload, Search, Filter, Box, BarChart3, MapPin } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAdmin } from '../../context/AdminContext';
 
 /**
- * ManageProducts — Halaman Manajemen Produk untuk Admin.
- * Desain bersih dan fungsional sesuai standar original.
+ * ManageProducts — Manajemen Katalog Produk Admin.
+ * Layout 2 kolom: Grid Produk (Main) + Insights & Filter (Sidebar).
  */
 const ManageProducts = () => {
-    const [products, setProducts] = useState([]); // State daftar produk
-    const [loading, setLoading] = useState(true); // State loading
-    const [isModalOpen, setIsModalOpen] = useState(false); // State modal
-    const [editingProduct, setEditingProduct] = useState(null); // Produk yang sedang diedit
+    const { showToast, setGlobalLoading } = useAdmin();
+    const [products, setProducts] = useState([]); // Daftar produk
+    const [loading, setLoading] = useState(true); // Loading state
+    const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+    const [editingProduct, setEditingProduct] = useState(null); // Produk diedit
+    const [uploading, setUploading] = useState(false); // Upload gambar state
+    const [searchTerm, setSearchTerm] = useState(''); // State pencarian
+    const [activeCategory, setActiveCategory] = useState('All'); // Filter kategori
 
-    // Initial Form State
-    const initialFormState = {
-        name: '',
-        description: '',
-        price: '',
-        originalPrice: '',
-        image: '',
-        category: 'Tempe Chips',
-        grade: 'Export Quality',
-        tag: '',
-        origin: 'Malang, Indonesia',
-        moq: '1000 Units',
-        packagingOptions: [{ label: "50 Gram", value: "50g" }],
-        isBestseller: false,
-        isHero: false
-    };
-
+    // Form state awal
+    const initialFormState = { name: '', description: '', price: '', originalPrice: '', image: '', category: 'Tempe Chips', grade: 'Export Quality', tag: '', origin: 'Malang, Indonesia', moq: '1000 Units', packagingOptions: [{ label: "50 Gram", value: "50g" }], isBestseller: false };
     const [formData, setFormData] = useState(initialFormState);
 
-    // Fungsi muat data
+    /** fetchProducts — Ambil data produk terbaru dari backend */
     const fetchProducts = async () => {
         setLoading(true);
-        try {
-            const data = await api.get('/products');
-            setProducts(data);
-        } catch (err) {
-            console.error("Gagal memuat produk:", err);
-        } finally {
-            setLoading(false);
-        }
+        try { setProducts(await api.get('/products')); } catch (err) { console.error("Gagal memuat produk:", err); } finally { setLoading(false); }
     };
 
-    useEffect(() => {
-        fetchProducts();
-    }, []);
+    useEffect(() => { fetchProducts(); }, []);
 
-    // Handle input perubahan
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData({
-            ...formData,
-            [name]: type === 'checkbox' ? checked : value
-        });
+        setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
     };
 
-    // Handle upload file
-    const [uploading, setUploading] = useState(false);
+    /** handleFileUpload — Proses unggah gambar produk */
     const handleFileUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-
         setUploading(true);
-        try {
-            const result = await api.upload(file);
-            const imageUrl = `http://localhost:5000${result.url}`;
-            setFormData(prev => ({ ...prev, image: imageUrl }));
-        } catch (err) {
-            alert("Gagal mengunggah gambar: " + err.message);
-        } finally {
-            setUploading(false);
-        }
+        try { const r = await api.upload(file); setFormData(prev => ({ ...prev, image: `http://localhost:5000${r.url}` })); showToast("Media terunggah", "success"); }
+        catch (err) { showToast("Gagal mengunggah", "error"); } finally { setUploading(false); }
     };
 
-    // Submit form
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setGlobalLoading(true);
         try {
-            const payload = {
-                ...formData,
-                price: parseFloat(formData.price),
-                originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null
-            };
-
-            if (editingProduct) {
-                await api.put(`/products/${editingProduct.id}`, payload);
-            } else {
-                await api.post('/products', payload);
-            }
-
-            setIsModalOpen(false);
-            setFormData(initialFormState);
-            fetchProducts();
-        } catch (err) {
-            alert("Gagal menyimpan: " + err.message);
-        }
+            if (editingProduct) { await api.put(`/products/${editingProduct.id}`, formData); showToast("Produk diperbarui", "success"); }
+            else { await api.post('/products', formData); showToast("Produk ditambahkan", "success"); }
+            setIsModalOpen(false); fetchProducts();
+        } catch (err) { showToast("Gagal menyimpan", "error"); } finally { setGlobalLoading(false); }
     };
 
-    // Hapus produk
     const handleDelete = async (id) => {
-        if (window.confirm("Hapus produk ini?")) {
-            try {
-                await api.delete(`/products/${id}`);
-                fetchProducts();
-            } catch (err) {
-                alert("Gagal menghapus");
-            }
+        if (window.confirm("Hapus produk ini dari database?")) {
+            setGlobalLoading(true);
+            try { await api.delete(`/products/${id}`); showToast("Produk dihapus", "info"); fetchProducts(); }
+            catch (err) { showToast("Gagal menghapus", "error"); } finally { setGlobalLoading(false); }
         }
     };
 
-    // Buka modal edit
     const openEditModal = (product) => {
         setEditingProduct(product);
-        setFormData({
-            name: product.name || '',
-            description: product.description || '',
-            price: product.price || '',
-            originalPrice: product.originalPrice || '',
-            image: product.image || '',
-            category: product.category || 'Tempe Chips',
-            grade: product.grade || 'Export Quality',
-            tag: product.tag || '',
-            origin: product.origin || 'Malang, Indonesia',
-            moq: product.moq || '1000 Units',
-            packagingOptions: product.packagingOptions || [{ label: "50 Gram", value: "50g" }],
-            isBestseller: !!product.isBestseller,
-            isHero: !!product.isHero
-        });
+        setFormData({ name: product.name || '', description: product.description || '', price: product.price || '', originalPrice: product.originalPrice || '', image: product.image || '', category: product.category || 'Tempe Chips', grade: product.grade || 'Export Quality', tag: product.tag || '', origin: product.origin || 'Malang, Indonesia', moq: product.moq || '1000 Units', packagingOptions: product.packagingOptions || [{ label: "50 Gram", value: "50g" }], isBestseller: !!product.isBestseller });
         setIsModalOpen(true);
     };
 
-    if (loading) return <div className="text-center py-20 font-bold text-stone-dark">Memuat Data Produk...</div>;
+    // Filter logika
+    const filteredProducts = products.filter(p =>
+        (activeCategory === 'All' || p.category === activeCategory) &&
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (loading) return <div className="text-center py-24 font-semibold text-slate-400 text-sm tracking-widest italic animate-pulse transition-opacity">MENGUMPULKAN DATA INVENTARIS...</div>;
 
     return (
-        <div className="space-y-6 pb-20">
+        <div className="space-y-4">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-8 rounded-2xl border border-stone-100 shadow-sm">
-                <div>
-                    <h2 className="text-2xl font-extrabold text-stone-dark">Kelola Produk</h2>
-                    <p className="text-sm text-stone-dark/50 mt-1">Daftar produk dan varian mahakarya Pakuaty.</p>
+            <div className="bg-white p-6 rounded-3xl border border-slate-200/60 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-brand-blue/5 text-brand-blue rounded-2xl flex items-center justify-center border border-brand-blue/10">
+                        <Package size={24} />
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-bold text-stone-dark tracking-tight leading-none">Inventaris Produk</h2>
+                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest leading-none">Manajemen Katalog SKU</p>
+                    </div>
                 </div>
-                <button
-                    onClick={() => { setIsModalOpen(true); setEditingProduct(null); setFormData(initialFormState); }}
-                    className="bg-brand-blue text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-opacity-90 transition-all shadow-md shadow-brand-blue/10"
-                >
-                    <Plus size={20} /> Tambah Produk
-                </button>
+                <div className="flex gap-3">
+                    <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-blue transition-colors" size={16} />
+                        <input
+                            type="text"
+                            placeholder="Cari produk..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pl-11 pr-6 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs font-bold w-64 focus:ring-1 focus:ring-brand-blue/30 transition-all border-dashed"
+                        />
+                    </div>
+                    <button onClick={() => { setIsModalOpen(true); setEditingProduct(null); setFormData(initialFormState); }} className="bg-brand-blue text-white px-6 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:bg-stone-dark shadow-lg shadow-brand-blue/15 transition-all active:scale-[0.98]">
+                        <Plus size={16} /> Tambah Produk
+                    </button>
+                </div>
             </div>
 
-            {/* Product List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {products.length === 0 ? (
-                    <div className="col-span-full py-20 text-center bg-white rounded-2xl border border-dashed border-stone-200">
-                        <Package className="mx-auto text-stone-200 mb-4" size={48} />
-                        <p className="text-stone-dark/30 font-medium italic">Belum ada produk yang terdaftar.</p>
+            {/* Main Layout Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                {/* Right Column: Statistics & Filter Sidebar (3/12) */}
+                <div className="lg:col-span-3 space-y-4">
+                    <div className="bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm space-y-4">
+                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                            <Filter size={14} className="text-brand-blue" /> Kategori Terdaftar
+                        </h3>
+                        <div className="flex flex-col gap-1">
+                            {['All', 'Tempe Chips', 'Packaging'].map(cat => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setActiveCategory(cat)}
+                                    className={`text-left px-4 py-2 rounded-lg text-xs font-bold transition-all ${activeCategory === cat ? 'bg-brand-blue text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'}`}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                ) : (
-                    products.map((product) => (
-                        <div key={product.id} className="bg-white rounded-2xl border border-stone-100 overflow-hidden shadow-sm hover:shadow-md transition-all group">
-                            {/* Image Preview */}
-                            <div className="aspect-video bg-stone-50 relative overflow-hidden flex items-center justify-center p-6">
-                                <img src={product.image} alt={product.name} className="max-w-[70%] max-h-[70%] object-contain group-hover:scale-110 transition-transform duration-500" />
-                                <div className="absolute top-4 left-4 flex flex-col gap-2">
-                                    {product.isHero && <span className="bg-brand-gold text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm">HERO</span>}
-                                    {product.isBestseller && <span className="bg-brand-blue text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm">BESTSELLER</span>}
-                                </div>
-                            </div>
 
-                            {/* Info */}
-                            <div className="p-6 space-y-4">
-                                <div>
-                                    <h3 className="font-bold text-stone-dark text-lg line-clamp-1">{product.name}</h3>
-                                    <p className="text-xs text-stone-dark/40 font-bold uppercase tracking-wider mt-1">{product.category} • {product.grade}</p>
-                                </div>
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-xl font-black text-brand-blue">Rp {Number(product.price).toLocaleString('id-ID')}</span>
-                                    {product.originalPrice && <span className="text-xs text-stone-dark/30 line-through">Rp {Number(product.originalPrice).toLocaleString('id-ID')}</span>}
-                                </div>
-                                <div className="flex gap-2 pt-2 border-t border-stone-50">
-                                    <button onClick={() => openEditModal(product)} className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-brand-cream text-brand-gold-dark rounded-lg text-sm font-bold hover:bg-brand-gold/10 transition-colors">
-                                        <Edit2 size={16} /> Edit
-                                    </button>
-                                    <button onClick={() => handleDelete(product.id)} className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-red-50 text-red-600 rounded-lg text-sm font-bold hover:bg-red-600 hover:text-white transition-colors">
-                                        <Trash2 size={16} /> Hapus
-                                    </button>
-                                </div>
+                    <div className="bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm space-y-5">
+                        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                            <BarChart3 size={14} className="text-brand-blue" /> Statistik SKU
+                        </h3>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <p className="text-2xl font-bold text-stone-dark">{products.length}</p>
+                                <p className="text-[10px] font-semibold text-slate-400 uppercase">Total Items</p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-2xl font-bold text-brand-gold">{products.filter(p => p.isBestseller).length}</p>
+                                <p className="text-[10px] font-semibold text-slate-400 uppercase">Bestsellers</p>
                             </div>
                         </div>
-                    ))
-                )}
+                        <div className="pt-4 border-t border-slate-100">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-[11px] font-medium text-slate-500">Market Coverage</span>
+                                <span className="text-[11px] font-bold text-brand-blue">100% Active</span>
+                            </div>
+                            <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                                <div className="bg-brand-blue h-full w-full" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Left Column: Product Grid (9/12) */}
+                <div className="lg:col-span-9">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                        {filteredProducts.length === 0 ? (
+                            <div className="col-span-full py-20 text-center bg-white rounded-2xl border border-dashed border-slate-200">
+                                <Package className="mx-auto text-slate-200 mb-4" size={40} />
+                                <p className="text-slate-400 text-xs font-bold uppercase tracking-widest leading-none">SKU tidak ditemukan.</p>
+                            </div>
+                        ) : (
+                            filteredProducts.map((product) => (
+                                <motion.div
+                                    key={product.id}
+                                    layout
+                                    className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col h-full"
+                                >
+                                    <div className="aspect-square bg-slate-50 relative overflow-hidden flex items-center justify-center p-6">
+                                        <img src={product.image} alt={product.name} className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-500" />
+                                        {product.isBestseller && (
+                                            <div className="absolute top-3 right-3 bg-brand-gold text-white text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-widest shadow-lg flex items-center gap-1.5">
+                                                <Star size={10} fill="currentColor" /> Best
+                                            </div>
+                                        )}
+                                        <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-200/50 flex items-center gap-1">
+                                            <Tag size={10} className="text-brand-blue" />
+                                            <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">{product.category}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="p-4 flex-1 flex flex-col justify-between">
+                                        <div className="mb-4">
+                                            <h3 className="font-bold text-stone-dark text-sm line-clamp-1 group-hover:text-brand-blue transition-colors mb-1">{product.name}</h3>
+                                            <p className="text-xs font-black text-brand-blue">Rp {Number(product.price).toLocaleString('id-ID')}</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button onClick={() => openEditModal(product)} className="flex-1 py-2 bg-slate-50 text-slate-400 hover:bg-brand-blue/10 hover:text-brand-blue rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all border border-slate-100"><Edit2 size={14} className="mx-auto" /></button>
+                                            <button onClick={() => handleDelete(product.id)} className="w-10 h-10 bg-rose-50 text-rose-400 hover:bg-rose-500 hover:text-white rounded-xl transition-all flex items-center justify-center border border-rose-100"><Trash2 size={14} /></button>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))
+                        )}
+                    </div>
+                </div>
             </div>
 
-            {/* Modal Form */}
+            {/* Modal Form — unified styling */}
             <AnimatePresence>
                 {isModalOpen && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-dark/30 backdrop-blur-sm p-4">
+                    <div className="fixed inset-0 z-[10002] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+                            initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.98, y: 10 }}
+                            className="bg-white w-full max-w-2xl rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden max-h-[92vh] flex flex-col border border-slate-200"
                         >
-                            <div className="p-6 border-b border-stone-50 flex items-center justify-between">
-                                <h3 className="text-xl font-bold text-stone-dark">{editingProduct ? 'Edit Produk' : 'Tambah Produk'}</h3>
-                                <button onClick={() => setIsModalOpen(false)} className="text-stone-dark/20 hover:text-stone-dark transition-colors">
-                                    <X size={24} />
-                                </button>
+                            {/* Header Modal — Presisi & Informatif */}
+                            <div className="px-7 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 bg-brand-blue rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-blue/20">
+                                        <Package size={20} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-stone-dark leading-none">{editingProduct ? 'Perbarui Atribut Produk' : 'Registrasi Produk Baru'}</h3>
+                                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest italic">Core Inventory Management System</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => setIsModalOpen(false)} className="w-9 h-9 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-100 transition-all hover:bg-rose-50"><X size={18} /></button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="p-8 overflow-y-auto space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold text-stone-dark/60 uppercase ml-1">Nama Produk</label>
-                                        <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 bg-stone-50 border border-stone-100 rounded-xl focus:ring-2 focus:ring-brand-gold outline-none transition-all" />
+                            {/* Form Input — Tata Letak Padat & Rapi */}
+                            <form onSubmit={handleSubmit} className="p-7 overflow-y-auto space-y-6 no-scrollbar">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                                    {/* Primary Information */}
+                                    <div className="space-y-1.5 md:col-span-2">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Nama Identitas Produk</label>
+                                        <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-brand-blue/30 focus:border-brand-blue outline-none text-base font-bold text-stone-dark shadow-sm transition-all" placeholder="Contoh: Kopi Tempe Original..." />
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold text-stone-dark/60 uppercase ml-1">Kategori</label>
-                                        <select name="category" value={formData.category} onChange={handleInputChange} className="w-full px-4 py-3 bg-stone-50 border border-stone-100 rounded-xl focus:ring-2 focus:ring-brand-gold outline-none transition-all">
-                                            <option value="Tempe Chips">Tempe Chips</option>
-                                            <option value="Packaging">Packaging</option>
+
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Segmentasi Kategori</label>
+                                        <div className="relative">
+                                            <select name="category" value={formData.category} onChange={handleInputChange} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl outline-none text-sm font-bold text-brand-blue cursor-pointer appearance-none shadow-sm focus:border-brand-blue transition-all">
+                                                <option value="Tempe Chips">Sangat Renyah (Tempe Chips)</option>
+                                                <option value="Packaging">Kemasan (Packaging)</option>
+                                            </select>
+                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                                <Tag size={14} />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Standarisasi Mutu</label>
+                                        <select name="grade" value={formData.grade} onChange={handleInputChange} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl outline-none text-sm font-bold text-emerald-600 shadow-sm focus:border-emerald-300 transition-all">
+                                            <option value="Export Quality">Export Grade A+</option>
+                                            <option value="Standard Quality">Standard Quality</option>
+                                            <option value="Premium Quality">Special Premium Rank</option>
                                         </select>
                                     </div>
-                                </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-stone-dark/60 uppercase ml-1">Deskripsi</label>
-                                    <textarea required name="description" value={formData.description} onChange={handleInputChange} rows="3" className="w-full px-4 py-3 bg-stone-50 border border-stone-100 rounded-xl focus:ring-2 focus:ring-brand-gold outline-none transition-all resize-none" />
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold text-stone-dark/60 uppercase ml-1">Harga (Rp)</label>
-                                        <input required type="number" name="price" value={formData.price} onChange={handleInputChange} className="w-full px-4 py-3 bg-stone-50 border border-stone-100 rounded-xl focus:ring-2 focus:ring-brand-gold outline-none transition-all" />
+                                    <div className="space-y-1.5 md:col-span-2">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Deskripsi & Narasi Singkat</label>
+                                        <textarea required name="description" value={formData.description} onChange={handleInputChange} rows="3" className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl outline-none resize-none text-sm leading-relaxed text-slate-600 shadow-sm focus:border-brand-blue transition-all" placeholder="Jelaskan karakteristik unik produk ini..." />
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold text-stone-dark/60 uppercase ml-1">URL Gambar</label>
+
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Harga Satuan (IDR)</label>
+                                        <div className="relative">
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 font-bold text-xs uppercase tracking-widest pointer-events-none">Rp</span>
+                                            <input required type="number" name="price" value={formData.price} onChange={handleInputChange} className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl outline-none text-lg font-black text-brand-blue shadow-sm focus:border-brand-blue transition-all" />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Geolokasi Produksi</label>
+                                        <div className="relative">
+                                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                                            <input name="origin" value={formData.origin} onChange={handleInputChange} className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl outline-none text-sm font-bold text-stone-dark shadow-sm focus:border-brand-blue transition-all" placeholder="Contoh: Malang, Jawa Timur" />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-1.5 md:col-span-2">
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Asset Digital (URL Media)</label>
                                         <div className="flex gap-2">
-                                            <input required name="image" value={formData.image} onChange={handleInputChange} className="flex-1 px-4 py-3 bg-stone-50 border border-stone-100 rounded-xl text-xs outline-none" placeholder="http://..." />
-                                            <label className="cursor-pointer w-12 h-12 bg-brand-blue text-white rounded-xl flex items-center justify-center hover:bg-opacity-90 transition-all flex-shrink-0">
+                                            <div className="relative flex-1">
+                                                <Box className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                                                <input required name="image" value={formData.image} onChange={handleInputChange} className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-[11px] font-medium outline-none text-slate-400 truncate shadow-sm focus:border-brand-blue transition-all" placeholder="Unggah atau tempel URL gambar..." />
+                                            </div>
+                                            <label className="cursor-pointer w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-brand-blue transition-all shadow-lg active:scale-95 group">
                                                 <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} disabled={uploading} />
-                                                <Upload size={20} className={uploading ? 'animate-bounce' : ''} />
+                                                {uploading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Upload size={20} className="group-hover:-translate-y-0.5 transition-transform" />}
                                             </label>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="flex gap-6 py-4 border-t border-stone-50">
-                                    <label className="flex items-center gap-2 cursor-pointer">
-                                        <input type="checkbox" name="isBestseller" checked={formData.isBestseller} onChange={handleInputChange} className="w-5 h-5 rounded border-stone-300 text-brand-gold focus:ring-brand-gold" />
-                                        <span className="text-sm font-bold text-stone-dark/70">Best Seller</span>
+                                {/* Area Kontrol Tambahan & Tombol Aksi */}
+                                <div className="pt-4 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                    <label className="flex items-center gap-4 cursor-pointer group select-none">
+                                        <div className="relative w-12 h-6 bg-slate-100 rounded-full border border-slate-200 transition-colors peer-checked:bg-brand-gold group-hover:border-brand-gold/50">
+                                            <input type="checkbox" name="isBestseller" checked={formData.isBestseller} onChange={handleInputChange} className="peer hidden" />
+                                            <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transition-all border border-slate-200 peer-checked:translate-x-6 peer-checked:border-brand-gold flex items-center justify-center">
+                                                <Star size={8} className="text-brand-gold opacity-0 peer-checked:opacity-100" fill="currentColor" />
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-[11px] font-black text-stone-dark uppercase tracking-widest leading-none">Best Seller Status</span>
+                                            <span className="text-[9px] font-bold text-slate-400 uppercase mt-1">Munculkan di rute populer</span>
+                                        </div>
                                     </label>
-                                    <label className="flex items-center gap-2 cursor-pointer">
-                                        <input type="checkbox" name="isHero" checked={formData.isHero} onChange={handleInputChange} className="w-5 h-5 rounded border-stone-300 text-brand-blue focus:ring-brand-blue" />
-                                        <span className="text-sm font-bold text-stone-dark/70">Tampilkan di Beranda</span>
-                                    </label>
-                                </div>
 
-                                <button type="submit" disabled={uploading} className="w-full py-4 bg-brand-blue text-white rounded-xl font-bold shadow-lg shadow-brand-blue/20 hover:bg-opacity-90 transition-all disabled:opacity-50">
-                                    {uploading ? 'Mengunggah Gambar...' : 'Simpan Produk'}
-                                </button>
+                                    <button type="submit" disabled={uploading} className="flex-1 md:flex-initial px-10 py-4 bg-brand-blue text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-brand-blue/20 hover:bg-stone-dark hover:shadow-stone-dark/10 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3">
+                                        {uploading ? 'Sinkronisasi Media...' : (editingProduct ? <><Edit2 size={16} /> Simpan Perubahan</> : <><Plus size={18} /> Daftarkan Inventaris</>)}
+                                    </button>
+                                </div>
                             </form>
                         </motion.div>
                     </div>

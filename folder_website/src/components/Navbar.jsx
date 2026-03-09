@@ -3,10 +3,14 @@ import { motion } from 'framer-motion';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ArrowRight, Menu, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { api } from '../utils/api'; // API untuk cek sertifikat aktif
 
 /**
  * Navbar — Template style with brand accents
  * Dynamic transparency on Home page
+ * 
+ * Fitur: Link "Sertifikasi" otomatis hilang jika semua sertifikat
+ * dimatikan dari dashboard (isActive === false).
  */
 const Navbar = () => {
     const { lang, switchLang, t } = useLanguage();
@@ -15,9 +19,15 @@ const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+    // Initial state dari sessionStorage agar "stabil" saat pindah halaman
+    const [hasCertificates, setHasCertificates] = useState(() => {
+        return sessionStorage.getItem('pakuaty_has_certs') === 'true';
+    });
+
+    // Scroll listener untuk efek transparansi
     useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
+            setIsScrolled(window.scrollY > 50); // Scroll > 50px → solid background
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
@@ -31,14 +41,38 @@ const Navbar = () => {
     // Prevent scroll when menu is open
     useEffect(() => {
         if (isMenuOpen) {
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden'; // Kunci scroll
         } else {
-            document.body.style.overflow = 'unset';
+            document.body.style.overflow = 'unset'; // Lepas scroll
         }
     }, [isMenuOpen]);
 
+    /**
+     * Cek apakah ada sertifikat aktif di backend.
+     * Jika 0 sertifikat aktif → sembunyikan link "Sertifikasi" dari navbar.
+     * Hasil disimpan di sessionStorage agar navigasi antar halaman tidak flicker.
+     */
+    useEffect(() => {
+        const checkCertificates = async () => {
+            try {
+                const data = await api.get('/certificates'); // Fetch semua sertifikat
+                const activeCount = data.filter(cert => cert.isActive !== false).length;
+                const hasActive = activeCount > 0;
+
+                setHasCertificates(hasActive);
+                sessionStorage.setItem('pakuaty_has_certs', hasActive); // Simpan status
+            } catch (err) {
+                // Jangan paksa sembunyikan jika API error sementara
+            }
+        };
+
+        // Panggil hanya jika belum ada di session atau butuh refresh berkala
+        checkCertificates();
+    }, []); // Hapus dependency location.pathname agar tidak re-fetch terus menerus (penyebab flicker)
+
     const isTransparent = isHome && !isScrolled;
 
+    // Style untuk link navbar (active/inactive + transparent/solid mode)
     const activeStyle = ({ isActive }) => {
         const base = "text-sm font-medium transition-all duration-300 relative group";
         if (isTransparent) {
@@ -46,6 +80,17 @@ const Navbar = () => {
         }
         return `${base} ${isActive ? 'text-brand-blue' : 'text-stone-dark/60 hover:text-brand-cyan hover:scale-105'}`;
     };
+
+    // Daftar link navbar — filter "Sertifikasi" jika tidak ada sertifikat aktif
+    const navLinks = [
+        { name: t('nav.products'), path: "/products" },
+        { name: t('nav.about'), path: "/about" },
+        { name: t('nav.gallery'), path: "/gallery" },
+        // Hanya tampilkan "Sertifikasi" jika ada sertifikat aktif
+        ...(hasCertificates ? [{ name: t('nav.certificates'), path: "/certificates" }] : []),
+        { name: t('nav.events'), path: "/events" },
+        { name: t('nav.contact'), path: "/contact" }
+    ];
 
     return (
         <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 ${isTransparent
@@ -63,16 +108,9 @@ const Navbar = () => {
                     />
                 </Link>
 
-                {/* Navbar links — urutan: Product, About, Gallery, Certificate, Events, Contact */}
+                {/* Navbar links — otomatis menyesuaikan berdasarkan hasCertificates */}
                 <div className="hidden md:flex items-center gap-10">
-                    {[
-                        { name: t('nav.products'), path: "/products" },
-                        { name: t('nav.about'), path: "/about" },
-                        { name: t('nav.gallery'), path: "/gallery" },
-                        { name: t('nav.certificates'), path: "/certificates" },
-                        { name: t('nav.events'), path: "/events" },
-                        { name: t('nav.contact'), path: "/contact" }
-                    ].map((link) => (
+                    {navLinks.map((link) => (
                         <NavLink key={link.path} to={link.path} className={activeStyle}>
                             {({ isActive }) => (
                                 <>
@@ -142,15 +180,9 @@ const Navbar = () => {
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 className="fixed top-20 right-4 w-[65vw] max-w-[240px] bg-white/75 backdrop-blur-3xl z-[120] md:hidden flex flex-col py-6 px-6 rounded-[1.5rem] border border-white/80 shadow-[0_20px_40px_rgba(0,0,0,0.15)] overflow-hidden"
             >
+                {/* Mobile nav links — juga otomatis menyesuaikan */}
                 <div className="flex flex-col gap-2 relative z-10">
-                    {[
-                        { name: t('nav.products'), path: "/products" },
-                        { name: t('nav.about'), path: "/about" },
-                        { name: t('nav.gallery'), path: "/gallery" },
-                        { name: t('nav.certificates'), path: "/certificates" },
-                        { name: t('nav.events'), path: "/events" },
-                        { name: t('nav.contact'), path: "/contact" }
-                    ].map((link, idx) => (
+                    {navLinks.map((link, idx) => (
                         <motion.div
                             key={link.path}
                             initial={{ opacity: 0, x: 5 }}
