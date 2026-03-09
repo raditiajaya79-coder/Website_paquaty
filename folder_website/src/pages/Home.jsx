@@ -315,13 +315,16 @@ const Home = () => {
                                     {/* Ambient Isolation Glow */}
                                     <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.25)_0%,transparent_70%)] scale-150 -z-10" />
 
-                                    <h1 className="lg:text-[8.5rem] md:text-7xl text-4xl font-bold text-white tracking-tight leading-[0.82] mb-6 drop-shadow-[0_10px_25px_rgba(27,58,92,0.5)]">
-                                        {t('hero.title_part1')} <br />
-                                        <span className="text-brand-gold drop-shadow-[0_5px_15px_rgba(0,0,0,0.2)]">{t('hero.title_part2')}</span>
+                                    <h1 className="lg:text-7xl md:text-6xl text-3xl font-bold tracking-tight leading-tight mb-6 drop-shadow-[0_10px_25px_rgba(27,58,92,0.5)]">
+                                        <span className="text-white">{t('hero.tagline')}</span><br />
+                                        <span className="text-brand-gold drop-shadow-[0_5px_15px_rgba(0,0,0,0.3)]">{t('hero.tagline2')}</span>
                                     </h1>
                                 </div>
-                                <p className="max-w-xl mx-auto text-white md:text-2xl text-lg mb-8 leading-relaxed font-semibold drop-shadow-[0_2px_10px_rgba(27,58,92,0.3)]">
+                                <p className="max-w-lg mx-auto text-white/80 text-sm md:text-base mb-2 leading-relaxed font-normal drop-shadow-[0_2px_10px_rgba(27,58,92,0.3)]">
                                     {t('hero.subtitle_part2')}
+                                </p>
+                                <p className="max-w-lg mx-auto text-white/50 text-xs md:text-sm mb-8 tracking-widest uppercase font-semibold">
+                                    {t('hero.microtag')}
                                 </p>
 
                                 <div className="flex flex-col md:flex-row items-center justify-center gap-3 text-white px-6 md:px-0">
@@ -329,9 +332,9 @@ const Home = () => {
                                         {t('hero.explore')}
                                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                     </Link>
-                                    <button className="w-full md:w-auto bg-white/5 backdrop-blur-md border border-white/20 text-white px-8 py-3.5 md:px-12 md:py-5 rounded-full text-base md:text-lg font-bold hover:bg-white/10 hover:border-white/40 transition-all pointer-events-auto shadow-xl">
+                                    <Link to="/about" className="w-full md:w-auto bg-white/5 backdrop-blur-md border border-white/20 text-white px-8 py-3.5 md:px-12 md:py-5 rounded-full text-base md:text-lg font-bold hover:bg-white/10 hover:border-white/40 transition-all pointer-events-auto shadow-xl text-center">
                                         {t('hero.story')}
-                                    </button>
+                                    </Link>
                                 </div>
                             </motion.div>
                         </div>
@@ -365,12 +368,12 @@ const Home = () => {
                                 {...fadeIn}
                                 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-stone-dark mb-4"
                             >
-                                {t('products.artisan')} <span className="text-brand-blue">{t('products.chips')}</span>
+                                {t('products.tagline')} <span className="text-brand-blue">{t('products.tagline2')}</span>
                             </motion.h2>
                             <motion.p
                                 {...fadeIn}
                                 transition={{ delay: 0.2 }}
-                                className="text-lg text-stone-dark/60 leading-relaxed max-w-lg"
+                                className="text-base text-stone-dark/60 leading-relaxed max-w-lg"
                             >
                                 {t('products.desc')}
                             </motion.p>
@@ -466,7 +469,8 @@ const Home = () => {
                             transition={{ delay: 0.1 }}
                             className="lg:text-6xl md:text-5xl text-4xl font-medium tracking-tight text-stone-dark"
                         >
-                            {t('process.title_part1')} <span className="text-brand-blue italic">{t('process.title_part2')}</span>
+                            {t('process.title_part1')}<br />
+                            <span className="text-brand-blue italic">{t('process.title_part2')}</span>
                         </motion.h2>
                     </div>
 
@@ -510,11 +514,11 @@ const Home = () => {
                                         </div>
                                     </div>
 
-                                    <div className="text-center md:text-left">
+                                    <div className="text-center">
                                         <h3 className="text-lg md:text-2xl font-bold mb-1 md:mb-4 text-stone-dark group-hover:text-brand-blue transition-colors duration-300 tracking-tight leading-tight">
                                             {item.title}
                                         </h3>
-                                        <p className="text-xs md:text-base text-[#57534E] leading-relaxed font-light px-4 md:px-0">
+                                        <p className="text-xs md:text-base text-[#57534E] leading-relaxed font-light">
                                             {item.desc}
                                         </p>
                                     </div>

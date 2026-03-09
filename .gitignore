@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.vscode/
+*.log
+.DS_Store
+folder_website/node_modules/
+folder_website/dist/
+folder_website/.vscode/
