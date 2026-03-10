@@ -25,7 +25,7 @@ const AnnouncementPopup = () => {
                 const hasBeenShown = sessionStorage.getItem('announcementShown');
 
                 // Tampilkan jika aktif DAN belum pernah muncul di sesi ini
-                if (announcementData && (announcementData.is_active || announcementData.title) && !hasBeenShown) {
+                if (announcementData && announcementData.is_active && !hasBeenShown) {
                     setData(announcementData);
                     setTimeout(() => {
                         setIsOpen(true);

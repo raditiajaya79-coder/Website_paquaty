@@ -68,18 +68,18 @@ const ManageContacts = () => {
             <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest leading-none">Omnichannel Management</p>
           </div>
         </div>
-        <div className="flex gap-2">
-          <div className="relative group">
+        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+          <div className="relative group w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-blue transition-colors" size={14} />
             <input
               type="text"
               placeholder="Cari platform..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-xs font-medium w-48 focus:ring-1 focus:ring-brand-blue/20 transition-all border-dashed"
+              className="pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-xs font-medium w-full sm:w-48 focus:ring-1 focus:ring-brand-blue/20 transition-all border-dashed"
             />
           </div>
-          <button onClick={() => { setIsModalOpen(true); setEditingContact(null); setFormData(initialForm); }} className="bg-brand-blue text-white px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-stone-dark transition-all shadow-md shadow-brand-blue/15 active:scale-95">
+          <button onClick={() => { setIsModalOpen(true); setEditingContact(null); setFormData(initialForm); }} className="bg-brand-blue text-white px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-stone-dark transition-all shadow-md shadow-brand-blue/15 active:scale-95 whitespace-nowrap">
             <Plus size={14} /> Deploy Link
           </button>
         </div>

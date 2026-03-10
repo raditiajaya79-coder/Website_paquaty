@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../utils/api';
-import { Plus, Edit2, Trash2, FileText, X, Calendar, User, Upload, Search, Filter, TrendingUp, Clock } from 'lucide-react';
+import { Plus, Edit2, Trash2, FileText, X, Calendar, User, Upload, Search, Filter, TrendingUp, Clock, Tag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
@@ -81,18 +81,18 @@ const ManageArticles = () => {
                         <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest leading-none">Kelola Konten & Berita</p>
                     </div>
                 </div>
-                <div className="flex gap-3">
-                    <div className="relative group">
+                <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <div className="relative group w-full">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-blue transition-colors" size={16} />
                         <input
                             type="text"
                             placeholder="Cari artikel..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-11 pr-6 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs font-bold w-64 focus:ring-1 focus:ring-brand-blue/30 transition-all border-dashed"
+                            className="pl-11 pr-6 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs font-bold w-full md:w-64 focus:ring-1 focus:ring-brand-blue/30 transition-all border-dashed"
                         />
                     </div>
-                    <button onClick={() => { setIsModalOpen(true); setEditingArticle(null); setFormData(initialFormState); }} className="bg-brand-blue text-white px-6 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:bg-stone-dark shadow-lg shadow-brand-blue/15 transition-all active:scale-[0.98]">
+                    <button onClick={() => { setIsModalOpen(true); setEditingArticle(null); setFormData(initialFormState); }} className="bg-brand-blue text-white px-6 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-stone-dark shadow-lg shadow-brand-blue/15 transition-all active:scale-[0.98] whitespace-nowrap">
                         <Plus size={16} /> Tulis Artikel
                     </button>
                 </div>
@@ -113,10 +113,10 @@ const ManageArticles = () => {
                                 key={article.id}
                                 initial={{ opacity: 0, x: -15 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className="bg-white rounded-3xl border border-slate-200/60 overflow-hidden shadow-sm hover:shadow-lg transition-all flex group h-40"
+                                className="bg-white rounded-3xl border border-slate-200/60 overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col md:flex-row group min-h-[160px]"
                             >
                                 {/* Thumbnail */}
-                                <div className="w-56 bg-slate-50 shrink-0 overflow-hidden relative">
+                                <div className="w-full md:w-56 bg-slate-50 shrink-0 overflow-hidden relative aspect-video md:aspect-auto">
                                     <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
                                     <div className="absolute top-3 left-3 bg-brand-blue/90 backdrop-blur-md text-white text-[9px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-widest shadow-lg">
                                         {article.category}
@@ -125,14 +125,14 @@ const ManageArticles = () => {
                                 {/* Content info */}
                                 <div className="p-6 flex-1 flex flex-col justify-between">
                                     <div>
-                                        <div className="flex items-center gap-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2">
+                                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2">
                                             <span className="flex items-center gap-1.5"><Calendar size={12} className="text-brand-blue" /> {article.date}</span>
                                             <span className="flex items-center gap-1.5"><User size={12} className="text-brand-blue" /> {article.author}</span>
                                         </div>
-                                        <h3 className="font-bold text-stone-dark text-lg line-clamp-1 truncate group-hover:text-brand-blue transition-colors leading-tight mb-2 uppercase tracking-tight">{article.title}</h3>
+                                        <h3 className="font-bold text-stone-dark text-base md:text-lg line-clamp-2 md:line-clamp-1 group-hover:text-brand-blue transition-colors leading-tight mb-2 uppercase tracking-tight">{article.title}</h3>
                                         <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed font-medium italic">"{article.excerpt}"</p>
                                     </div>
-                                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
+                                    <div className="flex justify-end gap-2 mt-4 md:mt-0 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all translate-x-0 md:translate-x-4 group-hover:translate-x-0">
                                         <button onClick={() => openEditModal(article)} className="p-2.5 bg-slate-50 text-slate-400 hover:text-brand-blue hover:bg-brand-blue/10 rounded-xl transition-all border border-slate-100"><Edit2 size={16} /></button>
                                         <button onClick={() => handleDelete(article.id)} className="p-2.5 bg-rose-50 text-rose-400 hover:text-white hover:bg-rose-500 rounded-xl transition-all border border-rose-100 shadow-sm"><Trash2 size={16} /></button>
                                     </div>

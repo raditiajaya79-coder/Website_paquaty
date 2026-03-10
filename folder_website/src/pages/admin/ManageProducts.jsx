@@ -89,18 +89,18 @@ const ManageProducts = () => {
                         <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest leading-none">Manajemen Katalog SKU</p>
                     </div>
                 </div>
-                <div className="flex gap-3">
-                    <div className="relative group">
+                <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <div className="relative group w-full">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-blue transition-colors" size={16} />
                         <input
                             type="text"
                             placeholder="Cari produk..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-11 pr-6 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs font-bold w-64 focus:ring-1 focus:ring-brand-blue/30 transition-all border-dashed"
+                            className="pl-11 pr-6 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs font-bold w-full sm:w-64 focus:ring-1 focus:ring-brand-blue/30 transition-all border-dashed"
                         />
                     </div>
-                    <button onClick={() => { setIsModalOpen(true); setEditingProduct(null); setFormData(initialFormState); }} className="bg-brand-blue text-white px-6 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 hover:bg-stone-dark shadow-lg shadow-brand-blue/15 transition-all active:scale-[0.98]">
+                    <button onClick={() => { setIsModalOpen(true); setEditingProduct(null); setFormData(initialFormState); }} className="bg-brand-blue text-white px-6 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-stone-dark shadow-lg shadow-brand-blue/15 transition-all active:scale-[0.98] whitespace-nowrap">
                         <Plus size={16} /> Tambah Produk
                     </button>
                 </div>
@@ -155,7 +155,7 @@ const ManageProducts = () => {
 
                 {/* Left Column: Product Grid (9/12) */}
                 <div className="lg:col-span-9">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
                         {filteredProducts.length === 0 ? (
                             <div className="col-span-full py-20 text-center bg-white rounded-2xl border border-dashed border-slate-200">
                                 <Package className="mx-auto text-slate-200 mb-4" size={40} />
@@ -166,29 +166,29 @@ const ManageProducts = () => {
                                 <motion.div
                                     key={product.id}
                                     layout
-                                    className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col h-full"
+                                    className="bg-white rounded-xl md:rounded-2xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group flex flex-col h-full"
                                 >
-                                    <div className="aspect-square bg-slate-50 relative overflow-hidden flex items-center justify-center p-6">
+                                    <div className="aspect-square bg-slate-50 relative overflow-hidden flex items-center justify-center p-3 md:p-6">
                                         <img src={product.image} alt={product.name} className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-500" />
                                         {product.isBestseller && (
-                                            <div className="absolute top-3 right-3 bg-brand-gold text-white text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-widest shadow-lg flex items-center gap-1.5">
-                                                <Star size={10} fill="currentColor" /> Best
+                                            <div className="absolute top-2 right-2 md:top-3 md:right-3 bg-brand-gold text-white text-[8px] md:text-[10px] font-bold px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-md md:rounded-lg uppercase tracking-widest shadow-lg flex items-center gap-1 md:gap-1.5">
+                                                <Star className="w-2 h-2 md:w-2.5 md:h-2.5" fill="currentColor" /> Best
                                             </div>
                                         )}
-                                        <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-md px-2 py-1 rounded-lg border border-slate-200/50 flex items-center gap-1">
-                                            <Tag size={10} className="text-brand-blue" />
-                                            <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">{product.category}</span>
+                                        <div className="absolute bottom-2 left-2 md:bottom-3 md:left-3 bg-white/90 backdrop-blur-md px-1.5 md:px-2 py-0.5 md:py-1 rounded-md md:rounded-lg border border-slate-200/50 flex items-center gap-1">
+                                            <Tag className="w-2 h-2 md:w-2.5 md:h-2.5 text-brand-blue" />
+                                            <span className="text-[7px] md:text-[9px] font-bold text-slate-600 uppercase tracking-widest">{product.category}</span>
                                         </div>
                                     </div>
 
-                                    <div className="p-4 flex-1 flex flex-col justify-between">
-                                        <div className="mb-4">
-                                            <h3 className="font-bold text-stone-dark text-sm line-clamp-1 group-hover:text-brand-blue transition-colors mb-1">{product.name}</h3>
-                                            <p className="text-xs font-black text-brand-blue">Rp {Number(product.price).toLocaleString('id-ID')}</p>
+                                    <div className="p-3 md:p-4 flex-1 flex flex-col justify-between">
+                                        <div className="mb-3 md:mb-4">
+                                            <h3 className="font-bold text-stone-dark text-xs md:text-sm line-clamp-2 md:line-clamp-1 group-hover:text-brand-blue transition-colors mb-0.5">{product.name}</h3>
+                                            <p className="text-[10px] md:text-xs font-black text-brand-blue">Rp {Number(product.price).toLocaleString('id-ID')}</p>
                                         </div>
-                                        <div className="flex gap-2">
-                                            <button onClick={() => openEditModal(product)} className="flex-1 py-2 bg-slate-50 text-slate-400 hover:bg-brand-blue/10 hover:text-brand-blue rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all border border-slate-100"><Edit2 size={14} className="mx-auto" /></button>
-                                            <button onClick={() => handleDelete(product.id)} className="w-10 h-10 bg-rose-50 text-rose-400 hover:bg-rose-500 hover:text-white rounded-xl transition-all flex items-center justify-center border border-rose-100"><Trash2 size={14} /></button>
+                                        <div className="flex gap-1.5 md:gap-2">
+                                            <button onClick={() => openEditModal(product)} className="flex-1 py-1.5 md:py-2 bg-slate-50 text-slate-400 hover:bg-brand-blue/10 hover:text-brand-blue rounded-lg md:rounded-xl font-bold text-[8px] md:text-[10px] uppercase tracking-widest transition-all border border-slate-100"><Edit2 className="w-3 h-3 md:w-3.5 md:h-3.5 mx-auto" /></button>
+                                            <button onClick={() => handleDelete(product.id)} className="w-8 h-8 md:w-10 md:h-10 shrink-0 bg-rose-50 text-rose-400 hover:bg-rose-500 hover:text-white rounded-lg md:rounded-xl transition-all flex items-center justify-center border border-rose-100"><Trash2 className="w-3 h-3 md:w-3.5 md:h-3.5" /></button>
                                         </div>
                                     </div>
                                 </motion.div>

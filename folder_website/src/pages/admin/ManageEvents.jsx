@@ -68,18 +68,18 @@ const ManageEvents = () => {
                         <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest italic">Global Exhibition & Corporate Gathering</p>
                     </div>
                 </div>
-                <div className="flex gap-2">
-                    <div className="relative">
+                <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                    <div className="relative w-full">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
                         <input
                             type="text"
                             placeholder="Cari event..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-xs font-medium w-48 focus:ring-1 focus:ring-brand-blue/20 transition-all border-dashed"
+                            className="pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-xs font-medium w-full sm:w-48 focus:ring-1 focus:ring-brand-blue/20 transition-all border-dashed"
                         />
                     </div>
-                    <button onClick={() => { setIsModalOpen(true); setEditingEvent(null); setFormData(initialFormState); }} className="bg-brand-blue text-white px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-stone-dark transition-all shadow-md shadow-brand-blue/15 active:scale-[0.98]">
+                    <button onClick={() => { setIsModalOpen(true); setEditingEvent(null); setFormData(initialFormState); }} className="bg-brand-blue text-white px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-stone-dark transition-all shadow-md shadow-brand-blue/15 active:scale-[0.98] whitespace-nowrap">
                         <Plus size={14} /> Create Event
                     </button>
                 </div>
@@ -113,9 +113,9 @@ const ManageEvents = () => {
                                             <div className="flex items-center gap-2.5 text-[11px] font-bold text-slate-400"><MapPin size={13} className="text-brand-blue" /> {event.location}</div>
                                             <div className="flex items-center gap-2.5 text-[11px] font-bold text-slate-400"><Clock size={13} className="text-brand-blue" /> {event.time}</div>
                                         </div>
-                                        <div className="flex gap-2 pt-4 mt-4 border-t border-slate-100 flex-wrap">
-                                            <button onClick={() => openEditModal(event)} className="flex-1 min-w-fit px-3 py-2 bg-slate-50 text-slate-600 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-brand-blue hover:text-white transition-all">Configure</button>
-                                            <button onClick={() => handleDelete(event.id)} className="w-10 h-10 flex items-center justify-center bg-rose-50 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-all"><Trash2 size={16} /></button>
+                                        <div className="flex gap-2 pt-4 mt-4 border-t border-slate-100">
+                                            <button onClick={() => openEditModal(event)} className="flex-1 px-3 py-2 bg-slate-50 text-slate-600 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-brand-blue hover:text-white transition-all whitespace-nowrap">Configure</button>
+                                            <button onClick={() => handleDelete(event.id)} className="w-10 h-10 shrink-0 flex items-center justify-center bg-rose-50 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-all"><Trash2 size={16} /></button>
                                         </div>
                                     </div>
                                 </motion.div>

@@ -1,8 +1,8 @@
 import { Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom'; // Komponen navigasi
-import React, { useEffect } from 'react'; // React effect hook
+import React, { useState, useEffect } from 'react'; // React hooks
 import Sidebar from '../components/admin/Sidebar'; // Mengimpor sidebar
 import { motion, AnimatePresence } from 'framer-motion'; // Library animasi
-import { Bell } from 'lucide-react'; // Ikon
+import { Bell, Menu, X } from 'lucide-react'; // Ikon
 import { AdminProvider, useAdmin } from '../context/AdminContext'; // Global State
 import AdminToast from '../components/admin/AdminToast'; // Notifikasi Global
 import AdminLoader from '../components/admin/AdminLoader'; // Loading Global
@@ -15,14 +15,20 @@ const AdminLayout = () => {
     const navigate = useNavigate(); // Hook navigasi programatik
     const location = useLocation(); // Hook lokasi URL aktif
     const { isLoggedIn, isAuthChecked } = useAdmin(); // Ambil state auth global
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State mobile sidebar
 
     /**
      * getPageTitle — Mengekstrak nama halaman dari path URL.
      */
     const getPageTitle = (path) => {
-        const route = path.split('/').pop() || 'Dashboard'; // Ambil segmen terakhir
+        const route = path.split('/').filter(Boolean).pop() || 'Dashboard'; // Ambil segmen terakhir, handle trailing slash
         return route.charAt(0).toUpperCase() + route.slice(1); // Capitalize huruf pertama
     };
+
+    // Close sidebar on route change (mobile)
+    useEffect(() => {
+        setIsSidebarOpen(false);
+    }, [location.pathname]);
 
     // Proteksi Rute: Tunggu hingga pengecekan auth selesai
     if (!isAuthChecked) {
@@ -44,39 +50,45 @@ const AdminLayout = () => {
 
             <AdminToast />   {/* Notifikasi toast global */}
 
-            <div className="relative z-20">
-                <Sidebar />
-            </div>
+            <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
-            <main className="flex-1 h-screen flex flex-col relative overflow-hidden z-10">
+            <main className="flex-1 h-screen flex flex-col relative overflow-hidden w-full">
                 <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-brand-blue/5 blur-[100px] -mr-48 -mt-48 rounded-full pointer-events-none" />
 
-                <header className="h-20 px-8 flex items-center justify-between relative z-20 border-b border-slate-200/40 bg-white/70 backdrop-blur-md">
-                    <div>
-                        <h2 className="text-lg font-bold text-stone-dark tracking-tight">
-                            {getPageTitle(location.pathname)}
-                        </h2>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5">Management Portal</p>
+                <header className="h-20 px-4 md:px-8 flex items-center justify-between relative z-20 border-b border-slate-200/40 bg-white/70 backdrop-blur-md">
+                    <div className="flex items-center gap-3">
+                        {/* Hamburger Button Mobile */}
+                        <button
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                            className="lg:hidden w-10 h-10 bg-white border border-slate-200/60 rounded-xl flex items-center justify-center text-slate-500 hover:text-brand-blue transition-all"
+                        >
+                            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+                        </button>
+
+                        <div>
+                            <h2 className="text-sm md:text-lg font-bold text-stone-dark tracking-tight">
+                                {getPageTitle(location.pathname)}
+                            </h2>
+                            <p className="hidden md:block text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-0.5">Management Portal</p>
+                        </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-4">
-                            <button className="w-10 h-10 bg-white border border-slate-200/60 rounded-xl flex items-center justify-center text-slate-400 hover:text-brand-blue hover:border-brand-blue/20 transition-all shadow-sm">
-                                <Bell size={18} />
-                            </button>
-                            <div className="h-8 w-px bg-slate-200/60 mx-1" />
-                            <div className="flex items-center gap-3 bg-white px-3 py-1.5 rounded-xl border border-slate-200/60 shadow-sm">
-                                <div className="w-7 h-7 bg-gradient-to-br from-brand-gold to-amber-400 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-md shadow-brand-gold/20">
-                                    A
-                                </div>
-                                <span className="text-xs font-bold text-slate-500 tracking-tight">System Admin</span>
+                    <div className="flex items-center gap-2 md:gap-4">
+                        <button className="w-10 h-10 bg-white border border-slate-200/60 rounded-xl flex items-center justify-center text-slate-400 hover:text-brand-blue hover:border-brand-blue/20 transition-all shadow-sm">
+                            <Bell size={18} />
+                        </button>
+                        <div className="hidden sm:block h-8 w-px bg-slate-200/60 mx-1" />
+                        <div className="hidden sm:flex items-center gap-3 bg-white px-3 py-1.5 rounded-xl border border-slate-200/60 shadow-sm">
+                            <div className="w-7 h-7 bg-gradient-to-br from-brand-gold to-amber-400 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-md shadow-brand-gold/20">
+                                A
                             </div>
+                            <span className="text-xs font-bold text-slate-500 tracking-tight">Admin</span>
                         </div>
                     </div>
                 </header>
 
-                <div className="flex-1 overflow-y-auto px-8 pb-10 scroll-smooth no-scrollbar relative z-10">
-                    <AdminLoader />  {/* Overlay loading global - Moved here for perfect centering */}
+                <div className="flex-1 overflow-y-auto px-4 md:px-8 pb-10 scroll-smooth no-scrollbar relative">
+                    <AdminLoader />  {/* Overlay loading global */}
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={location.pathname}
