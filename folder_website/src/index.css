@@ -3,16 +3,24 @@
 
 @theme {
   /* === BRAND COLORS — Structured 60-25-10-5 System === */
-  --color-brand-cream: #FFF6D9; /* 60% Main BG — Soft Warm Yellow */
-  --color-brand-blue: #0147AD;  /* 10% Accent — Deep Blue */
-  --color-brand-gold: #E5B326;  /* 10% Accent — Gold Yellow */
-  --color-brand-cyan: #1596D4;  /* 5% Interactive — Cyan */
-  
+  --color-brand-cream: #FFF6D9;
+  /* 60% Main BG — Soft Warm Yellow */
+  --color-brand-blue: #0147AD;
+  /* 10% Accent — Deep Blue */
+  --color-brand-gold: #E5B326;
+  /* 10% Accent — Gold Yellow */
+  --color-brand-cyan: #1596D4;
+  /* 5% Interactive — Cyan */
+
   /* Shared / Helper Tones */
-  --color-white: #FFFFFF;       /* 25% Content Sections */
-  --color-stone-dark: #1A1206;  /* Primary Text */
-  --color-stone-border: #E5B326; /* Accent Border (Gold) */
-  --color-neutral-bone: #FFF6D9; /* Fallback/Legacy mapping to Cream */
+  --color-white: #FFFFFF;
+  /* 25% Content Sections */
+  --color-stone-dark: #1A1206;
+  /* Primary Text */
+  --color-stone-border: #E5B326;
+  /* Accent Border (Gold) */
+  --color-neutral-bone: #FFF6D9;
+  /* Fallback/Legacy mapping to Cream */
 }
 
 @layer base {
@@ -63,7 +71,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background-image: 
+    background-image:
       radial-gradient(circle at 15% 25%, rgba(255, 237, 0, 0.2) 0%, transparent 60%),
       radial-gradient(circle at 85% 75%, rgba(230, 211, 32, 0.15) 0%, transparent 60%),
       radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 80%);

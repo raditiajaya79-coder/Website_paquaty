@@ -150,13 +150,16 @@ const Navbar = () => {
                         </button>
                     </div>
 
-                    <button className={`hidden lg:flex items-center gap-2 px-7 py-3 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-xl active:scale-95 ${isTransparent
-                        ? 'bg-white/10 text-white backdrop-blur-md border border-white/20 hover:bg-brand-cyan hover:text-white hover:border-brand-cyan'
-                        : 'bg-brand-blue text-white hover:bg-brand-cyan hover:shadow-brand-cyan/30 shadow-brand-blue/10'
-                        }`}>
+                    <Link
+                        to="/contact"
+                        className={`hidden lg:flex items-center gap-2 px-7 py-3 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-xl active:scale-95 ${isTransparent
+                            ? 'bg-white/10 text-white backdrop-blur-md border border-white/20 hover:bg-brand-cyan hover:text-white hover:border-brand-cyan'
+                            : 'bg-brand-blue text-white hover:bg-brand-cyan hover:shadow-brand-cyan/30 shadow-brand-blue/10'
+                            }`}
+                    >
                         {t('nav.partner')}
                         <ArrowRight className="w-4 h-4" />
-                    </button>
+                    </Link>
 
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}

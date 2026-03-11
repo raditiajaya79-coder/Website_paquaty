@@ -26,9 +26,12 @@ const CTA = () => {
                             placeholder={t('cta.input_placeholder')}
                             className="w-full sm:w-96 px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-gold focus:border-transparent transition-all"
                         />
-                        <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-brand-gold text-brand-blue font-semibold hover:bg-brand-cyan hover:text-white transition-all whitespace-nowrap shadow-lg shadow-brand-gold/20">
+                        <Link
+                            to="/contact"
+                            className="w-full sm:w-auto px-8 py-4 rounded-full bg-brand-gold text-brand-blue font-semibold hover:bg-brand-cyan hover:text-white transition-all whitespace-nowrap shadow-lg shadow-brand-gold/20 flex items-center justify-center"
+                        >
                             {t('cta.button')}
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>

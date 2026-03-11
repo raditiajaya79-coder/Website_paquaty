@@ -28,7 +28,7 @@ export const id = {
     "hero.subtitle_part1": "KERIPIK TEMPE PREMIUM INDONESIA",
     "hero.title_part1": "Premium Tempe",
     "hero.title_part2": "Chips",
-    "hero.tagline": "Renyah Berbudaya,",
+    "hero.tagline": "Renyah Berbudaya",
     "hero.tagline2": "Rasa Memukau Dunia",
     "hero.subtitle_part2": "Keripik tempe istimewa, lahir dari fermentasi turun-temurun dan semangat berinovasi.",
     "hero.microtag": "Biji unggul. Fermentasi alami. Renyah tiada tara.",

@@ -28,7 +28,7 @@ export const en = {
     "hero.subtitle_part1": "PREMIUM INDONESIAN TEMPE CHIPS",
     "hero.title_part1": "Premium Tempe",
     "hero.title_part2": "Chips",
-    "hero.tagline": "Crunch the Culture,",
+    "hero.tagline": "Crunch the Culture",
     "hero.tagline2": "Taste the Future",
     "hero.subtitle_part2": "Premium Indonesian tempe chips crafted from heritage fermentation and bold innovation.",
     "hero.microtag": "Pure bean. Clean ferment. Perfect crunch.",
