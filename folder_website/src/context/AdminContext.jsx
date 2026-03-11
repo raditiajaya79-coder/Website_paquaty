@@ -14,28 +14,40 @@ export const AdminProvider = ({ children }) => {
     const [toasts, setToasts] = useState([]); // Daftar notifikasi aktif
     const [globalLoading, setGlobalLoading] = useState(false); // Spinner layar penuh
     const [profile, setProfile] = useState({ fullName: 'Administrator', role: 'Super Admin' }); // Data Profil Admin
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State untuk mobile sidebar
 
     // Sinkronisasi status login dan profil saat mounting
     useEffect(() => {
-        const checkAuth = async () => {
+        const checkAuth = () => {
             const token = getToken();
             const loggedInFlag = localStorage.getItem('isLoggedIn');
             const adminData = localStorage.getItem('admin_user');
 
-            if (token && loggedInFlag === 'true') {
+            // Validasi ganda: Harus ada token DAN flag login bernilai true
+            if (token && token !== 'null' && loggedInFlag === 'true') {
                 setIsLoggedIn(true);
                 if (adminData) {
                     try { setProfile(JSON.parse(adminData)); } catch (e) { console.error("Gagal parse profil"); }
                 }
             } else {
+                // Jika salah satu hilang, paksa logout bersih
                 setIsLoggedIn(false);
-                // Clear state jika tidak ada token valid
                 localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('pakuaty_token');
             }
             setIsAuthChecked(true); // Tandai pengecekan selesai
         };
 
         checkAuth();
+
+        // Listener untuk logout otomatis dari api.js (karena token expired)
+        const handleAutoLogout = () => {
+            setIsLoggedIn(false);
+            showToast("Sesi Anda telah berakhir. Silakan login kembali.", "error");
+        };
+
+        window.addEventListener('pakuaty_logout', handleAutoLogout);
+        return () => window.removeEventListener('pakuaty_logout', handleAutoLogout);
     }, []);
 
     /**
@@ -60,6 +72,7 @@ export const AdminProvider = ({ children }) => {
         removeToken();
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('admin_user');
+        localStorage.removeItem('pakuaty_token'); // redundant check
         setIsLoggedIn(false);
         showToast("Anda telah keluar dari sistem.", "info");
     };
@@ -75,7 +88,9 @@ export const AdminProvider = ({ children }) => {
             globalLoading,
             setGlobalLoading,
             profile,
-            setProfile
+            setProfile,
+            isSidebarOpen,
+            setIsSidebarOpen
         }}>
             {children || <Outlet />}
         </AdminContext.Provider>

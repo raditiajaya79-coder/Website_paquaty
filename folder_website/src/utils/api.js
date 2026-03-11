@@ -69,7 +69,23 @@ async function apiFetch(endpoint, options = {}) {
       body: options.body ? JSON.stringify(options.body) : undefined // Serialize body ke JSON
     });
 
-    // Jika server mengembalikan error
+    // Deteksi Token Expired atau Invalid (401 Unauthorized / 403 Forbidden)
+    if (response.status === 401 || response.status === 403) {
+      console.error(`[API] 🛑 Akses Ditolak (${response.status}): Token tidak valid atau kadaluwarsa.`);
+      
+      // Jika error terjadi di admin area (menggunakan header Auth)
+      if (token) {
+        console.warn("[API] Menginisialisasi logout otomatis...");
+        removeToken(); // Hapus token dari storage
+        // Kirim event kustom agar context/UI bisa merespons (misal redirect ke login)
+        window.dispatchEvent(new Event('pakuaty_logout'));
+      }
+      
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || "Sesi berakhir. Silakan login kembali.");
+    }
+
+    // Jika server mengembalikan error lain
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({})); // Parse error body
       throw new Error(errorData.error || `Server Error (${response.status})`);

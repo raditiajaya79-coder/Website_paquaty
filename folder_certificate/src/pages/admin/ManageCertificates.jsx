@@ -88,19 +88,19 @@ const ManageCertificates = () => {
                     <h2 className="text-lg font-bold text-stone-dark tracking-tight">E-Legalitas & Audit</h2>
                     <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Compliance & Certification Module</p>
                 </div>
-                <div className="flex gap-2">
-                    <div className="relative">
+                <div className="flex flex-wrap gap-2 w-full md:w-auto">
+                    <div className="relative flex-1 md:flex-initial">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
                         <input
                             type="text"
-                            placeholder="Cari sertifikat..."
+                            placeholder="Cari..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-xs font-medium w-48 focus:ring-1 focus:ring-brand-blue/20 transition-all"
+                            className="pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-[11px] font-medium w-full md:w-36 lg:w-48 focus:ring-1 focus:ring-brand-blue/20 transition-all"
                         />
                     </div>
-                    <button onClick={() => { setIsModalOpen(true); setEditingItem(null); setFormData(initialForm); }} className="bg-brand-blue text-white px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-stone-dark transition-all shadow-md shadow-brand-blue/15">
-                        <Plus size={14} /> Register Asset
+                    <button onClick={() => { setIsModalOpen(true); setEditingItem(null); setFormData(initialForm); }} className="bg-brand-blue text-white px-3 md:px-5 py-2.5 rounded-lg font-bold text-[10px] md:text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-stone-dark transition-all shadow-md shadow-brand-blue/15 whitespace-nowrap">
+                        <Plus size={14} /> Register
                     </button>
                 </div>
             </div>
@@ -125,21 +125,20 @@ const ManageCertificates = () => {
                                 <div className={`w-14 h-14 bg-slate-50 rounded-lg overflow-hidden shrink-0 border border-slate-100 flex items-center justify-center p-2 ${!item.isActive ? 'grayscale opacity-50' : ''}`}>
                                     <img src={item.image} alt={item.title} className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-500" />
                                 </div>
-                                <div className="flex-1 min-w-0">
+                                <div className="flex-1 min-w-0 py-1">
                                     <div className="flex items-center gap-2 mb-0.5">
-                                        <h3 className="font-bold text-stone-dark text-sm truncate">{item.title}</h3>
+                                        <h3 className="font-bold text-stone-dark text-xs md:text-sm truncate">{item.title}</h3>
                                         {item.isPinned && <Pin size={10} className="text-brand-gold" fill="currentColor" />}
                                     </div>
-                                    <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-wider"><Building2 size={11} className="text-brand-blue" /> {item.issuedBy}</div>
+                                    <div className="flex items-center gap-1.5 text-slate-400 text-[9px] font-bold uppercase tracking-wider"><Building2 size={10} className="text-brand-blue" /> {item.issuedBy}</div>
                                 </div>
-                                <div className="flex items-center gap-3 pr-2">
-                                    <div className="hidden sm:flex flex-col items-end gap-1">
+                                <div className="flex items-center justify-between w-full sm:w-auto gap-4">
+                                    <div className="flex flex-col items-start sm:items-end gap-1">
                                         <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${item.isActive ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
-                                            {item.isActive ? 'Authorized' : 'Disabled'}
+                                            {item.isActive ? 'Active' : 'Disabled'}
                                         </span>
-                                        {item.isPinned && <span className="text-[8px] font-black text-brand-gold uppercase tracking-tighter">Priority View</span>}
                                     </div>
-                                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <div className="flex gap-1 md:opacity-0 group-hover:opacity-100 transition-opacity">
                                         <button onClick={() => openEditModal(item)} className="p-2 bg-slate-50 text-slate-400 hover:text-brand-blue hover:bg-brand-blue/10 rounded-lg transition-all" title="Edit"><Edit2 size={14} /></button>
                                         <button onClick={() => toggleActive(item)} className={`p-2 rounded-lg transition-all ${item.isActive ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' : 'bg-red-50 text-red-500 hover:bg-red-100'}`} title={item.isActive ? 'Nonaktifkan' : 'Aktifkan'}>{item.isActive ? <Eye size={14} /> : <EyeOff size={14} />}</button>
                                         <button onClick={() => handleDelete(item.id)} className="p-2 bg-slate-50 text-slate-400 hover:text-white hover:bg-rose-500 rounded-lg transition-all" title="Hapus"><Trash2 size={14} /></button>

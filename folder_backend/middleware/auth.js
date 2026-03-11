@@ -24,6 +24,12 @@ function authMiddleware(req, res, next) {
   const token = authHeader.split(' ')[1];
 
   try {
+    // Pastikan Secret Key tersedia
+    if (!process.env.JWT_SECRET) {
+      console.error('[AUTH] ❌ JWT_SECRET tidak terdefinisi di .env!');
+      return res.status(500).json({ error: 'Konfigurasi server bermasalah.' });
+    }
+
     // Verifikasi token menggunakan JWT_SECRET dari .env
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -33,6 +39,9 @@ function authMiddleware(req, res, next) {
     // Lanjutkan ke handler berikutnya
     next();
   } catch (error) {
+    // Log error secara detail ke console server (tidak dikirim ke client demi keamanan)
+    console.error(`[AUTH] ❌ Verifikasi Token Gagal: ${error.name} - ${error.message}`);
+    
     // Token invalid atau expired
     return res.status(403).json({ error: 'Token tidak valid atau sudah kedaluwarsa.' });
   }
