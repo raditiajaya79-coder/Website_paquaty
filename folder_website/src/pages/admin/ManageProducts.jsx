@@ -209,32 +209,32 @@ const ManageProducts = () => {
                             className="bg-white w-full max-w-2xl rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden max-h-[92vh] flex flex-col border border-slate-200"
                         >
                             {/* Header Modal — Presisi & Informatif */}
-                            <div className="px-7 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 bg-brand-blue rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-blue/20">
-                                        <Package size={20} />
+                            <div className="px-5 py-4 md:px-7 md:py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
+                                <div className="flex items-center gap-3 md:gap-4">
+                                    <div className="w-9 h-9 md:w-10 md:h-10 bg-brand-blue rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-blue/20 shrink-0">
+                                        <Package size={18} />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-bold text-stone-dark leading-none">{editingProduct ? 'Perbarui Atribut Produk' : 'Registrasi Produk Baru'}</h3>
-                                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest italic">Core Inventory Management System</p>
+                                        <h3 className="text-lg md:text-xl font-bold text-stone-dark leading-none">{editingProduct ? 'Perbarui Atribut Produk' : 'Registrasi Produk Baru'}</h3>
+                                        <p className="text-[9px] md:text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest italic">Core Inventory Management System</p>
                                     </div>
                                 </div>
-                                <button onClick={() => setIsModalOpen(false)} className="w-9 h-9 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-100 transition-all hover:bg-rose-50"><X size={18} /></button>
+                                <button onClick={() => setIsModalOpen(false)} className="w-9 h-9 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-100 transition-all hover:bg-rose-50 shrink-0"><X size={18} /></button>
                             </div>
 
                             {/* Form Input — Tata Letak Padat & Rapi */}
-                            <form onSubmit={handleSubmit} className="p-7 overflow-y-auto space-y-6 no-scrollbar">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                            <form onSubmit={handleSubmit} className="p-5 md:p-7 overflow-y-auto space-y-4 md:space-y-6 no-scrollbar">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 md:gap-y-5">
                                     {/* Primary Information */}
                                     <div className="space-y-1.5 md:col-span-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Nama Identitas Produk</label>
-                                        <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-brand-blue/30 focus:border-brand-blue outline-none text-base font-bold text-stone-dark shadow-sm transition-all" placeholder="Contoh: Kopi Tempe Original..." />
+                                        <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Nama Identitas Produk</label>
+                                        <input required name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-2.5 md:py-3 bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-brand-blue/30 focus:border-brand-blue outline-none text-sm md:text-base font-bold text-stone-dark shadow-sm transition-all" placeholder="Contoh: Kopi Tempe Original..." />
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Segmentasi Kategori</label>
+                                        <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Segmentasi Kategori</label>
                                         <div className="relative">
-                                            <select name="category" value={formData.category} onChange={handleInputChange} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl outline-none text-sm font-bold text-brand-blue cursor-pointer appearance-none shadow-sm focus:border-brand-blue transition-all">
+                                            <select name="category" value={formData.category} onChange={handleInputChange} className="w-full px-4 py-2.5 md:py-3 bg-white border border-slate-200 rounded-xl outline-none text-xs md:text-sm font-bold text-brand-blue cursor-pointer appearance-none shadow-sm focus:border-brand-blue transition-all">
                                                 <option value="Tempe Chips">Sangat Renyah (Tempe Chips)</option>
                                                 <option value="Packaging">Kemasan (Packaging)</option>
                                             </select>
@@ -245,8 +245,8 @@ const ManageProducts = () => {
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Standarisasi Mutu</label>
-                                        <select name="grade" value={formData.grade} onChange={handleInputChange} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl outline-none text-sm font-bold text-emerald-600 shadow-sm focus:border-emerald-300 transition-all">
+                                        <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Standarisasi Mutu</label>
+                                        <select name="grade" value={formData.grade} onChange={handleInputChange} className="w-full px-4 py-2.5 md:py-3 bg-white border border-slate-200 rounded-xl outline-none text-xs md:text-sm font-bold text-emerald-600 shadow-sm focus:border-emerald-300 transition-all">
                                             <option value="Export Quality">Export Grade A+</option>
                                             <option value="Standard Quality">Standard Quality</option>
                                             <option value="Premium Quality">Special Premium Rank</option>
@@ -254,58 +254,58 @@ const ManageProducts = () => {
                                     </div>
 
                                     <div className="space-y-1.5 md:col-span-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Deskripsi & Narasi Singkat</label>
-                                        <textarea required name="description" value={formData.description} onChange={handleInputChange} rows="3" className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl outline-none resize-none text-sm leading-relaxed text-slate-600 shadow-sm focus:border-brand-blue transition-all" placeholder="Jelaskan karakteristik unik produk ini..." />
+                                        <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Deskripsi & Narasi Singkat</label>
+                                        <textarea required name="description" value={formData.description} onChange={handleInputChange} rows="3" className="w-full px-4 py-2.5 md:py-3 bg-white border border-slate-200 rounded-xl outline-none resize-none text-xs md:text-sm leading-relaxed text-slate-600 shadow-sm focus:border-brand-blue transition-all" placeholder="Jelaskan karakteristik unik produk ini..." />
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Harga Satuan (IDR)</label>
+                                        <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Harga Satuan (IDR)</label>
                                         <div className="relative">
-                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 font-bold text-xs uppercase tracking-widest pointer-events-none">Rp</span>
-                                            <input required type="number" name="price" value={formData.price} onChange={handleInputChange} className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl outline-none text-lg font-black text-brand-blue shadow-sm focus:border-brand-blue transition-all" />
+                                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 font-bold text-[10px] md:text-xs uppercase tracking-widest pointer-events-none">Rp</span>
+                                            <input required type="number" name="price" value={formData.price} onChange={handleInputChange} className="w-full pl-10 md:pl-12 pr-4 py-2.5 md:py-3 bg-white border border-slate-200 rounded-xl outline-none text-base md:text-lg font-black text-brand-blue shadow-sm focus:border-brand-blue transition-all" />
                                         </div>
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Geolokasi Produksi</label>
+                                        <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Geolokasi Produksi</label>
                                         <div className="relative">
-                                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                                            <input name="origin" value={formData.origin} onChange={handleInputChange} className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl outline-none text-sm font-bold text-stone-dark shadow-sm focus:border-brand-blue transition-all" placeholder="Contoh: Malang, Jawa Timur" />
+                                            <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={14} md:size={16} />
+                                            <input name="origin" value={formData.origin} onChange={handleInputChange} className="w-full pl-10 md:pl-12 pr-4 py-2.5 md:py-3 bg-white border border-slate-200 rounded-xl outline-none text-xs md:text-sm font-bold text-stone-dark shadow-sm focus:border-brand-blue transition-all" placeholder="Contoh: Malang, Jawa Timur" />
                                         </div>
                                     </div>
 
                                     <div className="space-y-1.5 md:col-span-2">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Asset Digital (URL Media)</label>
+                                        <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Asset Digital (URL Media)</label>
                                         <div className="flex gap-2">
                                             <div className="relative flex-1">
-                                                <Box className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                                                <input required name="image" value={formData.image} onChange={handleInputChange} className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-[11px] font-medium outline-none text-slate-400 truncate shadow-sm focus:border-brand-blue transition-all" placeholder="Unggah atau tempel URL gambar..." />
+                                                <Box className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={14} md:size={16} />
+                                                <input required name="image" value={formData.image} onChange={handleInputChange} className="w-full pl-10 md:pl-12 pr-4 py-2.5 md:py-3 bg-white border border-slate-200 rounded-xl text-[10px] md:text-[11px] font-medium outline-none text-slate-400 truncate shadow-sm focus:border-brand-blue transition-all" placeholder="Unggah atau tempel URL gambar..." />
                                             </div>
-                                            <label className="cursor-pointer w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-brand-blue transition-all shadow-lg active:scale-95 group">
+                                            <label className="cursor-pointer w-10 h-10 md:w-12 md:h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-brand-blue transition-all shadow-lg active:scale-95 group shrink-0">
                                                 <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} disabled={uploading} />
-                                                {uploading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Upload size={20} className="group-hover:-translate-y-0.5 transition-transform" />}
+                                                {uploading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Upload size={18} className="group-hover:-translate-y-0.5 transition-transform" />}
                                             </label>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Area Kontrol Tambahan & Tombol Aksi */}
-                                <div className="pt-4 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                                    <label className="flex items-center gap-4 cursor-pointer group select-none">
-                                        <div className="relative w-12 h-6 bg-slate-100 rounded-full border border-slate-200 transition-colors peer-checked:bg-brand-gold group-hover:border-brand-gold/50">
+                                <div className="pt-2 md:pt-4 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
+                                    <label className="flex items-center gap-3 md:gap-4 cursor-pointer group select-none">
+                                        <div className="relative w-10 md:w-12 h-5 md:h-6 bg-slate-100 rounded-full border border-slate-200 transition-colors peer-checked:bg-brand-gold group-hover:border-brand-gold/50">
                                             <input type="checkbox" name="isBestseller" checked={formData.isBestseller} onChange={handleInputChange} className="peer hidden" />
-                                            <div className="absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transition-all border border-slate-200 peer-checked:translate-x-6 peer-checked:border-brand-gold flex items-center justify-center">
-                                                <Star size={8} className="text-brand-gold opacity-0 peer-checked:opacity-100" fill="currentColor" />
+                                            <div className="absolute left-1 top-0.5 md:top-1 w-3.5 md:w-4 h-3.5 md:h-4 bg-white rounded-full shadow-md transition-all border border-slate-200 peer-checked:translate-x-5 md:peer-checked:translate-x-6 peer-checked:border-brand-gold flex items-center justify-center">
+                                                <Star size={7} md:size={8} className="text-brand-gold opacity-0 peer-checked:opacity-100" fill="currentColor" />
                                             </div>
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-[11px] font-black text-stone-dark uppercase tracking-widest leading-none">Best Seller Status</span>
-                                            <span className="text-[9px] font-bold text-slate-400 uppercase mt-1">Munculkan di rute populer</span>
+                                            <span className="text-[10px] md:text-[11px] font-black text-stone-dark uppercase tracking-widest leading-none">Best Seller Status</span>
+                                            <span className="text-[8px] md:text-[9px] font-bold text-slate-400 uppercase mt-1">Munculkan di rute populer</span>
                                         </div>
                                     </label>
 
-                                    <button type="submit" disabled={uploading} className="flex-1 md:flex-initial px-10 py-4 bg-brand-blue text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-brand-blue/20 hover:bg-stone-dark hover:shadow-stone-dark/10 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3">
-                                        {uploading ? 'Sinkronisasi Media...' : (editingProduct ? <><Edit2 size={16} /> Simpan Perubahan</> : <><Plus size={18} /> Daftarkan Inventaris</>)}
+                                    <button type="submit" disabled={uploading} className="flex-1 md:flex-initial px-6 md:px-10 py-3 md:py-4 bg-brand-blue text-white rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-[0.2em] shadow-xl shadow-brand-blue/20 hover:bg-stone-dark hover:shadow-stone-dark/10 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 md:gap-3">
+                                        {uploading ? 'Sinkronisasi Media...' : (editingProduct ? <><Edit2 size={14} /> Simpan Perubahan</> : <><Plus size={16} /> Daftarkan Inventaris</>)}
                                     </button>
                                 </div>
                             </form>

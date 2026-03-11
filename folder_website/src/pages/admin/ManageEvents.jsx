@@ -60,26 +60,26 @@ const ManageEvents = () => {
     return (
         <div className="space-y-4 pb-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 md:p-5 rounded-2xl border border-slate-200/60 shadow-sm">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-brand-blue/5 text-brand-blue rounded-xl flex items-center justify-center border border-brand-blue/10"><Calendar size={20} /></div>
+                    <div className="w-9 h-9 md:w-10 md:h-10 bg-brand-blue/5 text-brand-blue rounded-xl flex items-center justify-center border border-brand-blue/10 shrink-0"><Calendar size={18} /></div>
                     <div>
-                        <h2 className="text-lg font-bold text-stone-dark tracking-tight">Kanal Event & Aktivitas</h2>
-                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest italic">Global Exhibition & Corporate Gathering</p>
+                        <h2 className="text-base md:text-lg font-bold text-stone-dark tracking-tight leading-none">Kanal Event & Aktivitas</h2>
+                        <p className="text-[9px] md:text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest italic">Global Exhibition & Corporate Gathering</p>
                     </div>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                    <div className="relative w-full">
+                    <div className="relative w-full sm:w-48">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
                         <input
                             type="text"
                             placeholder="Cari event..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-xs font-medium w-full sm:w-48 focus:ring-1 focus:ring-brand-blue/20 transition-all border-dashed"
+                            className="pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs font-bold w-full transition-all border-dashed focus:border-brand-blue"
                         />
                     </div>
-                    <button onClick={() => { setIsModalOpen(true); setEditingEvent(null); setFormData(initialFormState); }} className="bg-brand-blue text-white px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-stone-dark transition-all shadow-md shadow-brand-blue/15 active:scale-[0.98] whitespace-nowrap">
+                    <button onClick={() => { setIsModalOpen(true); setEditingEvent(null); setFormData(initialFormState); }} className="bg-brand-blue text-white px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-stone-dark transition-all shadow-lg shadow-brand-blue/15 active:scale-[0.98] whitespace-nowrap">
                         <Plus size={14} /> Create Event
                     </button>
                 </div>
@@ -104,18 +104,18 @@ const ManageEvents = () => {
                                 >
                                     <div className="aspect-video bg-slate-50 overflow-hidden relative">
                                         <img src={event.image} alt={event.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s]" />
-                                        <div className="absolute top-3 left-3 bg-stone-dark/80 backdrop-blur-md text-brand-gold text-[9px] font-black px-3 py-1 rounded shadow-lg uppercase tracking-widest">{event.category}</div>
+                                        <div className="absolute top-3 left-3 bg-stone-dark/80 backdrop-blur-md text-brand-gold text-[8px] md:text-[9px] font-black px-2 md:px-3 py-1 rounded shadow-lg uppercase tracking-widest">{event.category}</div>
                                     </div>
-                                    <div className="p-5">
-                                        <h3 className="font-bold text-stone-dark text-base line-clamp-1 group-hover:text-brand-blue transition-colors tracking-tight">{event.title}</h3>
-                                        <div className="space-y-2 mt-4">
-                                            <div className="flex items-center gap-2.5 text-[11px] font-bold text-slate-400"><Calendar size={13} className="text-brand-blue" /> {event.date}</div>
-                                            <div className="flex items-center gap-2.5 text-[11px] font-bold text-slate-400"><MapPin size={13} className="text-brand-blue" /> {event.location}</div>
-                                            <div className="flex items-center gap-2.5 text-[11px] font-bold text-slate-400"><Clock size={13} className="text-brand-blue" /> {event.time}</div>
+                                    <div className="p-4 md:p-5">
+                                        <h3 className="font-bold text-stone-dark text-sm md:text-base line-clamp-1 group-hover:text-brand-blue transition-colors tracking-tight">{event.title}</h3>
+                                        <div className="space-y-1.5 md:space-y-2 mt-3 md:mt-4">
+                                            <div className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold text-slate-400"><Calendar size={12} className="text-brand-blue shrink-0" /> {event.date}</div>
+                                            <div className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold text-slate-400"><MapPin size={12} className="text-brand-blue shrink-0" /> {event.location}</div>
+                                            <div className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold text-slate-400"><Clock size={12} className="text-brand-blue shrink-0" /> {event.time}</div>
                                         </div>
-                                        <div className="flex gap-2 pt-4 mt-4 border-t border-slate-100">
-                                            <button onClick={() => openEditModal(event)} className="flex-1 px-3 py-2 bg-slate-50 text-slate-600 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-brand-blue hover:text-white transition-all whitespace-nowrap">Configure</button>
-                                            <button onClick={() => handleDelete(event.id)} className="w-10 h-10 shrink-0 flex items-center justify-center bg-rose-50 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-all"><Trash2 size={16} /></button>
+                                        <div className="flex gap-2 pt-3 md:pt-4 mt-3 md:mt-4 border-t border-slate-100">
+                                            <button onClick={() => openEditModal(event)} className="flex-1 px-3 py-2 bg-slate-50 text-slate-600 rounded-lg text-[9px] md:text-[10px] font-black uppercase tracking-widest hover:bg-brand-blue hover:text-white transition-all whitespace-nowrap">Configure</button>
+                                            <button onClick={() => handleDelete(event.id)} className="w-9 h-9 md:w-10 md:h-10 shrink-0 flex items-center justify-center bg-rose-50 text-rose-500 rounded-lg hover:bg-rose-500 hover:text-white transition-all"><Trash2 size={15} md:size={16} /></button>
                                         </div>
                                     </div>
                                 </motion.div>
@@ -181,51 +181,51 @@ const ManageEvents = () => {
                 {isModalOpen && (
                     <div className="fixed inset-0 z-[10002] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
                         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col border border-white/10 transition-all">
-                            <div className="px-7 py-5 border-b border-slate-100 flex items-center justify-between bg-white">
+                            <div className="px-5 py-4 md:px-7 md:py-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
                                 <div>
-                                    <h3 className="text-xl font-bold text-stone-dark tracking-tighter">{editingEvent ? 'Modify Agenda' : 'Draft New Agenda'}</h3>
-                                    <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-[0.25em]">Event Scheduling module</p>
+                                    <h3 className="text-lg md:text-xl font-bold text-stone-dark tracking-tighter leading-none">{editingEvent ? 'Modify Agenda' : 'Draft New Agenda'}</h3>
+                                    <p className="text-[9px] md:text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-[0.2em] md:tracking-[0.25em]">Event Scheduling module</p>
                                 </div>
-                                <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all hover:rotate-90"><X size={20} /></button>
+                                <button onClick={() => setIsModalOpen(false)} className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all hover:rotate-90 shrink-0"><X size={18} md:size={20} /></button>
                             </div>
-                            <form onSubmit={handleSubmit} className="p-7 overflow-y-auto space-y-6 no-scrollbar grid grid-cols-1 md:grid-cols-2 gap-x-6">
+                            <form onSubmit={handleSubmit} className="p-5 md:p-7 overflow-y-auto space-y-4 md:space-y-6 no-scrollbar grid grid-cols-1 md:grid-cols-2 gap-x-6">
                                 <div className="space-y-1.5 md:col-span-2">
-                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Event Identification</label>
-                                    <input required name="title" value={formData.title} onChange={handleInputChange} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none text-base font-bold text-stone-dark focus:ring-1 focus:ring-brand-blue/20" placeholder="E.g. Pakuaty Annual Gala" />
+                                    <label className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Event Identification</label>
+                                    <input required name="title" value={formData.title} onChange={handleInputChange} className="w-full px-4 py-2.5 md:px-5 md:py-3.5 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl outline-none text-sm md:text-base font-bold text-stone-dark focus:ring-1 focus:ring-brand-blue/20" placeholder="E.g. Pakuaty Annual Gala" />
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Scheduling Date</label>
-                                    <input required type="date" name="date" value={formData.date} onChange={handleInputChange} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none text-sm font-bold text-brand-blue" />
+                                    <label className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Scheduling Date</label>
+                                    <input required type="date" name="date" value={formData.date} onChange={handleInputChange} className="w-full px-4 py-2.5 md:px-5 md:py-3.5 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl outline-none text-xs md:text-sm font-bold text-brand-blue" />
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Operational Hours</label>
-                                    <input name="time" value={formData.time} onChange={handleInputChange} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none text-sm font-bold text-stone-dark" placeholder="08:00 - 17:00 WIB" />
+                                    <label className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Operational Hours</label>
+                                    <input name="time" value={formData.time} onChange={handleInputChange} className="w-full px-4 py-2.5 md:px-5 md:py-3.5 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl outline-none text-xs md:text-sm font-bold text-stone-dark" placeholder="08:00 - 17:00 WIB" />
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Venue Location</label>
-                                    <input required name="location" value={formData.location} onChange={handleInputChange} className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none text-sm font-bold text-stone-dark" placeholder="JIExpo Kemayoran" />
+                                    <label className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Venue Location</label>
+                                    <input required name="location" value={formData.location} onChange={handleInputChange} className="w-full px-4 py-2.5 md:px-5 md:py-3.5 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl outline-none text-xs md:text-sm font-bold text-stone-dark" placeholder="JIExpo Kemayoran" />
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Asset Cover</label>
+                                    <label className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Asset Cover</label>
                                     <div className="flex gap-2">
-                                        <input name="image" value={formData.image} onChange={handleInputChange} className="flex-1 px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold outline-none text-slate-400 truncate" placeholder="URL Gambar..." />
-                                        <label className="cursor-pointer w-14 bg-brand-blue text-white rounded-2xl flex items-center justify-center hover:bg-stone-dark transition-all shadow-lg shadow-brand-blue/20">
+                                        <input name="image" value={formData.image} onChange={handleInputChange} className="flex-1 px-4 py-2.5 md:px-5 md:py-3.5 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-bold outline-none text-slate-400 truncate" placeholder="URL Gambar..." />
+                                        <label className="cursor-pointer w-10 h-10 md:w-14 md:h-14 bg-brand-blue text-white rounded-xl md:rounded-2xl flex items-center justify-center hover:bg-stone-dark transition-all shadow-lg shadow-brand-blue/20 shrink-0">
                                             <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} disabled={uploading} />
-                                            {uploading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Upload size={20} />}
+                                            {uploading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Upload size={18} md:size={20} />}
                                         </label>
                                     </div>
                                 </div>
 
                                 <div className="space-y-1.5 md:col-span-2">
-                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Editorial Description</label>
-                                    <textarea required name="description" value={formData.description} onChange={handleInputChange} rows="4" className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none resize-none text-sm leading-relaxed text-slate-600" placeholder="Detail deskripsi agenda event..." />
+                                    <label className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Editorial Description</label>
+                                    <textarea required name="description" value={formData.description} onChange={handleInputChange} rows="3" md:rows="4" className="w-full px-4 py-3 md:px-5 md:py-4 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl outline-none resize-none text-[11px] md:text-sm leading-relaxed text-slate-600" placeholder="Detail deskripsi agenda event..." />
                                 </div>
 
-                                <button type="submit" disabled={uploading} className="md:col-span-2 py-4 bg-stone-dark text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-xl hover:bg-brand-blue transition-all active:scale-[0.98] mt-2">
+                                <button type="submit" disabled={uploading} className="md:col-span-2 py-3.5 md:py-4 bg-stone-dark text-white rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] shadow-xl hover:bg-brand-blue transition-all active:scale-[0.98] mt-1 md:mt-2">
                                     {uploading ? 'UPLOADING DATA...' : 'COMMIT TO AGENDA'}
                                 </button>
                             </form>

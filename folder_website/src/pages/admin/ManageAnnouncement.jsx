@@ -70,43 +70,45 @@ const ManageAnnouncement = () => {
     return (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 pb-10">
             {/* Header + Toggle — full width */}
-            <div className="bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-lg font-bold text-stone-dark tracking-tight flex items-center gap-2">
-                        <div className="w-8 h-8 bg-brand-blue/5 text-brand-blue rounded-lg flex items-center justify-center"><Bell size={16} /></div>
+                    <h2 className="text-base md:text-lg font-bold text-stone-dark tracking-tight flex items-center gap-2 leading-none">
+                        <div className="w-8 h-8 md:w-9 md:h-9 bg-brand-blue/5 text-brand-blue rounded-lg flex items-center justify-center shrink-0"><Bell size={16} /></div>
                         Popup Pengumuman
                     </h2>
-                    <p className="text-xs text-slate-400 mt-0.5">Atur pesan selamat datang atau promo untuk pengunjung.</p>
+                    <p className="text-[10px] md:text-xs text-slate-400 mt-1.5 leading-none">Atur pesan selamat datang atau promo untuk pengunjung.</p>
                 </div>
                 {/* Toggle Switch */}
-                <div className="flex items-center gap-3 bg-slate-50 px-3.5 py-2 rounded-lg border border-slate-200/60">
-                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Status:</span>
-                    <button onClick={() => setData(prev => ({ ...prev, is_active: !prev.is_active }))} className={`transition-all duration-300 ${data.is_active ? 'text-brand-blue' : 'text-slate-300'}`}>
-                        {data.is_active ? <ToggleRight size={28} /> : <ToggleLeft size={28} />}
-                    </button>
-                    <span className={`text-xs font-bold ${data.is_active ? 'text-brand-blue' : 'text-slate-400'}`}>{data.is_active ? 'Aktif' : 'Nonaktif'}</span>
+                <div className="flex items-center gap-3 bg-slate-50 px-3 py-2 md:px-3.5 md:py-2 rounded-xl border border-slate-200/60 w-full md:w-auto justify-between md:justify-start">
+                    <span className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Status:</span>
+                    <div className="flex items-center gap-2">
+                        <button onClick={() => setData(prev => ({ ...prev, is_active: !prev.is_active }))} className={`transition-all duration-300 ${data.is_active ? 'text-brand-blue' : 'text-slate-300'}`}>
+                            {data.is_active ? <ToggleRight size={28} /> : <ToggleLeft size={28} />}
+                        </button>
+                        <span className={`text-[11px] md:text-xs font-bold leading-none ${data.is_active ? 'text-brand-blue' : 'text-slate-400'}`}>{data.is_active ? 'Aktif' : 'Nonaktif'}</span>
+                    </div>
                 </div>
             </div>
 
             {/* Main Content — Layout 3 kolom: Image | Form Fields | Preview/Tips */}
             <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-4">
                 {/* Kolom Kiri — Image Upload (4/12) */}
-                <div className="lg:col-span-4 bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm space-y-3">
-                    <label className="text-xs font-medium text-slate-500 flex items-center gap-1.5"><ImageIcon size={13} /> Gambar Pengumuman</label>
+                <div className="lg:col-span-4 bg-white p-4 md:p-5 rounded-2xl border border-slate-200/60 shadow-sm space-y-3">
+                    <label className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5"><ImageIcon size={13} /> Gambar Pengumuman</label>
                     {/* Preview area — aspect 4:3 */}
-                    <div className="aspect-[4/3] rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center relative overflow-hidden group transition-all hover:border-brand-gold/30">
+                    <div className="aspect-[4/3] rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center relative overflow-hidden group transition-all hover:border-brand-gold/30">
                         {data.image ? (
                             <>
                                 <img src={data.image} alt="Preview" className="w-full h-full object-cover" />
                                 {/* Tombol hapus gambar — tampil saat hover */}
                                 <div className="absolute inset-0 bg-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <button type="button" onClick={() => setData(prev => ({ ...prev, image: '' }))} className="bg-white p-2 rounded-full text-red-500 shadow-lg"><X size={16} /></button>
+                                    <button type="button" onClick={() => setData(prev => ({ ...prev, image: '' }))} className="bg-white p-2 rounded-full text-rose-500 shadow-lg"><X size={16} /></button>
                                 </div>
                             </>
                         ) : (
                             <div className="text-center p-4 opacity-40">
                                 <Upload className="mx-auto text-slate-400 mb-2" size={24} />
-                                <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Drop image or click to select</p>
+                                <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">Drop image or click<br />to select</p>
                             </div>
                         )}
                         {/* Uploading overlay */}
@@ -125,35 +127,35 @@ const ManageAnnouncement = () => {
                 </div>
 
                 {/* Kolom Tengah — Content Fields (5/12) */}
-                <div className="lg:col-span-5 bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm space-y-4">
-                    <h3 className="text-sm font-bold text-stone-dark flex items-center gap-1.5 mb-1"><Type size={14} className="text-brand-blue" /> Konten Pengumuman</h3>
+                <div className="lg:col-span-5 bg-white p-4 md:p-5 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
+                    <h3 className="text-xs md:text-sm font-black text-stone-dark uppercase tracking-widest flex items-center gap-1.5 mb-1"><Type size={14} className="text-brand-blue" /> Konten Pengumuman</h3>
 
                     {/* Headline */}
                     <div className="space-y-1.5">
-                        <label className="text-xs font-medium text-slate-500">Headline</label>
-                        <input required name="title" value={data.title} onChange={handleChange} placeholder="E.g. Promo Spesial" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-1 focus:ring-brand-blue outline-none text-sm font-medium text-stone-dark placeholder:text-slate-300" />
+                        <label className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Headline</label>
+                        <input required name="title" value={data.title} onChange={handleChange} placeholder="E.g. Promo Spesial" className="w-full px-4 py-2.5 md:py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-1 focus:ring-brand-blue/20 outline-none text-xs md:text-sm font-bold text-stone-dark placeholder:text-slate-300" />
                     </div>
 
                     {/* Pesan */}
                     <div className="space-y-1.5">
-                        <label className="text-xs font-medium text-slate-500 flex items-center gap-1.5"><AlignLeft size={12} /> Pesan</label>
-                        <textarea required name="message" value={data.message} onChange={handleChange} rows="5" placeholder="Deskripsi pengumuman..." className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-1 focus:ring-brand-blue outline-none resize-none text-sm leading-relaxed text-slate-600 placeholder:text-slate-300" />
+                        <label className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Pesan</label>
+                        <textarea required name="message" value={data.message} onChange={handleChange} rows="4" md:rows="5" placeholder="Deskripsi pengumuman..." className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-1 focus:ring-brand-blue/20 outline-none resize-none text-[11px] md:text-sm font-medium leading-relaxed text-slate-600 placeholder:text-slate-300" />
                     </div>
 
                     {/* Teks Tombol & URL */}
                     <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100">
                         <div className="space-y-1.5">
-                            <label className="text-xs font-medium text-slate-500">Teks Tombol</label>
-                            <input name="button_text" value={data.button_text} onChange={handleChange} placeholder="Explore Now" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-sm font-medium" />
+                            <label className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Teks Tombol</label>
+                            <input name="button_text" value={data.button_text} onChange={handleChange} placeholder="Explore Now" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs font-bold text-stone-dark" />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-medium text-slate-500 flex items-center gap-1"><LinkIcon size={12} /> URL Tujuan</label>
-                            <input name="link" value={data.link} onChange={handleChange} placeholder="/products" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-sm text-brand-blue font-medium" />
+                            <label className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">URL Tujuan</label>
+                            <input name="link" value={data.link} onChange={handleChange} placeholder="/products" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs text-brand-blue font-bold" />
                         </div>
                     </div>
 
                     {/* Submit */}
-                    <button type="submit" disabled={uploading} className="w-full py-3 bg-stone-dark text-white rounded-xl font-semibold text-sm shadow-lg hover:bg-brand-blue transition-all flex items-center justify-center gap-2 disabled:opacity-50 active:scale-[0.99] mt-2">
+                    <button type="submit" disabled={uploading} className="w-full py-3.5 bg-stone-dark text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl hover:bg-brand-blue transition-all flex items-center justify-center gap-2 disabled:opacity-50 active:scale-[0.98] mt-2">
                         <Save size={15} /> Simpan Pengaturan
                     </button>
                 </div>

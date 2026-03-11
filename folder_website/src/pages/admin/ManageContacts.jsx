@@ -60,26 +60,26 @@ const ManageContacts = () => {
   return (
     <div className="space-y-4 pb-10">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 md:p-5 rounded-2xl border border-slate-200/60 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-brand-blue/5 text-brand-blue rounded-xl flex items-center justify-center border border-brand-blue/10"><Share2 size={20} /></div>
+          <div className="w-9 h-9 md:w-10 md:h-10 bg-brand-blue/5 text-brand-blue rounded-xl flex items-center justify-center border border-brand-blue/10 shrink-0"><Share2 size={18} /></div>
           <div>
-            <h2 className="text-lg font-bold text-stone-dark tracking-tight leading-none">Media Sosial & Kontak</h2>
-            <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest leading-none">Omnichannel Management</p>
+            <h2 className="text-base md:text-lg font-bold text-stone-dark tracking-tight leading-none">Media Sosial & Kontak</h2>
+            <p className="text-[9px] md:text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest leading-none">Omnichannel Management</p>
           </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-          <div className="relative group w-full">
+          <div className="relative group w-full sm:w-48">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-brand-blue transition-colors" size={14} />
             <input
               type="text"
               placeholder="Cari platform..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-xs font-medium w-full sm:w-48 focus:ring-1 focus:ring-brand-blue/20 transition-all border-dashed"
+              className="pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs font-bold w-full transition-all border-dashed focus:border-brand-blue"
             />
           </div>
-          <button onClick={() => { setIsModalOpen(true); setEditingContact(null); setFormData(initialForm); }} className="bg-brand-blue text-white px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-stone-dark transition-all shadow-md shadow-brand-blue/15 active:scale-95 whitespace-nowrap">
+          <button onClick={() => { setIsModalOpen(true); setEditingContact(null); setFormData(initialForm); }} className="bg-brand-blue text-white px-5 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-stone-dark transition-all shadow-lg shadow-brand-blue/15 active:scale-95 whitespace-nowrap">
             <Plus size={14} /> Deploy Link
           </button>
         </div>
@@ -102,20 +102,20 @@ const ManageContacts = () => {
                   layout
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex items-center gap-4 group relative overflow-hidden"
+                  className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all flex items-center gap-3 md:gap-4 group relative overflow-hidden"
                 >
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-lg transition-transform group-hover:rotate-12 ${contact.location === 'footer' ? 'bg-brand-blue' : 'bg-brand-gold'}`}>{getIcon(contact.platform)}</div>
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center text-white shadow-lg transition-transform group-hover:rotate-12 shrink-0 ${contact.location === 'footer' ? 'bg-brand-blue' : 'bg-brand-gold'}`}>{getIcon(contact.platform)}</div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-black text-stone-dark text-sm uppercase tracking-tighter">{contact.platform}</h3>
-                    <p className="text-[10px] text-slate-400 font-bold truncate mt-1 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 flex items-center gap-1.5 min-w-fit">
-                      <Zap size={10} className="text-brand-gold" /> {contact.value}
+                    <h3 className="font-black text-stone-dark text-[11px] md:text-sm uppercase tracking-tighter leading-none">{contact.platform}</h3>
+                    <p className="text-[9px] md:text-[10px] text-slate-400 font-bold truncate mt-1 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 flex items-center gap-1.5 min-w-fit">
+                      <Zap size={9} md:size={10} className="text-brand-gold" /> {contact.value}
                     </p>
                   </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
-                    <button onClick={() => openEditModal(contact)} className="p-2.5 bg-slate-50 text-slate-400 hover:text-brand-blue hover:bg-brand-blue/10 rounded-xl transition-all shadow-sm border border-slate-100"><Edit2 size={14} /></button>
-                    <button onClick={() => handleDelete(contact.id)} className="p-2.5 bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white rounded-xl transition-all shadow-sm border border-rose-100"><Trash2 size={14} /></button>
+                  <div className="flex gap-1 md:opacity-0 group-hover:opacity-100 transition-all translate-x-1 md:translate-x-2 group-hover:translate-x-0">
+                    <button onClick={() => openEditModal(contact)} className="p-2 md:p-2.5 bg-slate-50 text-slate-400 hover:text-brand-blue hover:bg-brand-blue/10 rounded-lg md:rounded-xl transition-all shadow-sm border border-slate-100"><Edit2 size={12} md:size={14} /></button>
+                    <button onClick={() => handleDelete(contact.id)} className="p-2 md:p-2.5 bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white rounded-lg md:rounded-xl transition-all shadow-sm border border-rose-100"><Trash2 size={12} md:size={14} /></button>
                   </div>
-                  <div className={`absolute top-0 right-0 w-12 h-12 rotate-45 translate-x-6 -translate-y-6 opacity-10 group-hover:opacity-20 transition-opacity ${contact.location === 'footer' ? 'bg-brand-blue' : 'bg-brand-gold'}`} />
+                  <div className={`absolute top-0 right-0 w-10 h-10 rotate-45 translate-x-5 -translate-y-5 opacity-10 group-hover:opacity-20 transition-opacity ${contact.location === 'footer' ? 'bg-brand-blue' : 'bg-brand-gold'}`} />
                 </motion.div>
               ))
             )}
@@ -181,19 +181,19 @@ const ManageContacts = () => {
       <AnimatePresence>
         {isModalOpen && (
           <div className="fixed inset-0 z-[10002] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/20 transition-all p-2">
-              <div className="bg-white rounded-[2rem] border border-slate-100 pb-2">
-                <div className="px-7 py-6 flex items-center justify-between">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white w-full max-w-sm rounded-[2rem] md:rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/20 transition-all p-1.5 md:p-2">
+              <div className="bg-white rounded-[1.5rem] md:rounded-[2rem] border border-slate-100 pb-1.5 md:pb-2">
+                <div className="px-5 py-5 md:px-7 md:py-6 flex items-center justify-between">
                   <div>
-                    <h3 className="text-xl font-black text-stone-dark tracking-tighter uppercase leading-none">{editingContact ? 'Modify Channel' : 'New Channel'}</h3>
-                    <p className="text-[10px] font-black text-slate-300 mt-1.5 uppercase tracking-widest italic leading-none">Global Connectivity</p>
+                    <h3 className="text-lg md:text-xl font-black text-stone-dark tracking-tighter uppercase leading-none">{editingContact ? 'Modify Channel' : 'New Channel'}</h3>
+                    <p className="text-[9px] md:text-[10px] font-black text-slate-300 mt-1.5 uppercase tracking-widest italic leading-none">Global Connectivity</p>
                   </div>
-                  <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all active:scale-90"><X size={18} /></button>
+                  <button onClick={() => setIsModalOpen(false)} className="w-9 h-9 md:w-10 md:h-10 rounded-xl md:rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all active:scale-90 shrink-0"><X size={18} /></button>
                 </div>
-                <form onSubmit={handleSubmit} className="px-7 pb-8 space-y-5">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Platform Identity</label>
-                    <select name="platform" value={formData.platform} onChange={handleInputChange} className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none text-sm font-black uppercase text-brand-blue appearance-none cursor-pointer focus:ring-1 focus:ring-brand-blue/20">
+                <form onSubmit={handleSubmit} className="px-5 pb-6 md:px-7 md:pb-8 space-y-4 md:space-y-5">
+                  <div className="space-y-1.5 md:space-y-2">
+                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Platform Identity</label>
+                    <select name="platform" value={formData.platform} onChange={handleInputChange} className="w-full px-4 py-3 md:px-5 md:py-4 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl outline-none text-xs md:text-sm font-black uppercase text-brand-blue appearance-none cursor-pointer focus:ring-1 focus:ring-brand-blue/20">
                       <option value="Instagram">Instagram</option>
                       <option value="TikTok">TikTok</option>
                       <option value="WhatsApp">WhatsApp</option>
@@ -202,18 +202,18 @@ const ManageContacts = () => {
                       <option value="Website">Website</option>
                     </select>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Credential/Address</label>
-                    <input required name="value" value={formData.value} onChange={handleInputChange} className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none text-sm font-bold text-stone-dark" placeholder="@username or full URL" />
+                  <div className="space-y-1.5 md:space-y-2">
+                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Credential/Address</label>
+                    <input required name="value" value={formData.value} onChange={handleInputChange} className="w-full px-4 py-3 md:px-5 md:py-4 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl outline-none text-xs md:text-sm font-bold text-stone-dark" placeholder="@username or full URL" />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Live Placement</label>
-                    <select name="location" value={formData.location} onChange={handleInputChange} className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none text-xs font-bold text-slate-600 appearance-none cursor-pointer">
+                  <div className="space-y-1.5 md:space-y-2">
+                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Live Placement</label>
+                    <select name="location" value={formData.location} onChange={handleInputChange} className="w-full px-4 py-3 md:px-5 md:py-4 bg-slate-50 border border-slate-200 rounded-xl md:rounded-2xl outline-none text-[11px] md:text-xs font-bold text-slate-600 appearance-none cursor-pointer">
                       <option value="both">Halaman Kontak & Footer</option>
                       <option value="footer">Hanya Footer</option>
                     </select>
                   </div>
-                  <button type="submit" className="w-full py-4.5 bg-stone-dark text-white rounded-2xl font-black text-xs uppercase tracking-[0.4em] shadow-xl hover:bg-brand-blue transition-all active:scale-95 mt-4">
+                  <button type="submit" className="w-full py-3.5 md:py-4.5 bg-stone-dark text-white rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-[0.3em] md:tracking-[0.4em] shadow-xl hover:bg-brand-blue transition-all active:scale-95 mt-2 md:mt-4">
                     COMMIT CHANNEL
                   </button>
                 </form>

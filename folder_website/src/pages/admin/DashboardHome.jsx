@@ -96,71 +96,71 @@ const DashboardHome = () => {
     return (
         <div className="space-y-6">
             {/* Hero Section — Welcome message dengan nuansa gelap mewah */}
-            <section className="relative overflow-hidden bg-slate-900 rounded-3xl p-6 md:p-10 group min-h-[auto] md:min-h-[280px] flex items-center">
+            <section className="relative overflow-hidden bg-slate-900 rounded-[2rem] md:rounded-3xl p-5 md:p-10 group min-h-[auto] md:min-h-[280px] flex items-center">
                 {/* Dekorasi cahaya keemasan di pojok kanan atas */}
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-gold/10 blur-[120px] -mr-40 -mt-40 rounded-full" />
 
-                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between items-start gap-6 md:gap-8 w-full">
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between items-start gap-4 md:gap-8 w-full">
                     <div className="max-w-xl">
                         {/* Label subtitle dengan animasi muncul */}
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="flex items-center gap-2 mb-3 md:mb-4"
+                            className="flex items-center gap-2 mb-2 md:mb-4"
                         >
                             <span className="h-0.5 w-6 md:w-8 bg-brand-gold" />
-                            <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] text-brand-gold">Administrative Portal</span>
+                            <span className="text-[9px] md:text-xs font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] text-brand-gold">Administrative Portal</span>
                         </motion.div>
                         {/* Judul sapaan — memanggil nama dari context */}
-                        <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white tracking-tight leading-tight md:leading-none mb-3 md:mb-4">
+                        <h1 className="text-xl md:text-3xl lg:text-5xl font-bold text-white tracking-tight leading-tight md:leading-none mb-2 md:mb-4">
                             Halo, <span className="text-brand-gold">{profile?.fullName || 'Administrator'}</span>
                         </h1>
-                        <p className="text-slate-400 font-medium text-xs md:text-sm lg:text-base leading-relaxed">
+                        <p className="text-slate-400 font-medium text-[11px] md:text-sm lg:text-base leading-relaxed max-w-md md:max-w-none">
                             Pantau performa dan kelola aset digital PT Bala Aditi Pakuaty. Semua kendali bisnis ada dalam genggaman Anda hari ini.
                         </p>
                     </div>
 
-                    {/* Badge status operasional sistem — Redesigned as a sleek horizontal pill */}
+                    {/* Badge status operasional sistem — Compact horizontal pill for mobile */}
                     <motion.div
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="bg-slate-900/40 backdrop-blur-xl border border-white/10 px-4 py-2.5 rounded-full flex items-center gap-4 shadow-2xl shadow-black/20 group hover:border-brand-gold/30 transition-all"
+                        className="bg-slate-900/40 backdrop-blur-xl border border-white/10 px-3 py-1.5 md:px-4 md:py-2.5 rounded-full flex items-center gap-3 md:gap-4 shadow-2xl shadow-black/20 group hover:border-brand-gold/30 transition-all"
                     >
                         <div className="flex flex-col">
-                            <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] leading-none mb-1">System Status</span>
-                            <div className="flex items-center gap-2">
+                            <span className="text-[8px] md:text-[9px] font-black text-white/30 uppercase tracking-[0.2em] leading-none mb-0.5 md:mb-1">System Status</span>
+                            <div className="flex items-center gap-1.5 md:gap-2">
                                 <div className="relative flex items-center justify-center">
-                                    <span className="absolute w-2 h-2 bg-emerald-500 rounded-full animate-ping opacity-75" />
-                                    <span className="relative w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                                    <span className="absolute w-1.5 h-1.5 md:w-2 md:h-2 bg-emerald-500 rounded-full animate-ping opacity-75" />
+                                    <span className="relative w-1.5 h-1.5 md:w-2 md:h-2 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
                                 </div>
-                                <span className="text-xs font-bold text-white uppercase tracking-widest">Active</span>
+                                <span className="text-[10px] md:text-xs font-bold text-white uppercase tracking-widest leading-none">Active</span>
                             </div>
                         </div>
-                        <div className="h-8 w-px bg-white/10 hidden md:block" />
-                        <div className="hidden md:flex flex-col">
-                            <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] leading-none mb-1">Response</span>
-                            <span className="text-xs font-bold text-brand-gold uppercase tracking-widest italic">Optimal</span>
+                        <div className="h-6 md:h-8 w-px bg-white/10" />
+                        <div className="flex flex-col">
+                            <span className="text-[8px] md:text-[9px] font-black text-white/30 uppercase tracking-[0.2em] leading-none mb-0.5 md:mb-1">Response</span>
+                            <span className="text-[10px] md:text-xs font-bold text-brand-gold uppercase tracking-widest italic leading-none">Optimal</span>
                         </div>
                     </motion.div>
                 </div>
             </section>
 
             {/* Grid Kartu Statistik — menampilkan ringkasan data */}
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 md:gap-6">
                 {cards.map((card, idx) => (
                     <motion.div
                         key={idx}
-                        whileHover={{ y: -5, scale: 1.02 }} // Hover effect melayang
-                        className="bg-white rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-brand-blue/5 transition-all group"
+                        whileHover={{ y: -5, scale: 1.02 }}
+                        className="bg-white rounded-[1.5rem] md:rounded-3xl p-4 md:p-6 shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-brand-blue/5 transition-all group"
                     >
                         {/* Lingkaran Ikon dengan gradient */}
-                        <div className={`w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br ${card.gradient} rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-3 md:mb-4 shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform`}>
-                            <card.icon className="w-5 h-5 md:w-6 md:h-6" />
+                        <div className={`w-9 h-9 md:w-12 md:h-12 bg-gradient-to-br ${card.gradient} rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-2 md:mb-4 shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform`}>
+                            <card.icon size={18} md:size={24} />
                         </div>
                         {/* Label kecil */}
-                        <p className="text-slate-400 text-[10px] md:text-xs font-bold uppercase tracking-widest mb-1">{card.label}</p>
+                        <p className="text-slate-400 text-[9px] md:text-xs font-bold uppercase tracking-widest mb-0.5 md:mb-1">{card.label}</p>
                         {/* Nilai angka statistik */}
-                        <h3 className="text-xl md:text-2xl font-bold text-stone-dark tracking-tight">{card.value}</h3>
+                        <h3 className="text-lg md:text-2xl font-bold text-stone-dark tracking-tight">{card.value}</h3>
                     </motion.div>
                 ))}
             </div>
@@ -168,38 +168,38 @@ const DashboardHome = () => {
             {/* Area Konten Tambahan — Informasi bantuan dan tips */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Kartu 'Informasi Cepat' (Lebar 2 kolom) */}
-                <div className="lg:col-span-2 bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col md:flex-row items-center gap-10">
-                    <div className="flex-1 space-y-4">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-blue/5 text-brand-blue rounded-full text-[10px] font-bold uppercase tracking-widest">
+                <div className="lg:col-span-2 bg-white p-6 md:p-8 rounded-[2rem] md:rounded-3xl border border-slate-100 shadow-sm flex flex-col md:flex-row items-center gap-6 md:gap-10">
+                    <div className="flex-1 space-y-3 md:space-y-4">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-blue/5 text-brand-blue rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest">
                             <ShieldCheck size={14} /> Keamanan Sistem Aktif
                         </div>
-                        <h3 className="text-2xl font-bold text-stone-dark leading-tight">Kelola konten Anda dengan satu klik.</h3>
-                        <p className="text-slate-500 text-sm leading-relaxed">
+                        <h3 className="text-xl md:text-2xl font-bold text-stone-dark leading-tight">Kelola konten Anda dengan satu klik.</h3>
+                        <p className="text-slate-500 text-xs md:text-sm leading-relaxed">
                             Pastikan data produk dan artikel selalu diperbarui untuk memberikan informasi terbaik kepada pelanggan. Anda dapat mengunggah gambar langsung dari komputer.
                         </p>
-                        <button className="flex items-center gap-2 text-brand-blue font-bold text-sm group">
-                            Pelajari Selengkapnya <ArrowUpRight size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        <button className="flex items-center gap-2 text-brand-blue font-bold text-xs md:text-sm group">
+                            Pelajari Selengkapnya <ArrowUpRight size={16} md:size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                         </button>
                     </div>
                     {/* Visual ilustrasi miniatur statistik */}
                     <div className="w-full md:w-48 aspect-video bg-slate-50 rounded-2xl border border-dashed border-slate-200 flex items-center justify-center text-slate-300">
-                        <TrendingUp size={48} />
+                        <TrendingUp size={40} md:size={48} />
                     </div>
                 </div>
 
                 {/* Kartu 'Dukungan Teknis' */}
-                <div className="bg-brand-blue rounded-3xl p-8 text-white relative overflow-hidden group">
+                <div className="bg-brand-blue rounded-[2rem] md:rounded-3xl p-6 md:p-8 text-white relative overflow-hidden group">
                     {/* Background glow di kartu biru */}
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl -mr-16 -mt-16 rounded-full group-hover:scale-150 transition-transform duration-700" />
-                    <div className="relative z-10 space-y-5">
-                        <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center">
-                            <MessageSquare size={24} className="text-brand-gold" />
+                    <div className="relative z-10 space-y-4 md:space-y-5">
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-white/10 rounded-xl md:rounded-2xl flex items-center justify-center">
+                            <MessageSquare size={20} md:size={24} className="text-brand-gold" />
                         </div>
-                        <h3 className="text-xl font-bold">Butuh Bantuan?</h3>
-                        <p className="text-white/70 text-sm leading-relaxed">
+                        <h3 className="text-lg md:text-xl font-bold">Butuh Bantuan?</h3>
+                        <p className="text-white/70 text-xs md:text-sm leading-relaxed font-medium">
                             Hubungi tim IT jika Anda menemui kendala teknis atau kesalahan sinkronisasi data pada dashboard.
                         </p>
-                        <a href="mailto:support@pakuaty.com" className="block w-full py-3 bg-white text-brand-blue text-center rounded-xl font-bold text-sm shadow-lg shadow-black/10 active:scale-[0.98] transition-all">
+                        <a href="mailto:support@pakuaty.com" className="block w-full py-2.5 md:py-3 bg-white text-brand-blue text-center rounded-xl font-bold text-xs md:text-sm shadow-lg shadow-black/10 active:scale-[0.98] transition-all">
                             Hubungi Support
                         </a>
                     </div>

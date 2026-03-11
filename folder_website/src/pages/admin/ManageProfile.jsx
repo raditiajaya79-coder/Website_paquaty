@@ -35,18 +35,18 @@ const ManageProfile = () => {
     return (
         <div className="space-y-4 pb-10">
             {/* Profile Hero Header — full width */}
-            <div className="bg-stone-dark rounded-xl p-5 text-white flex flex-col md:flex-row items-center gap-5 shadow-lg relative overflow-hidden">
+            <div className="bg-stone-dark rounded-2xl md:rounded-xl p-4 md:p-5 text-white flex flex-col md:flex-row items-center gap-4 md:gap-5 shadow-lg relative overflow-hidden">
                 {/* Dekorasi blur */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-brand-gold/5 blur-[80px] -mr-32 -mt-32 rounded-full" />
-                <div className="relative z-10 flex flex-col md:flex-row items-center gap-5 w-full">
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-4 md:gap-5 w-full text-center md:text-left">
                     {/* Avatar */}
-                    <div className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 text-brand-gold text-2xl font-bold italic">
+                    <div className="w-12 h-12 md:w-14 md:h-14 bg-white/10 rounded-xl flex items-center justify-center border border-white/10 text-brand-gold text-xl md:text-2xl font-bold italic shrink-0">
                         {profile.fullName.charAt(0)}
                     </div>
-                    <div className="text-center md:text-left flex-1">
-                        <p className="text-brand-gold text-[10px] font-semibold uppercase tracking-widest mb-0.5">Administrator Profile</p>
-                        <h2 className="text-xl font-bold tracking-tight">{profile.fullName}</h2>
-                        <p className="text-white/40 text-xs mt-0.5">{profile.role} • {profile.email}</p>
+                    <div className="flex-1">
+                        <p className="text-brand-gold text-[9px] md:text-[10px] font-black uppercase tracking-widest mb-1 leading-none">Administrator Profile</p>
+                        <h2 className="text-lg md:text-xl font-bold tracking-tight leading-none">{profile.fullName}</h2>
+                        <p className="text-white/40 text-[10px] md:text-xs mt-1.5 md:mt-1 font-medium italic">{profile.role} • {profile.email}</p>
                     </div>
                     {/* Quick stats — hanya desktop */}
                     <div className="hidden md:flex gap-4">
@@ -68,45 +68,45 @@ const ManageProfile = () => {
             {/* Main: 3 kolom — profil info | keamanan | session/tips */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
                 {/* Informasi Profil (5/12) */}
-                <div className="lg:col-span-5 bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm">
-                    <h3 className="text-base font-bold text-stone-dark mb-5 flex items-center gap-2"><User size={16} className="text-brand-blue" /> Informasi Profil</h3>
+                <div className="lg:col-span-5 bg-white p-4 md:p-5 rounded-2xl border border-slate-200/60 shadow-sm">
+                    <h3 className="text-xs md:text-base font-black text-stone-dark uppercase tracking-widest mb-4 md:mb-5 flex items-center gap-2"><User size={16} className="text-brand-blue" /> Informasi Profil</h3>
                     <form onSubmit={handleProfileUpdate} className="space-y-4">
                         <div className="space-y-1.5">
-                            <label className="text-xs font-medium text-slate-500">Username</label>
-                            <input disabled value={profile.username} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-400 font-medium cursor-not-allowed text-sm" />
+                            <label className="text-[9px] md:text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Username</label>
+                            <input disabled value={profile.username} className="w-full px-4 py-2.5 md:py-3 bg-slate-50 border border-slate-200 rounded-xl md:rounded-lg text-slate-400 font-bold cursor-not-allowed text-xs md:text-sm" />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-medium text-slate-500">Email</label>
+                            <label className="text-[9px] md:text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Email</label>
                             <div className="relative">
-                                <input required type="email" value={profile.email} onChange={(e) => setProfile({ ...profile, email: e.target.value })} className="w-full px-4 py-2.5 pl-10 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-1 focus:ring-brand-blue text-sm" />
-                                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300" size={15} />
+                                <input required type="email" value={profile.email} onChange={(e) => setProfile({ ...profile, email: e.target.value })} className="w-full px-4 py-2.5 md:py-3 pl-10 bg-slate-50 border border-slate-200 rounded-xl md:rounded-lg outline-none focus:ring-1 focus:ring-brand-blue/20 text-xs md:text-sm font-bold" />
+                                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
                             </div>
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-medium text-slate-500">Nama Lengkap</label>
-                            <input required value={profile.fullName} onChange={(e) => setProfile({ ...profile, fullName: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-1 focus:ring-brand-blue text-sm" />
+                            <label className="text-[9px] md:text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Nama Lengkap</label>
+                            <input required value={profile.fullName} onChange={(e) => setProfile({ ...profile, fullName: e.target.value })} className="w-full px-4 py-2.5 md:py-3 bg-slate-50 border border-slate-200 rounded-xl md:rounded-lg outline-none focus:ring-1 focus:ring-brand-blue/20 text-xs md:text-sm font-bold" />
                         </div>
-                        <button type="submit" className="w-full py-3 bg-brand-blue text-white rounded-xl font-semibold text-sm hover:bg-opacity-90 transition-all shadow-md shadow-brand-blue/10 flex items-center justify-center gap-2"><Save size={15} /> Simpan Perubahan</button>
+                        <button type="submit" className="w-full py-3.5 bg-brand-blue text-white rounded-xl md:rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-opacity-90 transition-all shadow-lg shadow-brand-blue/10 flex items-center justify-center gap-2 active:scale-[0.98]"><Save size={14} /> Simpan Perubahan</button>
                     </form>
                 </div>
 
                 {/* Keamanan Akun (4/12) */}
-                <div className="lg:col-span-4 bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm">
-                    <h3 className="text-base font-bold text-stone-dark mb-5 flex items-center gap-2"><Lock size={16} className="text-brand-gold" /> Keamanan Akun</h3>
+                <div className="lg:col-span-4 bg-white p-4 md:p-5 rounded-2xl border border-slate-200/60 shadow-sm">
+                    <h3 className="text-xs md:text-base font-black text-stone-dark uppercase tracking-widest mb-4 md:mb-5 flex items-center gap-2"><Lock size={16} className="text-brand-gold" /> Keamanan Akun</h3>
                     <form onSubmit={handlePasswordChange} className="space-y-4">
                         <div className="space-y-1.5">
-                            <label className="text-xs font-medium text-slate-500">Password Saat Ini</label>
-                            <input required type="password" value={passwordData.currentPassword} onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-1 focus:ring-brand-gold text-sm" placeholder="••••••••" />
+                            <label className="text-[9px] md:text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Password Saat Ini</label>
+                            <input required type="password" value={passwordData.currentPassword} onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })} className="w-full px-4 py-2.5 md:py-3 bg-slate-50 border border-slate-200 rounded-xl md:rounded-lg outline-none focus:ring-1 focus:ring-brand-gold/20 text-xs md:text-sm font-bold" placeholder="••••••••" />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-medium text-slate-500">Password Baru</label>
-                            <input required type="password" value={passwordData.newPassword} onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-1 focus:ring-brand-gold text-sm" placeholder="Minimal 8 karakter" />
+                            <label className="text-[9px] md:text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Password Baru</label>
+                            <input required type="password" value={passwordData.newPassword} onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })} className="w-full px-4 py-2.5 md:py-3 bg-slate-50 border border-slate-200 rounded-xl md:rounded-lg outline-none focus:ring-1 focus:ring-brand-gold/20 text-xs md:text-sm font-bold" placeholder="Minimal 8 karakter" />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-xs font-medium text-slate-500">Konfirmasi Password</label>
-                            <input required type="password" value={passwordData.confirmPassword} onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-1 focus:ring-brand-gold text-sm" placeholder="Ulangi password baru" />
+                            <label className="text-[9px] md:text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Konfirmasi Password</label>
+                            <input required type="password" value={passwordData.confirmPassword} onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })} className="w-full px-4 py-2.5 md:py-3 bg-slate-50 border border-slate-200 rounded-xl md:rounded-lg outline-none focus:ring-1 focus:ring-brand-gold/20 text-xs md:text-sm font-bold" placeholder="Ulangi password baru" />
                         </div>
-                        <button type="submit" className="w-full py-3 bg-stone-dark text-white rounded-xl font-semibold text-sm hover:bg-opacity-90 transition-all shadow-lg flex items-center justify-center gap-2"><RotateCcw size={15} /> Ganti Password</button>
+                        <button type="submit" className="w-full py-3.5 bg-stone-dark text-white rounded-xl md:rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-opacity-90 transition-all shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]"><RotateCcw size={14} /> Ganti Password</button>
                     </form>
                 </div>
 

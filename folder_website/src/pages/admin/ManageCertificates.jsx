@@ -83,10 +83,13 @@ const ManageCertificates = () => {
     return (
         <div className="space-y-4 pb-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-slate-200/60 shadow-sm">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 md:p-5 rounded-2xl border border-slate-200/60 shadow-sm">
                 <div>
-                    <h2 className="text-lg font-bold text-stone-dark tracking-tight">E-Legalitas & Audit</h2>
-                    <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Compliance & Certification Module</p>
+                    <h2 className="text-base md:text-lg font-bold text-stone-dark tracking-tight flex items-center gap-2 leading-none">
+                        <div className="w-8 h-8 md:w-9 md:h-9 bg-brand-blue/5 text-brand-blue rounded-lg flex items-center justify-center shrink-0"><Award size={16} /></div>
+                        E-Legalitas & Audit
+                    </h2>
+                    <p className="text-[10px] md:text-xs font-bold text-slate-400 mt-1.5 uppercase tracking-widest leading-none">Compliance & Certification Module</p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                     <div className="relative w-full">
@@ -96,10 +99,10 @@ const ManageCertificates = () => {
                             placeholder="Cari sertifikat..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg outline-none text-xs font-medium w-full sm:w-48 focus:ring-1 focus:ring-brand-blue/20 transition-all"
+                            className="pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs font-bold w-full sm:w-48 focus:ring-1 focus:ring-brand-blue/20 transition-all border-dashed"
                         />
                     </div>
-                    <button onClick={() => { setIsModalOpen(true); setEditingItem(null); setFormData(initialForm); }} className="bg-brand-blue text-white px-5 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-stone-dark transition-all shadow-md shadow-brand-blue/15 whitespace-nowrap">
+                    <button onClick={() => { setIsModalOpen(true); setEditingItem(null); setFormData(initialForm); }} className="bg-brand-blue text-white px-5 py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-stone-dark transition-all shadow-lg shadow-brand-blue/15 active:scale-[0.98] whitespace-nowrap">
                         <Plus size={14} /> Register Asset
                     </button>
                 </div>
@@ -120,29 +123,28 @@ const ManageCertificates = () => {
                                 key={item.id}
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className={`bg-white p-4 rounded-xl border flex items-center gap-4 group hover:shadow-md transition-all ${!item.isActive ? 'border-red-200 bg-red-50/20' : item.isPinned ? 'border-brand-gold bg-brand-gold/[0.02]' : 'border-slate-200/60'}`}
+                                className={`bg-white p-3 md:p-4 rounded-2xl border flex items-center gap-3 md:gap-4 group hover:shadow-md transition-all ${!item.isActive ? 'border-red-200 bg-red-50/20' : item.isPinned ? 'border-brand-gold bg-brand-gold/[0.02]' : 'border-slate-200/60'}`}
                             >
-                                <div className={`w-14 h-14 bg-slate-50 rounded-lg overflow-hidden shrink-0 border border-slate-100 flex items-center justify-center p-2 ${!item.isActive ? 'grayscale opacity-50' : ''}`}>
+                                <div className={`w-12 h-12 md:w-14 md:h-14 bg-slate-50 rounded-xl overflow-hidden shrink-0 border border-slate-100 flex items-center justify-center p-2 ${!item.isActive ? 'grayscale opacity-50' : ''}`}>
                                     <img src={item.image} alt={item.title} className="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-500" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-0.5">
-                                        <h3 className="font-bold text-stone-dark text-sm truncate">{item.title}</h3>
+                                        <h3 className="font-bold text-stone-dark text-xs md:text-sm truncate leading-none">{item.title}</h3>
                                         {item.isPinned && <Pin size={10} className="text-brand-gold" fill="currentColor" />}
                                     </div>
-                                    <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-wider"><Building2 size={11} className="text-brand-blue" /> {item.issuedBy}</div>
+                                    <div className="flex items-center gap-1.5 text-slate-400 text-[9px] md:text-[10px] font-black uppercase tracking-widest leading-none mt-1"><Building2 size={11} className="text-brand-blue" /> {item.issuedBy}</div>
                                 </div>
-                                <div className="flex items-center gap-3 pr-2">
+                                <div className="flex items-center gap-2 md:gap-3 pr-1 md:pr-2">
                                     <div className="hidden sm:flex flex-col items-end gap-1">
                                         <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${item.isActive ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
                                             {item.isActive ? 'Authorized' : 'Disabled'}
                                         </span>
                                         {item.isPinned && <span className="text-[8px] font-black text-brand-gold uppercase tracking-tighter">Priority View</span>}
                                     </div>
-                                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button onClick={() => openEditModal(item)} className="p-2 bg-slate-50 text-slate-400 hover:text-brand-blue hover:bg-brand-blue/10 rounded-lg transition-all" title="Edit"><Edit2 size={14} /></button>
-                                        <button onClick={() => toggleActive(item)} className={`p-2 rounded-lg transition-all ${item.isActive ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' : 'bg-red-50 text-red-500 hover:bg-red-100'}`} title={item.isActive ? 'Nonaktifkan' : 'Aktifkan'}>{item.isActive ? <Eye size={14} /> : <EyeOff size={14} />}</button>
-                                        <button onClick={() => handleDelete(item.id)} className="p-2 bg-slate-50 text-slate-400 hover:text-white hover:bg-rose-500 rounded-lg transition-all" title="Hapus"><Trash2 size={14} /></button>
+                                    <div className="flex gap-1 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button onClick={() => openEditModal(item)} className="p-2 bg-slate-50 text-slate-400 hover:text-brand-blue hover:bg-brand-blue/10 rounded-xl transition-all border border-slate-100" title="Edit"><Edit2 size={13} /></button>
+                                        <button onClick={() => toggleActive(item)} className={`p-2 rounded-xl transition-all border ${item.isActive ? 'bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100' : 'bg-rose-50 text-rose-500 border-rose-100 hover:bg-rose-100'}`} title={item.isActive ? 'Nonaktifkan' : 'Aktifkan'}>{item.isActive ? <Eye size={13} /> : <EyeOff size={13} />}</button>
                                     </div>
                                 </div>
                             </motion.div>
@@ -210,53 +212,53 @@ const ManageCertificates = () => {
                 {isModalOpen && (
                     <div className="fixed inset-0 z-[10002] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
                         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-slate-200/60 transition-all">
-                            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
+                            <div className="px-5 py-4 md:px-6 md:py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
                                 <div>
-                                    <h3 className="text-lg font-bold text-stone-dark tracking-tight">{editingItem ? 'Edit Credential' : 'New Credential'}</h3>
-                                    <p className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">Document management</p>
+                                    <h3 className="text-base md:text-lg font-bold text-stone-dark tracking-tight">{editingItem ? 'Edit Credential' : 'New Credential'}</h3>
+                                    <p className="text-[9px] md:text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">Document management</p>
                                 </div>
-                                <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors"><X size={18} /></button>
+                                <button onClick={() => setIsModalOpen(false)} className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors shrink-0"><X size={18} /></button>
                             </div>
-                            <form onSubmit={handleSubmit} className="p-6 space-y-5">
+                            <form onSubmit={handleSubmit} className="p-5 md:p-6 space-y-4 md:space-y-5">
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Label Sertifikat</label>
-                                    <input required name="title" value={formData.title} onChange={handleInputChange} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-bold text-stone-dark" placeholder="Misal: Sertifikat Halal MUI" />
+                                    <label className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Label Sertifikat</label>
+                                    <input required name="title" value={formData.title} onChange={handleInputChange} className="w-full px-4 py-2.5 md:py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs md:text-sm font-bold text-stone-dark" placeholder="Misal: Sertifikat Halal MUI" />
                                 </div>
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Lembaga Akreditasi</label>
-                                    <input required name="issuedBy" value={formData.issuedBy} onChange={handleInputChange} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-bold text-brand-blue" placeholder="Penerbit dokumen..." />
+                                    <label className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Lembaga Akreditasi</label>
+                                    <input required name="issuedBy" value={formData.issuedBy} onChange={handleInputChange} className="w-full px-4 py-2.5 md:py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs md:text-sm font-bold text-brand-blue" placeholder="Penerbit dokumen..." />
                                 </div>
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Asset Reference (URL/File)</label>
+                                    <label className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Asset Reference (URL/File)</label>
                                     <div className="flex gap-2">
-                                        <input required name="image" value={formData.image} onChange={handleInputChange} className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium outline-none text-slate-400" />
-                                        <label className="cursor-pointer px-4 bg-brand-blue text-white rounded-xl flex items-center justify-center hover:bg-stone-dark transition-all shadow-md">
+                                        <input required name="image" value={formData.image} onChange={handleInputChange} className="flex-1 px-4 py-2.5 md:py-3 bg-slate-50 border border-slate-200 rounded-xl text-[10px] md:text-xs font-medium outline-none text-slate-400 truncate" />
+                                        <label className="cursor-pointer w-10 h-10 md:w-12 md:h-12 bg-brand-blue text-white rounded-xl flex items-center justify-center hover:bg-stone-dark transition-all shadow-md shrink-0">
                                             <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} disabled={uploading} />
                                             <Upload size={18} className={uploading ? 'animate-bounce' : ''} />
                                         </label>
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-50">
-                                    <label className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100 cursor-pointer group">
-                                        <div className="relative w-5 h-5">
+                                <div className="grid grid-cols-2 gap-3 pt-2 md:pt-4 border-t border-slate-50">
+                                    <label className="flex items-center gap-2 md:gap-3 p-2.5 md:p-3 bg-slate-50 rounded-xl border border-slate-100 cursor-pointer group">
+                                        <div className="relative w-4 md:w-5 h-4 md:h-5">
                                             <input type="checkbox" name="isPinned" checked={formData.isPinned} onChange={handleInputChange} className="peer hidden" />
                                             <div className="w-full h-full border-2 border-slate-300 rounded group-hover:border-brand-gold peer-checked:bg-brand-gold peer-checked:border-brand-gold flex items-center justify-center">
-                                                <Pin size={12} className="text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="currentColor" />
+                                                <Pin size={10} md:size={12} className="text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="currentColor" />
                                             </div>
                                         </div>
-                                        <span className="text-xs font-bold text-slate-500 uppercase tracking-tighter">Pin to Front</span>
+                                        <span className="text-[9px] md:text-xs font-bold text-slate-500 uppercase tracking-tighter">Pin to Front</span>
                                     </label>
-                                    <label className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100 cursor-pointer group">
-                                        <div className="relative w-5 h-5">
+                                    <label className="flex items-center gap-2 md:gap-3 p-2.5 md:p-3 bg-slate-50 rounded-xl border border-slate-100 cursor-pointer group">
+                                        <div className="relative w-4 md:w-5 h-4 md:h-5">
                                             <input type="checkbox" name="isActive" checked={formData.isActive} onChange={handleInputChange} className="peer hidden" />
                                             <div className="w-full h-full border-2 border-slate-300 rounded group-hover:border-emerald-500 peer-checked:bg-emerald-500 peer-checked:border-emerald-500 flex items-center justify-center">
-                                                <div className="w-1.5 h-1.5 bg-white rounded-full opacity-0 peer-checked:opacity-100" />
+                                                <div className="w-1 md:w-1.5 h-1 md:h-1.5 bg-white rounded-full opacity-0 peer-checked:opacity-100" />
                                             </div>
                                         </div>
-                                        <span className="text-xs font-bold text-slate-500 uppercase tracking-tighter">Publish Live</span>
+                                        <span className="text-[9px] md:text-xs font-bold text-slate-500 uppercase tracking-tighter">Publish Live</span>
                                     </label>
                                 </div>
-                                <button type="submit" disabled={uploading} className="w-full py-4 bg-stone-dark text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] shadow-xl hover:bg-brand-blue transition-all disabled:opacity-50">
+                                <button type="submit" disabled={uploading} className="w-full py-3 md:py-4 bg-stone-dark text-white rounded-2xl font-black text-[9px] md:text-[10px] uppercase tracking-[0.25em] md:tracking-[0.3em] shadow-xl hover:bg-brand-blue transition-all disabled:opacity-50">
                                     {uploading ? 'CALCULATING DATA...' : 'AUTHORIZE STORAGE'}
                                 </button>
                             </form>

@@ -100,10 +100,10 @@ const ManageArticles = () => {
 
             {/* Main Layout Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                {/* Left Column: Article List (8/12) */}
-                <div className="lg:col-span-8 space-y-4">
+                {/* Left Column: Article List (8/12) - Strictly 2-column grid as requested */}
+                <div className="lg:col-span-8 grid grid-cols-2 gap-3 md:gap-4 content-start">
                     {filteredArticles.length === 0 ? (
-                        <div className="py-24 text-center bg-white rounded-3xl border border-dashed border-slate-200">
+                        <div className="col-span-full py-24 text-center bg-white rounded-3xl border border-dashed border-slate-200">
                             <FileText className="mx-auto text-slate-100 mb-6" size={48} />
                             <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Belum ada artikel yang diterbitkan.</p>
                         </div>
@@ -111,30 +111,30 @@ const ManageArticles = () => {
                         filteredArticles.map((article) => (
                             <motion.div
                                 key={article.id}
-                                initial={{ opacity: 0, x: -15 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                className="bg-white rounded-3xl border border-slate-200/60 overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col md:flex-row group min-h-[160px]"
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                className="bg-white rounded-2xl md:rounded-3xl border border-slate-200/60 overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col group h-full"
                             >
-                                {/* Thumbnail */}
-                                <div className="w-full md:w-56 bg-slate-50 shrink-0 overflow-hidden relative aspect-video md:aspect-auto">
+                                {/* Thumbnail - Fixed aspect for vertical cards */}
+                                <div className="w-full bg-slate-50 shrink-0 overflow-hidden relative aspect-video">
                                     <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
-                                    <div className="absolute top-3 left-3 bg-brand-blue/90 backdrop-blur-md text-white text-[9px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-widest shadow-lg">
+                                    <div className="absolute top-2 left-2 md:top-2.5 md:left-2.5 bg-brand-blue/90 backdrop-blur-md text-white text-[7px] md:text-[9px] font-black px-1.5 py-1 md:px-2.5 md:py-1 rounded-md md:rounded-lg uppercase tracking-widest shadow-lg">
                                         {article.category}
                                     </div>
                                 </div>
-                                {/* Content info */}
-                                <div className="p-6 flex-1 flex flex-col justify-between">
+                                {/* Content info - Compact vertical layout for 2-column grid */}
+                                <div className="p-3 md:p-5 flex-1 flex flex-col justify-between">
                                     <div>
-                                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-2">
-                                            <span className="flex items-center gap-1.5"><Calendar size={12} className="text-brand-blue" /> {article.date}</span>
-                                            <span className="flex items-center gap-1.5"><User size={12} className="text-brand-blue" /> {article.author}</span>
+                                        <div className="flex flex-wrap items-center gap-x-2 md:gap-x-3 gap-y-0.5 text-[7px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 md:mb-2">
+                                            <span className="flex items-center gap-1"><Calendar size={10} className="text-brand-blue" /> {article.date}</span>
+                                            <span className="flex items-center gap-1"><User size={10} className="text-brand-blue" /> {article.author}</span>
                                         </div>
-                                        <h3 className="font-bold text-stone-dark text-base md:text-lg line-clamp-2 md:line-clamp-1 group-hover:text-brand-blue transition-colors leading-tight mb-2 uppercase tracking-tight">{article.title}</h3>
-                                        <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed font-medium italic">"{article.excerpt}"</p>
+                                        <h3 className="font-black text-stone-dark text-[10px] md:text-base line-clamp-2 group-hover:text-brand-blue transition-colors leading-tight mb-1.5 md:mb-2 uppercase tracking-tight">{article.title}</h3>
+                                        <p className="text-[9px] md:text-xs text-slate-500 line-clamp-2 leading-relaxed font-medium italic">"{article.excerpt}"</p>
                                     </div>
-                                    <div className="flex justify-end gap-2 mt-4 md:mt-0 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all translate-x-0 md:translate-x-4 group-hover:translate-x-0">
-                                        <button onClick={() => openEditModal(article)} className="p-2.5 bg-slate-50 text-slate-400 hover:text-brand-blue hover:bg-brand-blue/10 rounded-xl transition-all border border-slate-100"><Edit2 size={16} /></button>
-                                        <button onClick={() => handleDelete(article.id)} className="p-2.5 bg-rose-50 text-rose-400 hover:text-white hover:bg-rose-500 rounded-xl transition-all border border-rose-100 shadow-sm"><Trash2 size={16} /></button>
+                                    <div className="flex justify-end gap-1.5 md:gap-2 mt-3 md:mt-4 md:opacity-0 group-hover:opacity-100 transition-all">
+                                        <button onClick={() => openEditModal(article)} className="p-2 md:p-2.5 bg-slate-50 text-slate-400 hover:text-brand-blue hover:bg-brand-blue/10 rounded-lg md:rounded-xl transition-all border border-slate-100"><Edit2 size={13} /></button>
+                                        <button onClick={() => handleDelete(article.id)} className="p-2 md:p-2.5 bg-rose-50 text-rose-400 hover:text-white hover:bg-rose-500 rounded-lg md:rounded-xl transition-all border border-rose-100 shadow-sm"><Trash2 size={13} /></button>
                                     </div>
                                 </div>
                             </motion.div>
@@ -211,31 +211,31 @@ const ManageArticles = () => {
                             className="bg-white w-full max-w-2xl rounded-[1.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden max-h-[92vh] flex flex-col border border-slate-200"
                         >
                             {/* Header Modal — Presisi & Informatif */}
-                            <div className="px-7 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 bg-brand-blue rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-blue/20">
-                                        <FileText size={20} />
+                            <div className="px-5 py-4 md:px-7 md:py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
+                                <div className="flex items-center gap-3 md:gap-4">
+                                    <div className="w-9 h-9 md:w-10 md:h-10 bg-brand-blue rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-blue/20 shrink-0">
+                                        <FileText size={18} />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-bold text-stone-dark leading-none">{editingArticle ? 'Edit Narasi Konten' : 'Registrasi Konten Baru'}</h3>
-                                        <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest italic">Content & Media Strategy System</p>
+                                        <h3 className="text-lg md:text-xl font-bold text-stone-dark leading-none">{editingArticle ? 'Edit Narasi Konten' : 'Registrasi Konten Baru'}</h3>
+                                        <p className="text-[9px] md:text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest italic">Content & Media Strategy System</p>
                                     </div>
                                 </div>
-                                <button onClick={() => setIsModalOpen(false)} className="w-9 h-9 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-100 transition-all hover:bg-rose-50"><X size={18} /></button>
+                                <button onClick={() => setIsModalOpen(false)} className="w-9 h-9 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-100 transition-all hover:bg-rose-50 shrink-0"><X size={18} /></button>
                             </div>
 
                             {/* Form Input — Tata Letak Padat & Rapi */}
-                            <form onSubmit={handleSubmit} className="p-7 overflow-y-auto space-y-6 no-scrollbar">
+                            <form onSubmit={handleSubmit} className="p-5 md:p-7 overflow-y-auto space-y-4 md:space-y-6 no-scrollbar">
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Judul Utama Artikel</label>
-                                    <input required name="title" value={formData.title} onChange={handleInputChange} placeholder="Ketik judul artikel yang menarik..." className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-brand-blue/30 focus:border-brand-blue outline-none text-base font-bold text-stone-dark shadow-sm transition-all" />
+                                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Judul Utama Artikel</label>
+                                    <input required name="title" value={formData.title} onChange={handleInputChange} placeholder="Ketik judul artikel yang menarik..." className="w-full px-4 py-2.5 md:py-3 bg-white border border-slate-200 rounded-xl focus:ring-1 focus:ring-brand-blue/30 focus:border-brand-blue outline-none text-sm md:text-base font-bold text-stone-dark shadow-sm transition-all" />
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 md:gap-y-5">
                                     <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Kategori & Topik</label>
+                                        <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Kategori & Topik</label>
                                         <div className="relative">
-                                            <input name="category" value={formData.category} onChange={handleInputChange} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl outline-none text-sm font-bold text-brand-blue shadow-sm focus:border-brand-blue transition-all" placeholder="Misal: Edukasi, News..." />
+                                            <input name="category" value={formData.category} onChange={handleInputChange} className="w-full px-4 py-2.5 md:py-3 bg-white border border-slate-200 rounded-xl outline-none text-xs md:text-sm font-bold text-brand-blue shadow-sm focus:border-brand-blue transition-all" placeholder="Misal: Edukasi, News..." />
                                             <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                                                 <Tag size={14} />
                                             </div>
@@ -243,30 +243,30 @@ const ManageArticles = () => {
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Lampiran Media (URL Sampul)</label>
+                                        <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Lampiran Media (URL Sampul)</label>
                                         <div className="flex gap-2">
-                                            <input required name="image" value={formData.image} onChange={handleInputChange} className="flex-1 px-4 py-3 bg-white border border-slate-200 rounded-xl text-[11px] font-medium outline-none text-slate-400 truncate shadow-sm focus:border-brand-blue transition-all" placeholder="http://..." />
-                                            <label className="cursor-pointer w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-brand-blue transition-all shadow-lg active:scale-95 group shrink-0">
+                                            <input required name="image" value={formData.image} onChange={handleInputChange} className="flex-1 px-4 py-2.5 md:py-3 bg-white border border-slate-200 rounded-xl text-[10px] md:text-[11px] font-medium outline-none text-slate-400 truncate shadow-sm focus:border-brand-blue transition-all" placeholder="http://..." />
+                                            <label className="cursor-pointer w-10 h-10 md:w-12 md:h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center hover:bg-brand-blue transition-all shadow-lg active:scale-95 group shrink-0">
                                                 <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} disabled={uploading} />
-                                                {uploading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Upload size={20} className="group-hover:-translate-y-0.5 transition-transform" />}
+                                                {uploading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Upload size={18} className="group-hover:-translate-y-0.5 transition-transform" />}
                                             </label>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Ringkasan Eksekutif (Excerpt)</label>
-                                    <textarea name="excerpt" value={formData.excerpt} onChange={handleInputChange} rows="2" placeholder="Tulis ringkasan singkat untuk pratinjau..." className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl outline-none resize-none italic text-xs leading-relaxed text-slate-500 shadow-sm focus:border-brand-blue transition-all" />
+                                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Ringkasan Eksekutif (Excerpt)</label>
+                                    <textarea name="excerpt" value={formData.excerpt} onChange={handleInputChange} rows="2" placeholder="Tulis ringkasan singkat untuk pratinjau..." className="w-full px-4 py-2.5 md:py-3 bg-white border border-slate-200 rounded-xl outline-none resize-none italic text-[11px] md:text-xs leading-relaxed text-slate-500 shadow-sm focus:border-brand-blue transition-all" />
                                 </div>
 
-                                <div className="space-y-1.5 flex-1">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Isi Narasi Lengkap</label>
-                                    <textarea required name="content" value={formData.content} onChange={handleInputChange} rows="8" placeholder="Tuangkan detail konten secara mendalam..." className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl outline-none resize-none leading-relaxed text-sm text-stone-dark shadow-sm focus:border-brand-blue transition-all" />
+                                <div className="space-y-1.5">
+                                    <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] ml-1">Isi Narasi Lengkap</label>
+                                    <textarea required name="content" value={formData.content} onChange={handleInputChange} rows="8" placeholder="Tuangkan detail konten secara mendalam..." className="w-full px-4 py-2.5 md:py-3 bg-white border border-slate-200 rounded-xl outline-none resize-none leading-relaxed text-xs md:text-sm text-stone-dark shadow-sm focus:border-brand-blue transition-all" />
                                 </div>
 
-                                <div className="pt-4 border-t border-slate-100">
-                                    <button type="submit" disabled={uploading} className="w-full py-4 bg-brand-blue text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-brand-blue/20 hover:bg-stone-dark hover:shadow-stone-dark/10 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-3">
-                                        {uploading ? 'Sinkronisasi Media...' : (editingArticle ? <><Edit2 size={16} /> Update Konten & Publish</> : <><Plus size={18} /> Terbitkan Artikel Baru</>)}
+                                <div className="pt-2 md:pt-4 border-t border-slate-100">
+                                    <button type="submit" disabled={uploading} className="w-full py-3 md:py-4 bg-brand-blue text-white rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-[0.2em] shadow-xl shadow-brand-blue/20 hover:bg-stone-dark hover:shadow-stone-dark/10 transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 md:gap-3">
+                                        {uploading ? 'Sinkronisasi Media...' : (editingArticle ? <><Edit2 size={14} /> Update Konten & Publish</> : <><Plus size={16} /> Terbitkan Artikel Baru</>)}
                                     </button>
                                 </div>
                             </form>

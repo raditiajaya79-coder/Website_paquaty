@@ -63,10 +63,10 @@ const AdminLayout = () => {
                         </button>
 
                         <div>
-                            <h2 className="text-sm lg:text-lg font-bold text-stone-dark tracking-tight">
+                            <h2 className="text-base md:text-lg font-bold text-stone-dark tracking-tight leading-none">
                                 {getPageTitle(location.pathname)}
                             </h2>
-                            <p className="text-[8px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] lg:mt-0.5">Management Portal</p>
+                            <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] md:tracking-[0.3em] mt-1.5 md:mt-0.5 leading-none">Management Portal</p>
                         </div>
                     </div>
 
