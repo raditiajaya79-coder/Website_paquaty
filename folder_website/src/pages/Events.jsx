@@ -5,13 +5,11 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, User, MapPin } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
 import { useLanguage } from '../context/LanguageContext';
-import { api } from '../utils/api';
-
 /**
  * Events — Halaman unifikasi Acara & Berita
  * Menampilkan Event utama (Hero/Banner) di atas, 
  * dan daftar Artikel di bawahnya.
- * Data di-fetch dinamis dari backend API.
+ * Data saat ini dikosongkan karena beralih ke mode statis.
  */
 const Events = () => {
     const { t } = useLanguage();
@@ -19,25 +17,30 @@ const Events = () => {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Fetch data saat komponen dimuat
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Fetch paralel untuk performa lebih baik
-                const [eventsData, articlesData] = await Promise.all([
-                    api.get('/events'),
-                    api.get('/articles')
-                ]);
-                setEvents(eventsData);
-                setArticles(articlesData);
-            } catch (error) {
-                console.error('Gagal memuat data:', error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchData();
     }, []);
+
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const [eventsRes, articlesRes] = await Promise.all([
+                fetch('http://localhost:5000/api/events'),
+                fetch('http://localhost:5000/api/articles')
+            ]);
+
+            if (eventsRes.ok && articlesRes.ok) {
+                const eventsData = await eventsRes.json();
+                const articlesData = await articlesRes.json();
+                setEvents(eventsData);
+                setArticles(articlesData);
+            }
+        } catch (error) {
+            console.error('Failed to fetch events/articles:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Logic penentuan Featured (Acara Utama)
     // Sesuai permintaan: Hanya tampilkan banner jika ada data 'events'

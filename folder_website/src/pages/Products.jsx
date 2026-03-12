@@ -2,9 +2,10 @@ import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { PRODUCTS, COMPANY_INFO } from '../data/products'; // Data produk statis & Info perusahaan
+import { COMPANY_INFO } from '../data/products'; // Info perusahaan
 import { generatePageTitle } from '../utils/seo';
 import { useLanguage } from '../context/LanguageContext';
+import React, { useState, useEffect } from 'react';
 
 /**
  * Products — Halaman katalog semua produk
@@ -14,7 +15,27 @@ import { useLanguage } from '../context/LanguageContext';
 const Products = () => {
     const { t } = useLanguage();
 
-    // Konfigurasi animasi fade-in untuk motion components
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
+    const fetchProducts = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/products');
+            if (response.ok) {
+                const data = await response.json();
+                setProducts(data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch products:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const fadeIn = {
         initial: { opacity: 0, y: 20 },
         whileInView: { opacity: 1, y: 0 },
@@ -51,70 +72,72 @@ const Products = () => {
                         </p>
                     </motion.div>
 
-                    {/* Grid produk — 3 kolom di desktop, 2 di tablet, 1 di mobile */}
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {PRODUCTS.map((product) => (
-                            // Setiap card adalah link ke halaman detail produk
-                            <Link to={`/products/${product.id}`} key={product.id} className="block group">
-                                <motion.div
-                                    {...fadeIn}
-                                    className="bg-white rounded-3xl border border-stone-border hover:border-brand-gold/50 transition-all duration-700 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transform-gpu"
-                                >
-                                    {/* Image Container with "Breathing Room" */}
-                                    <div className="aspect-square relative overflow-hidden bg-stone-50/50 p-8 flex items-center justify-center">
-                                        {/* Image — refined zoom for elegant gallery feel */}
-                                        <img
-                                            src={product.image}
-                                            alt={t(`product.${product.id}.name`)}
-                                            className="max-w-full max-h-full object-contain transition-transform duration-1000 group-hover:scale-105 drop-shadow-2xl"
-                                        />
+                    {loading ? (
+                        <div className="flex justify-center py-20">
+                            <div className="w-12 h-12 border-4 border-brand-blue border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    ) : products.length === 0 ? (
+                        <div className="text-center py-20">
+                            <p className="text-[#78716C] font-medium tracking-widest uppercase text-xs">Belum ada produk yang tersedia.</p>
+                        </div>
+                    ) : (
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                            {products.map((product) => (
+                                <Link to={`/products/${product.id}`} key={product.id} className="block group">
+                                    <motion.div
+                                        {...fadeIn}
+                                        className="bg-white rounded-3xl border border-stone-border hover:border-brand-gold/50 transition-all duration-700 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transform-gpu h-full flex flex-col"
+                                    >
+                                        <div className="aspect-square relative overflow-hidden bg-stone-50/50 p-8 flex items-center justify-center">
+                                            <img
+                                                src={product.image}
+                                                alt={product.name}
+                                                className="max-w-full max-h-full object-contain transition-transform duration-1000 group-hover:scale-105 drop-shadow-2xl"
+                                            />
+                                            {product.tag && (
+                                                <span className="absolute top-6 left-6 z-20 px-4 py-1.5 rounded-full text-xs font-bold bg-brand-gold text-stone-dark shadow-lg">
+                                                    {product.tag}
+                                                </span>
+                                            )}
+                                        </div>
 
-                                        {/* Badge tag produk (Best Seller, Spicy, dll) di pojok kiri atas */}
-                                        {product.tag && (
-                                            <span className="absolute top-6 left-6 z-20 px-4 py-1.5 rounded-full text-xs font-bold bg-brand-gold text-stone-dark shadow-lg">
-                                                {product.tag}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    {/* Konten card: nama, grade, harga, origin */}
-                                    <div className="p-6">
-                                        {/* Nama varian dan grade */}
-                                        <h3 className="text-xl font-semibold text-stone-dark mb-1">{t(`product.${product.id}.name`)}</h3>
-                                        <p className="text-brand-gold-dark text-sm font-medium mb-3">{t(`product.${product.id}.grade`)}</p>
-
-                                        {/* Section harga */}
-                                        {product.price && (
-                                            <div className="mb-6">
-                                                <div className="flex items-baseline gap-3">
-                                                    <span className="text-xl font-bold text-stone-dark">
-                                                        Rp {formatPrice(product.price)}
-                                                    </span>
-                                                    {product.originalPrice && product.originalPrice > product.price && (
-                                                        <span className="text-sm text-[#A8A29E] line-through font-medium">
-                                                            Rp {formatPrice(product.originalPrice)}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <p className="text-xs text-[#78716C] mt-1">/ {t('products.price_gram')}</p>
-                                            </div>
-                                        )}
-
-                                        {/* Footer card: origin + arrow icon */}
-                                        <div className="flex justify-between items-center pt-4 border-t border-stone-border">
+                                        <div className="p-6 flex-1 flex flex-col justify-between">
                                             <div>
-                                                <p className="text-[10px] text-[#78716C] uppercase tracking-widest mb-1">{t('products.origin')}</p>
-                                                <p className="text-sm font-medium text-stone-dark">{product.origin}</p>
+                                                <h3 className="text-xl font-semibold text-stone-dark mb-1">{product.name}</h3>
+                                                <p className="text-brand-gold-dark text-sm font-medium mb-3">{product.grade}</p>
+
+                                                {product.price && (
+                                                    <div className="mb-6">
+                                                        <div className="flex items-baseline gap-3">
+                                                            <span className="text-xl font-bold text-stone-dark">
+                                                                Rp {formatPrice(product.price)}
+                                                            </span>
+                                                            {product.original_price && product.original_price > product.price && (
+                                                                <span className="text-xs text-[#A8A29E] line-through">
+                                                                    Rp {formatPrice(product.original_price)}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <p className="text-xs text-[#78716C] mt-1">/ {t('products.price_gram')}</p>
+                                                    </div>
+                                                )}
                                             </div>
-                                            <div className="bg-neutral-50 hover:bg-brand-gold text-[#78716C] hover:text-stone-dark p-3 rounded-full transition-all group-hover:scale-110">
-                                                <ArrowRight className="w-5 h-5 -rotate-45" />
+
+                                            <div className="flex justify-between items-center pt-4 border-t border-stone-border mt-auto">
+                                                <div>
+                                                    <p className="text-[10px] text-[#78716C] uppercase tracking-widest mb-1">{t('products.origin')}</p>
+                                                    <p className="text-sm font-medium text-stone-dark">{product.origin}</p>
+                                                </div>
+                                                <div className="bg-neutral-50 hover:bg-brand-gold text-[#78716C] hover:text-stone-dark p-3 rounded-full transition-all group-hover:scale-110">
+                                                    <ArrowRight className="w-5 h-5 -rotate-45" />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </motion.div>
-                            </Link>
-                        ))}
-                    </div>
+                                    </motion.div>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </>

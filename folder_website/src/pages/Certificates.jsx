@@ -4,19 +4,36 @@ import { Helmet } from 'react-helmet-async';
 import { ShieldCheck, Award, CheckCircle2, X, Download, FileCheck, Landmark, FileBadge, Check } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
 import { useLanguage } from '../context/LanguageContext';
-import { api } from '../utils/api'; // API untuk fetch data sertifikat dari backend
-
 /**
  * Certificates — Halaman Sertifikasi & Kualitas
- * Menampilkan sertifikat yang AKTIF saja (isActive === true).
- * Sertifikat yang dimatikan dari dashboard tidak tampil sama sekali.
- * Data diambil dari API backend (/api/certificates).
+ * Data saat ini dikosongkan karena beralih ke mode statis tanpa dashboard admin.
  */
 const Certificates = () => {
     const { t } = useLanguage();
-    const [selectedCert, setSelectedCert] = useState(null); // State untuk modal detail (mobile)
-    const [certificates, setCertificates] = useState([]); // Data sertifikat dari API
-    const [loading, setLoading] = useState(true); // Loading state
+    const [selectedCert, setSelectedCert] = useState(null);
+    const [certificates, setCertificates] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchCertificates();
+    }, []);
+
+    const fetchCertificates = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch('http://localhost:5000/api/certificates');
+            if (response.ok) {
+                const data = await response.json();
+                // Filter is_active on the client side just in case, 
+                // but the API should handle it too.
+                setCertificates(data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch certificates:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Ikon default berdasarkan index (karena ikon tidak disimpan di database)
     const iconMap = [ShieldCheck, Check, FileBadge, FileCheck, Landmark];
@@ -30,24 +47,6 @@ const Certificates = () => {
     ];
     // Span grid default berdasarkan index
     const spanMap = ["md:col-span-6", "md:col-span-6", "md:col-span-4", "md:col-span-4", "md:col-span-4"];
-
-    // Fetch data sertifikat dari API saat mount
-    useEffect(() => {
-        const fetchCertificates = async () => {
-            try {
-                const data = await api.get('/certificates'); // Ambil semua sertifikat
-                // Filter: hanya tampilkan yang isActive === true (hilang total jika off)
-                const activeCerts = data.filter(cert => cert.isActive !== false);
-                setCertificates(activeCerts); // Set ke state
-            } catch (error) {
-                console.error('Gagal memuat sertifikat:', error.message);
-                setCertificates([]); // Kosongkan jika error
-            } finally {
-                setLoading(false); // Selesai loading
-            }
-        };
-        fetchCertificates();
-    }, []);
 
     // Animasi komponen
     const fadeIn = {
@@ -115,7 +114,7 @@ const Certificates = () => {
 
                     {/* Certifications Grid — hanya sertifikat aktif yang ditampilkan */}
                     <div className="grid grid-cols-2 md:grid-cols-12 gap-4 md:gap-8">
-                        {certificates.map((cert, idx) => {
+                        {certificates.filter(c => c.is_active).map((cert, idx) => {
                             // Assign ikon, warna, dan span berdasarkan index (looping jika lebih dari 5)
                             const IconComponent = iconMap[idx % iconMap.length];
                             const colors = colorMap[idx % colorMap.length];
@@ -129,7 +128,7 @@ const Certificates = () => {
                                     viewport={{ once: true }}
                                     transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: idx * 0.1 }}
                                     onClick={() => {
-                                        if (window.innerWidth < 768) setSelectedCert({ ...cert, icon: IconComponent, ...colors }); // Set modal data di mobile
+                                        if (window.innerWidth < 768) setSelectedCert({ ...cert, icon: IconComponent, ...colors });
                                     }}
                                     className={`group bg-white rounded-[1.5rem] md:rounded-[3rem] border border-stone-border/30 overflow-hidden hover:shadow-2xl transition-all duration-700 transform-gpu cursor-pointer md:cursor-default ${span}`}
                                 >
@@ -146,7 +145,7 @@ const Certificates = () => {
                                             </h3>
                                             {/* Sub-judul */}
                                             <p className="text-[7px] md:text-[10px] font-bold text-brand-gold-dark uppercase tracking-[0.2em] mb-4">
-                                                {cert.sub || cert.issuedBy}
+                                                {cert.sub || cert.issued_by}
                                             </p>
 
                                             {/* Deskripsi — hanya desktop */}
