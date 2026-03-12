@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Instagram } from 'lucide-react';
@@ -11,17 +12,27 @@ import { useLanguage } from '../context/LanguageContext';
  */
 const Gallery = () => {
     const { t } = useLanguage();
+    const [images, setImages] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    // Data gambar statis (mengikuti pola incoming pull)
-    const images = [
-        { id: 1, src: "/images/keripik tempe original pakuaty.jpg", span: "md:col-span-8", aspect: "aspect-[1.5/1] md:aspect-[2/1]" },
-        { id: 2, src: "/images/keirpik tempe balado pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square" },
-        { id: 3, src: "/images/keripik tempe bbq pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square" },
-        { id: 4, src: "/images/keripik tempe keju pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square" },
-        { id: 5, src: "/images/keripik tempe sapi pakuaty.jpg", span: "md:col-span-4", aspect: "aspect-square" },
-        { id: 6, src: "/images/keripik jamur pakuaty.jpg", span: "md:col-span-6", aspect: "aspect-video" },
-        { id: 7, src: "/images/FOTO ALL KERIPIK TEMPE.jpg", span: "md:col-span-6", aspect: "aspect-video" },
-    ];
+    useEffect(() => {
+        fetchGallery();
+    }, []);
+
+    const fetchGallery = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch('http://localhost:5000/api/gallery');
+            if (response.ok) {
+                const data = await response.json();
+                setImages(data);
+            }
+        } catch (error) {
+            console.error('Failed to fetch gallery:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const fadeIn = {
         initial: { opacity: 0, y: 30 },
@@ -64,42 +75,52 @@ const Gallery = () => {
                     </header>
 
                     {/* Grid Galeri */}
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-                        {images.map((img, idx) => (
-                            <motion.div
-                                key={img.id}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: idx * 0.1 }}
-                                className={`relative group overflow-hidden rounded-[3rem] shadow-xl bg-white border border-stone-border/30 transform-gpu ${img.span} ${img.aspect}`}
-                            >
-                                {/* Image Container */}
-                                <div className="absolute inset-0 p-4 transition-all duration-700 group-hover:p-0">
-                                    <img
-                                        src={img.src}
-                                        alt={t(`gallery.item${img.id}.title`)}
-                                        className="w-full h-full object-cover rounded-[2.2rem] transition-all duration-1000 group-hover:rounded-none group-hover:scale-105"
-                                    />
-                                </div>
+                    {loading ? (
+                        <div className="flex justify-center py-20">
+                            <div className="w-12 h-12 border-4 border-brand-blue border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    ) : images.length === 0 ? (
+                        <div className="text-center py-20">
+                            <p className="text-[#78716C] font-medium tracking-widest uppercase text-xs">Belum ada foto di galeri.</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+                            {images.map((img, idx) => (
+                                <motion.div
+                                    key={img.id}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: idx * 0.1 }}
+                                    className={`relative group overflow-hidden rounded-[3rem] shadow-xl bg-white border border-stone-border/30 transform-gpu ${img.span || 'md:col-span-4'} ${img.aspect || 'aspect-square'}`}
+                                >
+                                    {/* Image Container */}
+                                    <div className="absolute inset-0 p-4 transition-all duration-700 group-hover:p-0">
+                                        <img
+                                            src={img.image}
+                                            alt={img.title}
+                                            className="w-full h-full object-cover rounded-[2.2rem] transition-all duration-1000 group-hover:rounded-none group-hover:scale-105"
+                                        />
+                                    </div>
 
-                                {/* Category Badge */}
-                                <div className="absolute top-8 left-8 z-20">
-                                    <span className="px-4 py-1.5 bg-white/90 backdrop-blur-xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] text-brand-blue shadow-xl border border-white/20">
-                                        {t(`gallery.item${img.id}.cat`)}
-                                    </span>
-                                </div>
+                                    {/* Category Badge */}
+                                    <div className="absolute top-8 left-8 z-20">
+                                        <span className="px-4 py-1.5 bg-white/90 backdrop-blur-xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] text-brand-blue shadow-xl border border-white/20">
+                                            {img.category}
+                                        </span>
+                                    </div>
 
-                                {/* Overlay on Hover */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-stone-dark/90 via-stone-dark/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-10 pointer-events-none">
-                                    <h3 className="text-white text-3xl font-medium tracking-tight translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-100">
-                                        {t(`gallery.item${img.id}.title`)}
-                                    </h3>
-                                    <div className="w-12 h-0.5 bg-brand-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-700 delay-200 origin-left mt-2"></div>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
+                                    {/* Overlay on Hover */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-stone-dark/90 via-stone-dark/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-10 pointer-events-none">
+                                        <h3 className="text-white text-3xl font-medium tracking-tight translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-100">
+                                            {img.title}
+                                        </h3>
+                                        <div className="w-12 h-0.5 bg-brand-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-700 delay-200 origin-left mt-2"></div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    )}
 
                     {/* Instagram CTA */}
                     <motion.div

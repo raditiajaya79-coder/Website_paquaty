@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { ArrowLeft, CheckCircle2, ShieldCheck, Globe2, MessageCircle, FileText, Package, MapPin } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
-import { PRODUCTS, COMPANY_INFO } from '../data/products';
+import { COMPANY_INFO } from '../data/products';
 import { useLanguage } from '../context/LanguageContext';
 
 /**
@@ -16,13 +16,37 @@ const ProductDetail = () => {
     const { t, lang } = useLanguage();
     const { id } = useParams();
 
-    // Mencari produk dari data statis berdasarkan ID di URL
-    const product = PRODUCTS.find(p => p.id === parseInt(id));
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [selectedPackaging, setSelectedPackaging] = useState(null);
 
-    // State untuk pilihan kemasan, default ke opsi pertama
-    const [selectedPackaging, setSelectedPackaging] = useState(
-        product?.packagingOptions?.[0] || { label: "50 Gram", value: "50g" }
-    );
+    useEffect(() => {
+        fetchProduct();
+    }, [id]);
+
+    const fetchProduct = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch(`http://localhost:5000/api/products/${id}`);
+            if (response.ok) {
+                const data = await response.json();
+                setProduct(data);
+
+                // Parse packaging_options if it's a string (from DB)
+                const options = typeof data.packaging_options === 'string'
+                    ? JSON.parse(data.packaging_options)
+                    : (data.packaging_options || []);
+
+                if (options.length > 0) {
+                    setSelectedPackaging(options[0]);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch product:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Konfigurasi animasi
     const fadeIn = {
@@ -38,40 +62,54 @@ const ProductDetail = () => {
         return new Intl.NumberFormat('id-ID').format(price);
     };
 
-    // Tampilan fallback jika produk tidak ditemukan
-    if (!product) {
-        return (
-            <div className="pt-40 pb-20 text-center">
-                <h2 className="text-2xl font-serif text-stone-dark mb-4">Product Not Found</h2>
-                <Link to="/products" className="text-brand-gold-dark font-medium hover:underline">Return to Catalog</Link>
-            </div>
-        );
-    }
-
     /**
      * handleWhatsAppOrder — Buka WhatsApp dengan pesan pre-filled untuk order
      */
     const handleWhatsAppOrder = () => {
-        const productName = t(`product.${product.id}.name`);
+        const productName = product.name;
         const message = lang === 'id'
-            ? `Halo ${COMPANY_INFO.name}, saya tertarik dengan produk Keripik Tempe Pakuaty rasa ${productName} (${selectedPackaging.label}). Mohon info harga dan ketersediaan.`
-            : `Hello ${COMPANY_INFO.name}, I am interested in Pakuaty Tempe Chips ${productName} flavor (${selectedPackaging.label}). Please provide information on price and availability.`;
+            ? `Halo ${COMPANY_INFO.name}, saya tertarik dengan produk Keripik Tempe Pakuaty rasa ${productName} (${selectedPackaging?.label || ''}). Mohon info harga dan ketersediaan.`
+            : `Hello ${COMPANY_INFO.name}, I am interested in Pakuaty Tempe Chips ${productName} flavor (${selectedPackaging?.label || ''}). Please provide information on price and availability.`;
         window.open(`https://wa.me/${COMPANY_INFO.whatsapp}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
-    // Hitung persentase diskon jika ada originalPrice
-    const discountPercent = product.originalPrice && product.price
-        ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+
+    // Loading state UI
+    if (loading) {
+        return (
+            <div className="bg-neutral-bone min-h-screen pt-24 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-brand-blue border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-sm font-medium text-stone-dark/40">Memuat Detail Produk...</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Tampilan fallback jika produk tidak ditemukan
+    if (!product) {
+        return (
+            <div className="pt-40 pb-20 text-center bg-neutral-bone min-h-screen">
+                <h2 className="text-2xl font-serif text-stone-dark mb-4">Produk Tidak Ditemukan</h2>
+                <Link to="/products" className="text-brand-gold-dark font-medium hover:underline">Kembali ke Katalog</Link>
+            </div>
+        );
+    }
+    // Hitung persentase diskon jika ada original_price
+    const discountPercent = product.original_price && product.price
+        ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
         : 0;
 
-    const packagingOptions = product.packagingOptions || [];
+    const packagingOptions = typeof product.packaging_options === 'string'
+        ? JSON.parse(product.packaging_options)
+        : (product.packaging_options || []);
 
     return (
         <>
             {/* SEO metadata */}
             <Helmet>
-                <title>{generatePageTitle(`${t(`product.${product.id}.name`)} — Keripik Tempe Pakuaty`)}</title>
-                <meta name="description" content={`${t(`product.${product.id}.name`)}. ${t(`product.${product.id}.grade`)}. Harga Rp ${formatPrice(product.price || 0)}.`} />
+                <title>{generatePageTitle(`${product.name} — Keripik Tempe Pakuaty`)}</title>
+                <meta name="description" content={`${product.name}. ${product.grade}. Harga Rp ${formatPrice(product.price || 0)}.`} />
             </Helmet>
 
             <div className="bg-neutral-bone min-h-screen pt-24 pb-16 md:pb-20 relative overflow-hidden">
@@ -94,8 +132,8 @@ const ProductDetail = () => {
                             {/* Image Container */}
                             <div className="w-full aspect-square p-12 flex items-center justify-center bg-stone-50/50">
                                 <img
-                                    src={product.detailImage || product.image}
-                                    alt={t(`product.${product.id}.name`)}
+                                    src={product.detail_image || product.image}
+                                    alt={product.name}
                                     className="max-w-full max-h-full object-contain drop-shadow-2xl"
                                 />
                             </div>
@@ -120,10 +158,10 @@ const ProductDetail = () => {
                             </span>
 
                             <h1 className="text-3xl md:text-5xl font-serif font-medium text-stone-dark tracking-tight mb-1 leading-[1.1]">
-                                {t(`product.${product.id}.name`)}
+                                {product.name}
                             </h1>
 
-                            <p className="text-base text-[#78716C] font-light mb-5 italic">{t(`product.${product.id}.grade`)}</p>
+                            <p className="text-base text-[#78716C] font-light mb-5 italic">{product.grade}</p>
 
                             {/* Harga */}
                             {product.price && (
@@ -131,9 +169,9 @@ const ProductDetail = () => {
                                     <span className="text-2xl font-bold text-brand-blue">
                                         Rp{formatPrice(product.price)}
                                     </span>
-                                    {product.originalPrice && product.originalPrice > product.price && (
+                                    {product.original_price && product.original_price > product.price && (
                                         <span className="text-sm text-[#A8A29E] line-through">
-                                            Rp{formatPrice(product.originalPrice)}
+                                            Rp{formatPrice(product.original_price)}
                                         </span>
                                     )}
                                     {discountPercent > 0 && (
@@ -184,7 +222,7 @@ const ProductDetail = () => {
                             <div className="mb-6">
                                 <h3 className="text-xs font-bold text-stone-dark uppercase tracking-widest mb-3">{lang === 'id' ? 'Deskripsi Produk' : 'Product Description'}</h3>
                                 <p className="text-sm text-[#57534E] leading-[1.8] whitespace-pre-line">
-                                    {t(`product.${product.id}.desc`)}
+                                    {product.description}
                                 </p>
                             </div>
 

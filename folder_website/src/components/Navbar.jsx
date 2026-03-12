@@ -3,15 +3,6 @@ import { motion } from 'framer-motion';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ArrowRight, Menu, X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { api } from '../utils/api'; // API untuk cek sertifikat aktif
-
-/**
- * Navbar — Template style with brand accents
- * Dynamic transparency on Home page
- * 
- * Fitur: Link "Sertifikasi" otomatis hilang jika semua sertifikat
- * dimatikan dari dashboard (isActive === false).
- */
 const Navbar = () => {
     const { lang, switchLang, t } = useLanguage();
     const location = useLocation();
@@ -19,10 +10,8 @@ const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    // Initial state dari sessionStorage agar "stabil" saat pindah halaman
-    const [hasCertificates, setHasCertificates] = useState(() => {
-        return sessionStorage.getItem('pakuaty_has_certs') === 'true';
-    });
+    // Set true agar link "Sertifikasi" tetap muncul di mode statis
+    const [hasCertificates, setHasCertificates] = useState(true);
 
     // Scroll listener untuk efek transparansi
     useEffect(() => {
@@ -46,29 +35,6 @@ const Navbar = () => {
             document.body.style.overflow = 'unset'; // Lepas scroll
         }
     }, [isMenuOpen]);
-
-    /**
-     * Cek apakah ada sertifikat aktif di backend.
-     * Jika 0 sertifikat aktif → sembunyikan link "Sertifikasi" dari navbar.
-     * Hasil disimpan di sessionStorage agar navigasi antar halaman tidak flicker.
-     */
-    useEffect(() => {
-        const checkCertificates = async () => {
-            try {
-                const data = await api.get('/certificates'); // Fetch semua sertifikat
-                const activeCount = data.filter(cert => cert.isActive !== false).length;
-                const hasActive = activeCount > 0;
-
-                setHasCertificates(hasActive);
-                sessionStorage.setItem('pakuaty_has_certs', hasActive); // Simpan status
-            } catch (err) {
-                // Jangan paksa sembunyikan jika API error sementara
-            }
-        };
-
-        // Panggil hanya jika belum ada di session atau butuh refresh berkala
-        checkCertificates();
-    }, []); // Hapus dependency location.pathname agar tidak re-fetch terus menerus (penyebab flicker)
 
     const isTransparent = isHome && !isScrolled;
 

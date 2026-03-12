@@ -33,6 +33,13 @@
     font-family: 'Plus Jakarta Sans', sans-serif;
     background-color: var(--color-brand-cream);
     background-attachment: fixed;
+    /* Move scrollbar hiding here directly to ensure it works without @apply issues */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
   }
 
   /* Selection colors — deep blue */
@@ -50,15 +57,13 @@
 }
 
 /* Scrollbar hiding */
-@layer utilities {
-  .no-scrollbar::-webkit-scrollbar {
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
     display: none;
   }
-
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+}
 
   /* Sophisticated textured background for sections */
   .bg-mesh-subtle {
@@ -77,4 +82,3 @@
       radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 80%);
     z-index: 0;
   }
-}

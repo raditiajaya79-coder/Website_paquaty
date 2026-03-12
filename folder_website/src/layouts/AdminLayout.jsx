@@ -1,106 +1,59 @@
-import { Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom'; // Komponen navigasi
-import React, { useEffect } from 'react'; // React hooks
-import Sidebar from '../components/admin/Sidebar'; // Mengimpor sidebar
-import { motion, AnimatePresence } from 'framer-motion'; // Library animasi
-import { Bell, Menu, X } from 'lucide-react'; // Ikon
-import { useAdmin } from '../context/AdminContext'; // Global State
-import AdminToast from '../components/admin/AdminToast'; // Notifikasi Global
-import AdminLoader from '../components/admin/AdminLoader'; // Loading Global
+import React from 'react'; // React library
+import { Outlet } from 'react-router-dom'; // Route outlets for children pages
+import Sidebar from '../components/admin/Sidebar.jsx'; // Sidebar component
+import { Bell, Search, User } from 'lucide-react'; // Icon set from Lucide
 
 /**
- * AdminLayout — Root layout admin yang mengatur sidebar + header + area konten.
+ * AdminLayout — Wrapper utama untuk semua halaman di dalam area Admin.
+ * Menyediakan Sidebar tetap dan area konten utama dengan header.
  */
 const AdminLayout = () => {
-    const location = useLocation(); // Hook lokasi URL aktif
-    const { isLoggedIn, isAuthChecked, isSidebarOpen, setIsSidebarOpen } = useAdmin(); // Ambil state auth dan sidebar global
-
-    /**
-     * getPageTitle — Mengekstrak nama halaman dari path URL.
-     */
-    const getPageTitle = (path) => {
-        const route = path.split('/').filter(Boolean).pop() || 'Dashboard'; // Ambil segmen terakhir, handle trailing slash
-        return route.charAt(0).toUpperCase() + route.slice(1); // Capitalize huruf pertama
-    };
-
-    // Close sidebar on route change (mobile)
-    useEffect(() => {
-        setIsSidebarOpen(false);
-    }, [location.pathname, setIsSidebarOpen]);
-
-    // Proteksi Rute: Tunggu hingga pengecekan auth selesai
-    if (!isAuthChecked) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 flex items-center justify-center">
-                <div className="w-8 h-8 border-[3px] border-brand-blue border-t-transparent rounded-full animate-spin" />
-            </div>
-        );
-    }
-
-    // Jika tidak login, redirect ke halaman login
-    if (!isLoggedIn) {
-        return <Navigate to="/admin/login" state={{ from: location }} replace />;
-    }
-
     return (
-        <div className="flex bg-[#F8FAFC] min-h-screen font-sans selection:bg-brand-blue selection:text-white overflow-hidden relative">
-            <div className="fixed inset-0 bg-slate-50 z-0" />
+        <div className="flex h-screen bg-slate-100 font-['Inter',sans-serif] text-[#1E293B] overflow-hidden">
+            {/* Fixed Sidebar — Navigasi samping */}
+            <Sidebar />
 
-            <AdminToast />   {/* Notifikasi toast global */}
-
-            <Sidebar /> {/* Sidebar sekarang mengambil state dari useAdmin secara internal */}
-
-            <main className="flex-1 h-screen flex flex-col relative overflow-hidden w-full">
-                <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-brand-blue/5 blur-[100px] -mr-48 -mt-48 rounded-full pointer-events-none" />
-
-                <header className="h-16 lg:h-20 px-4 lg:px-8 flex items-center justify-between relative z-20 border-b border-slate-200/40 bg-white/70 backdrop-blur-md">
-                    <div className="flex items-center gap-4">
-                        {/* Hamburger Button — Mobile Only */}
-                        <button
-                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className="lg:hidden w-10 h-10 bg-white border border-slate-200/60 rounded-xl flex items-center justify-center text-slate-500 hover:text-brand-blue transition-all"
-                        >
-                            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-                        </button>
-
-                        <div>
-                            <h2 className="text-base md:text-lg font-bold text-stone-dark tracking-tight leading-none">
-                                {getPageTitle(location.pathname)}
-                            </h2>
-                            <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] md:tracking-[0.3em] mt-1.5 md:mt-0.5 leading-none">Management Portal</p>
+            {/* Main Content Area — pl-64 untuk kompensasi sidebar fixed */}
+            <main className="flex-1 flex flex-col min-w-0 overflow-hidden pl-64 transition-all">
+                {/* Top Header — Navigasi atas */}
+                <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 py-2 flex items-center justify-between shrink-0">
+                    <div className="flex items-center gap-4 w-1/3">
+                        <div className="relative w-full max-w-sm">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8]" />
+                            <input
+                                type="text"
+                                placeholder="Cari data..."
+                                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 pl-11 pr-5 text-xs font-semibold focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all placeholder:text-slate-400"
+                            />
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 lg:gap-4">
-                        <button className="hidden sm:flex w-10 h-10 bg-white border border-slate-200/60 rounded-xl items-center justify-center text-slate-400 hover:text-brand-blue hover:border-brand-blue/20 transition-all shadow-sm">
-                            <Bell size={18} />
+                    <div className="flex items-center gap-5">
+                        <button className="relative p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/50 transition-all active:scale-95 group">
+                            <Bell className="w-4.5 h-4.5 text-[#64748B] group-hover:text-[#2563EB]" />
+                            <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full border-2 border-white"></span>
                         </button>
-                        <div className="hidden sm:block h-8 w-px bg-slate-200/60 mx-1" />
-                        <div className="flex items-center gap-2 lg:gap-3 bg-white px-2 lg:px-3 py-1.5 rounded-xl border border-slate-200/60 shadow-sm">
-                            <div className="w-6 h-6 lg:w-7 lg:h-7 bg-gradient-to-br from-brand-gold to-amber-400 rounded-lg flex items-center justify-center text-white font-bold text-[10px] lg:text-xs shadow-md shadow-brand-gold/20">
-                                A
+
+                        <div className="h-6 w-px bg-slate-200"></div>
+
+                        {/* User Profile — Teks di Kiri, Ikon di Kanan sesuai Screenshot */}
+                        <div className="flex items-center gap-3 cursor-pointer group hover:bg-slate-50 p-1 rounded-xl transition-all">
+                            <div className="text-right hidden sm:block">
+                                <p className="text-[13px] font-black text-[#1E293B] leading-none mb-1">Super Admin</p>
+                                <p className="text-[8.5px] font-black text-[#94A3B8] uppercase tracking-[0.2em] opacity-80">Management</p>
                             </div>
-                            <span className="text-[10px] lg:text-xs font-bold text-slate-500 tracking-tight hidden xs:block">Admin</span>
+                            <div className="w-8.5 h-8.5 rounded-xl bg-[#2563EB] flex items-center justify-center shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-all text-white">
+                                <User className="w-4.5 h-4.5" />
+                            </div>
                         </div>
                     </div>
                 </header>
 
-                <div className="flex-1 overflow-y-auto px-4 lg:px-8 pb-10 scroll-smooth no-scrollbar relative z-10">
-                    <AdminLoader />  {/* Overlay loading global */}
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={location.pathname}
-                            initial={{ opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{
-                                duration: 0.4,
-                                ease: [0.22, 1, 0.36, 1]
-                            }}
-                            className="min-h-full pt-6"
-                        >
-                            <Outlet />
-                        </motion.div>
-                    </AnimatePresence>
+                {/* Dynamic Page Content — Halaman yang me-render kartu-kartu internal */}
+                <div className="flex-1 overflow-y-auto px-8 py-4 custom-scrollbar">
+                    <div className="max-w-[1600px] mx-auto">
+                        <Outlet />
+                    </div>
                 </div>
             </main>
         </div>

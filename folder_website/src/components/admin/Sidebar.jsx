@@ -1,160 +1,108 @@
-import React from 'react'; // React
-import { Link, useLocation } from 'react-router-dom'; // Utilitas navigasi
+import React, { useState } from 'react'; // React library & hooks
+import { NavLink, useNavigate } from 'react-router-dom'; // Navigation links for routing
+import ConfirmModal from './ConfirmModal';
 import {
     LayoutDashboard,
     Package,
-    FileText,
-    Image as ImageIcon,
+    Image,
     Award,
     Calendar,
-    Link as LinkIcon,
-    Bell,
-    User,
+    Contact,
+    Megaphone,
+    UserCircle,
     LogOut,
-    X
-} from 'lucide-react'; // Ikon modern dari lucide-react
-import { motion, AnimatePresence } from 'framer-motion'; // Library animasi transisi
-import { useAdmin } from '../../context/AdminContext'; // Global State
+    ChevronRight
+} from 'lucide-react'; // Icon set from Lucide
 
 /**
- * Sidebar — Komponen navigasi utama dashboard admin.
- * Desain compact, modern, dengan floating container dan soft visual.
+ * Sidebar — Komponen navigasi vertikal untuk Admin Dashboard.
+ * Berisi 8 menu utama sesuai permintaan (Dashboard, Product, Galeri, Sertifikate, Event, Kontak, Pengumuman, Profil).
  */
 const Sidebar = () => {
-    const location = useLocation(); // Hook untuk mendapatkan path aktif
-    const { profile, isSidebarOpen, setIsSidebarOpen } = useAdmin(); // Ambil state global untuk sidebar dan profil
+    const navigate = useNavigate();
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
-    // Daftar menu navigasi dengan path, ikon, dan nama
+    // Fungsi Logout
+    const handleLogout = () => {
+        // Hapus data dari localStorage
+        localStorage.removeItem('admin_token');
+        localStorage.removeItem('admin_user');
+
+        // Redirect ke login
+        navigate('/admin/login');
+    };
+    // list menu navigasi
     const menuItems = [
-        { name: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
-        { name: 'Produk', icon: Package, path: '/admin/products' },
-        { name: 'Artikel', icon: FileText, path: '/admin/articles' },
-        { name: 'Galeri', icon: ImageIcon, path: '/admin/gallery' },
-        { name: 'Sertifikat', icon: Award, path: '/admin/certificates' },
-        { name: 'Event', icon: Calendar, path: '/admin/events' },
-        { name: 'Kontak', icon: LinkIcon, path: '/admin/contacts' },
-        { name: 'Pengumuman', icon: Bell, path: '/admin/announcement' },
-        { name: 'Profil', icon: User, path: '/admin/profile' },
+        { label: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
+        { label: 'Product', icon: Package, path: '/admin/products' },
+        { label: 'Galeri', icon: Image, path: '/admin/gallery' },
+        { label: 'Sertifikat', icon: Award, path: '/admin/certificates' },
+        { label: 'Event', icon: Calendar, path: '/admin/events' },
+        { label: 'Kontak', icon: Contact, path: '/admin/contact' },
+        { label: 'Pengumuman', icon: Megaphone, path: '/admin/announcements' },
+        { label: 'Profil', icon: UserCircle, path: '/admin/profile' },
     ];
 
     return (
-        <AnimatePresence>
-            {/* 
-                Sidebar Logic:
-                1. Layar Desktop (lg+): Selalu tampil, posisi sticky.
-                2. Layar Mobile (<lg): Tampil sebagai drawer (fixed) jika isSidebarOpen = true.
-            */}
-            <aside
-                className={`
-                    fixed lg:sticky top-0 left-0 h-screen z-[10001] transition-all duration-500
-                    ${isSidebarOpen ? 'translate-x-0 w-72' : '-translate-x-full lg:translate-x-0 w-0 lg:w-72'}
-                    flex flex-col p-4
-                `}
-            >
-                {/* Overlay untuk mobile (hanya muncul saat sidebar terbuka di layar kecil) */}
-                <AnimatePresence>
-                    {isSidebarOpen && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[-1] lg:hidden"
-                            onClick={() => setIsSidebarOpen(false)}
-                        />
-                    )}
-                </AnimatePresence>
+        <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-slate-100 flex flex-col z-50 shadow-xl shadow-slate-900/5">
+            {/* Branding Area — Logo dan nama perusahaan */}
+            <div className="py-4 px-6 border-b border-slate-100 flex flex-col items-center justify-center text-center">
+                <img
+                    src="/images/pure logo pakuaty.png"
+                    alt="Logo Pakuaty"
+                    className="w-24 h-auto object-contain mb-1.5"
+                />
+                <h2 className="text-[#64748B] text-[9.5px] font-black uppercase tracking-[0.3em] leading-none opacity-80">Admin Panel</h2>
+            </div>
 
-                {/* Floating container utama — glassmorphism effect */}
-                <div className="flex-1 bg-white/95 backdrop-blur-2xl border border-slate-200/50 rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden relative">
-                    {/* Header Mobile: Tombol Close - Hanya tampil di mobile saat drawer terbuka */}
-                    <div className="lg:hidden absolute top-4 right-4 z-20">
-                        <button
-                            onClick={() => setIsSidebarOpen(false)}
-                            className="w-10 h-10 bg-slate-100/50 text-slate-400 rounded-full flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-colors"
-                        >
-                            <X size={20} />
-                        </button>
-                    </div>
-
-                    {/* Dekorasi blur gradient di sudut kiri atas */}
-                    <div className="absolute top-0 left-0 w-32 h-32 bg-brand-gold/10 blur-3xl -ml-16 -mt-16 rounded-full" />
-
-                    {/* Branding Section — logo resmi Pakuaty */}
-                    <div className="p-7 relative flex justify-center border-b border-slate-50">
-                        <img
-                            src="/images/pure logo pakuaty.png"
-                            alt="Pakuaty Logo"
-                            className="h-10 w-auto object-contain"
-                        />
-                    </div>
-
-                    {/* Content Area */}
-                    <div className="flex-1 overflow-y-auto no-scrollbar py-2">
-                        {/* Profile Widget — menampilkan nama admin dan status online */}
-                        <div className="px-5 my-4">
-                            <div className="p-4 bg-slate-50/80 rounded-2xl border border-slate-100/60 flex items-center gap-4 shadow-sm">
-                                {/* Avatar placeholder dengan ikon */}
-                                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-slate-200/60 text-brand-gold shadow-md overflow-hidden">
-                                    <User size={20} />
+            {/* Navigation Menu — Daftar link navigasi */}
+            <nav className="flex-1 overflow-y-auto py-4 px-4 space-y-1 no-scrollbar">
+                {menuItems.map((item, index) => (
+                    <NavLink
+                        key={index}
+                        to={item.path}
+                        className={({ isActive }) => `
+              group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200
+              ${isActive
+                                ? 'bg-[#2563EB] text-white shadow-md shadow-blue-500/20'
+                                : 'text-[#64748B] hover:bg-white hover:text-[#2563EB]'}
+            `}
+                    >
+                        {({ isActive }) => (
+                            <>
+                                <div className="flex items-center gap-3">
+                                    <item.icon className={`w-5 h-5 transition-colors ${isActive ? 'text-white' : 'text-[#94A3B8] group-hover:text-[#2563EB]'}`} /> {/* Ikon menu */}
+                                    <span className="font-semibold text-sm tracking-tight">{item.label}</span> {/* Label menu */}
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-stone-dark text-sm font-bold truncate leading-none mb-1">{profile.fullName || 'Administrator'}</p>
-                                    <div className="flex items-center gap-1.5">
-                                        <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-sm shadow-emerald-500/50" />
-                                        <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest">Connected</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                <ChevronRight className={`w-4 h-4 transition-transform ${isActive ? '' : 'text-gray-300 group-hover:text-[#2563EB]/50'}`} />
+                            </>
+                        )}
+                    </NavLink>
+                ))}
+            </nav>
 
-                        {/* Navigation Menu — daftar link halaman admin */}
-                        <nav className="px-4 space-y-1">
-                            {menuItems.map((item) => {
-                                const isActive = location.pathname === item.path;
-                                return (
-                                    <Link
-                                        key={item.path}
-                                        to={item.path}
-                                        onClick={() => window.innerWidth < 1024 && setIsSidebarOpen(false)}
-                                        className={`group relative flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-300 font-bold text-[14px] overflow-hidden ${isActive
-                                            ? 'bg-brand-blue text-white shadow-lg shadow-brand-blue/20'
-                                            : 'text-slate-500 hover:bg-slate-50 hover:text-stone-dark'
-                                            }`}
-                                    >
-                                        {isActive && (
-                                            <motion.div
-                                                layoutId="activeTab"
-                                                className="absolute left-0 w-1.5 h-6 bg-brand-gold rounded-full"
-                                            />
-                                        )}
-                                        <item.icon size={18} className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
-                                        <span className="relative z-10 tracking-tight">{item.name}</span>
-                                        {!isActive && (
-                                            <div className="absolute inset-0 bg-brand-blue/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                                        )}
-                                    </Link>
-                                );
-                            })}
-                        </nav>
-                    </div>
+            {/* Footer Area — Tombol logout */}
+            <div className="p-4 border-t border-gray-100">
+                <button
+                    onClick={() => setIsLogoutModalOpen(true)}
+                    className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-red-500 hover:bg-red-50 transition-colors font-semibold text-sm"
+                >
+                    <LogOut className="w-5 h-5" /> {/* Ikon Logout */}
+                    <span>Keluar Sistem</span>
+                </button>
+            </div>
 
-                    {/* Footer Section — tombol logout */}
-                    <div className="p-4 mt-auto border-t border-slate-100/50 bg-slate-50/30">
-                        <button
-                            onClick={() => {
-                                localStorage.removeItem('isLoggedIn');
-                                localStorage.removeItem('pakuaty_token');
-                                window.location.href = '/admin/login';
-                            }}
-                            className="flex items-center gap-4 w-full p-4 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-2xl transition-all duration-300 font-bold text-sm group"
-                        >
-                            <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
-                            <span className="tracking-tight">System Logout</span>
-                        </button>
-                    </div>
-                </div>
-            </aside>
-        </AnimatePresence>
+            {/* Logout Confirmation Modal */}
+            <ConfirmModal
+                isOpen={isLogoutModalOpen}
+                onClose={() => setIsLogoutModalOpen(false)}
+                onConfirm={handleLogout}
+                title="Konfirmasi Keluar"
+                message="Apakah Anda yakin ingin keluar dari sistem admin Pakuaty?"
+                confirmText="Ya, Keluar"
+                cancelText="Batal"
+            />
+        </aside>
     );
 };
 

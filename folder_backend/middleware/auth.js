@@ -23,6 +23,11 @@ function authMiddleware(req, res, next) {
   // Ekstrak token dari header (buang prefix "Bearer ")
   const token = authHeader.split(' ')[1];
 
+  // Tambahan validasi: Cegah token "null", "undefined", atau kosong
+  if (!token || token === 'null' || token === 'undefined' || token === '') {
+    return res.status(401).json({ error: 'Sesi tidak valid. Silakan login kembali.' });
+  }
+
   try {
     // Pastikan Secret Key tersedia
     if (!process.env.JWT_SECRET) {
