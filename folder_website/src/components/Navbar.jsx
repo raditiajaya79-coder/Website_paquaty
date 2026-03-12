@@ -36,7 +36,7 @@ const Navbar = () => {
         }
     }, [isMenuOpen]);
 
-    const isTransparent = isHome && !isScrolled;
+    const isTransparent = false; // Always solid — hero section is no longer full-bleed
 
     // Style untuk link navbar (active/inactive + transparent/solid mode)
     const activeStyle = ({ isActive }) => {
