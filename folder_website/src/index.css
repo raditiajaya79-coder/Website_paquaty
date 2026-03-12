@@ -12,6 +12,11 @@
   --color-brand-cyan: #1596D4;
   /* 5% Interactive — Cyan */
 
+  /* === NEW HERITAGE REFINEMENTS === */
+  --color-warm-gold-light: #F4C542;
+  --color-warm-gold-dark: #E89A1A;
+  --color-neutral-warm: #FFF7E6;
+
   /* Shared / Helper Tones */
   --color-white: #FFFFFF;
   /* 25% Content Sections */
@@ -29,7 +34,9 @@
   }
 
   body {
-    @apply text-stone-dark antialiased;
+    color: var(--color-stone-dark);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     font-family: 'Plus Jakarta Sans', sans-serif;
     background-color: var(--color-brand-cream);
     background-attachment: fixed;
@@ -37,7 +44,8 @@
 
   /* Selection colors — deep blue */
   ::selection {
-    @apply bg-brand-blue text-white;
+    background-color: var(--color-brand-blue);
+    color: var(--color-white);
   }
 
   /* Custom heading styles */
@@ -45,7 +53,8 @@
   h2,
   h3,
   .font-serif {
-    @apply tracking-tight;
+    letter-spacing: -0.025em;
+    /* tracking-tight equivalent */
   }
 }
 

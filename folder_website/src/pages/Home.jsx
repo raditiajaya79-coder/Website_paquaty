@@ -66,7 +66,7 @@ const Home = () => {
         <div className="bg-brand-cream text-stone-dark">
             {/* Hero Section — Balanced Premium "Muted Gold" Theme */}
             <section
-                className="relative min-h-screen overflow-hidden bg-[#EAD890]"
+                className="relative min-h-screen overflow-hidden bg-gradient-to-br from-warm-gold-light to-warm-gold-dark"
             >
                 {/* Luminous Warm Gradient Overlay — Adds depth/vignette */}
                 <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(255,255,255,0.2)_0%,_rgba(0,0,0,0.1)_100%)] pointer-events-none" />
@@ -195,7 +195,7 @@ const Home = () => {
                                         <img
                                             src={item.src}
                                             alt={item.name}
-                                            className="w-full h-full object-contain object-center drop-shadow-[0_10px_30px_rgba(0,0,0,0.12)] transform-gpu"
+                                            className="w-full h-full object-contain object-center drop-shadow-[0_20px_50px_rgba(0,0,0,0.25)] transform-gpu"
                                         />
 
                                         {/* Flavor Label — Floating at the bottom */}
@@ -207,7 +207,7 @@ const Home = () => {
                                             }}
                                             className="absolute bottom-10 left-0 right-0 text-center z-10"
                                         >
-                                            <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] tracking-[0.2em] uppercase font-bold transition-all duration-500 ${isActive ? 'bg-brand-gold text-stone-dark scale-110 shadow-xl' : 'bg-white/10 text-white backdrop-blur-md opacity-0'
+                                            <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] tracking-[0.2em] uppercase font-bold transition-all duration-500 ${isActive ? 'bg-warm-gold-light text-stone-dark scale-110 shadow-xl' : 'bg-white/10 text-white backdrop-blur-md opacity-0'
                                                 }`}>
                                                 {item.name}
                                             </span>
@@ -244,7 +244,7 @@ const Home = () => {
                                         <motion.img
                                             src={item.src}
                                             alt={item.name}
-                                            className="w-[92vw] h-auto max-h-[45vh] object-contain drop-shadow-[0_45px_90px_rgba(0,0,0,0.65)] transform-gpu"
+                                            className="w-[92vw] h-auto max-h-[45vh] object-contain drop-shadow-[0_50px_100px_rgba(0,0,0,0.7)] transform-gpu"
                                         />
                                     </div>
 
@@ -253,7 +253,7 @@ const Home = () => {
                                         initial={{ opacity: 0, y: 15 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.3 }}
-                                        className="mt-6 bg-brand-gold text-stone-dark px-6 py-1.5 rounded-full shadow-[0_15px_30px_rgba(218,165,32,0.3)] border border-white/20"
+                                        className="mt-6 bg-warm-gold-light text-stone-dark px-6 py-1.5 rounded-full shadow-[0_15px_30px_rgba(244,197,66,0.3)] border border-white/20"
                                     >
                                         <span className="text-[11px] font-black tracking-[0.4em] uppercase">
                                             {item.name}
@@ -311,7 +311,7 @@ const Home = () => {
                                 </p>
 
                                 <div className="flex flex-col md:flex-row items-center justify-center gap-3 text-white px-6 md:px-0">
-                                    <Link to="/products" className="w-full md:w-auto bg-brand-gold text-stone-dark px-8 py-3.5 md:px-12 md:py-5 rounded-full text-base md:text-lg font-extrabold hover:bg-white hover:scale-105 hover:shadow-[0_20px_40px_rgba(255,237,0,0.3)] transition-all duration-700 shadow-2xl flex items-center justify-center gap-2 group pointer-events-auto">
+                                    <Link to="/products" className="w-full md:w-auto bg-warm-gold-light text-stone-dark px-8 py-3.5 md:px-12 md:py-5 rounded-full text-base md:text-lg font-extrabold hover:bg-white hover:scale-105 hover:shadow-[0_20px_40px_rgba(244,197,66,0.4)] transition-all duration-700 shadow-2xl flex items-center justify-center gap-2 group pointer-events-auto">
                                         {t('hero.explore')}
                                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                     </Link>
@@ -328,10 +328,8 @@ const Home = () => {
             {/* Brand Badge Strip */}
             <div className="relative z-10 bg-brand-cream py-3 md:py-8 border-b border-brand-gold/10">
                 <div className="max-w-7xl mx-auto px-4 md:px-6">
-                    <div className="flex flex-wrap justify-center md:justify-between items-center gap-4 md:gap-10 opacity-30 grayscale hover:grayscale-0 transition-all duration-1000">
-                        {["WholeFoods", "TESCO", "Carrefour", "Waitrose", "TraderJoe's"].map(brand => (
-                            <span key={brand} className="text-[10px] md:text-xl font-bold tracking-tight text-stone-dark italic hover:text-brand-gold transition-colors">{brand}</span>
-                        ))}
+                    <div className="flex justify-center items-center opacity-60">
+                        <span className="text-sm md:text-2xl font-black tracking-[0.3em] text-stone-dark uppercase italic drop-shadow-sm">Designed for Global Retail Markets</span>
                     </div>
                 </div>
             </div>
