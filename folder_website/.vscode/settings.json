@@ -1,5 +1,7 @@
 {
-  "css.customData": [],
+  "css.customData": [
+    "./.vscode/tailwind-data.json"
+  ],
   "css.lint.unknownAtRules": "ignore",
   "files.associations": {
     "*.css": "tailwindcss"
