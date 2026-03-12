@@ -48,9 +48,9 @@ function App() {
     const location = useLocation();
 
     return (
-        // AnimatePresence — Memungkinkan animasi cross-fade halus antar perpindahan halaman
+        // AnimatePresence — Memungkinkan animasi transisi halaman
         <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
+            <Routes location={location}>
                 {/* 
             Route parent dengan MainLayout sebagai wrapper
             Semua child routes akan di-render di dalam MainLayout (via <Outlet />)

@@ -84,7 +84,7 @@ const Gallery = () => {
                             <p className="text-[#78716C] font-medium tracking-widest uppercase text-xs">Belum ada foto di galeri.</p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+                        <div className="grid grid-cols-2 md:grid-cols-12 gap-3 md:gap-8">
                             {images.map((img, idx) => (
                                 <motion.div
                                     key={img.id}
@@ -92,30 +92,30 @@ const Gallery = () => {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: idx * 0.1 }}
-                                    className={`relative group overflow-hidden rounded-[3rem] shadow-xl bg-white border border-stone-border/30 transform-gpu ${img.span || 'md:col-span-4'} ${img.aspect || 'aspect-square'}`}
+                                    className={`relative group overflow-hidden rounded-[1.5rem] md:rounded-[3rem] shadow-md md:shadow-xl bg-white border border-stone-border/30 transform-gpu ${img.span || 'col-span-1 md:col-span-4'} ${img.aspect || 'aspect-square'}`}
                                 >
                                     {/* Image Container */}
-                                    <div className="absolute inset-0 p-4 transition-all duration-700 group-hover:p-0">
+                                    <div className="absolute inset-0 p-2 md:p-4 transition-all duration-700 group-hover:p-0">
                                         <img
                                             src={img.image}
                                             alt={img.title}
-                                            className="w-full h-full object-cover rounded-[2.2rem] transition-all duration-1000 group-hover:rounded-none group-hover:scale-105"
+                                            className="w-full h-full object-cover rounded-[1.2rem] md:rounded-[2.2rem] transition-all duration-1000 group-hover:rounded-none group-hover:scale-105"
                                         />
                                     </div>
 
                                     {/* Category Badge */}
-                                    <div className="absolute top-8 left-8 z-20">
-                                        <span className="px-4 py-1.5 bg-white/90 backdrop-blur-xl rounded-full text-[10px] font-bold uppercase tracking-[0.2em] text-brand-blue shadow-xl border border-white/20">
+                                    <div className="absolute top-4 left-4 md:top-8 md:left-8 z-20">
+                                        <span className="px-2.5 py-1 md:px-4 md:py-1.5 bg-white/90 backdrop-blur-xl rounded-full text-[8px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-brand-blue shadow-xl border border-white/20">
                                             {img.category}
                                         </span>
                                     </div>
 
                                     {/* Overlay on Hover */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-stone-dark/90 via-stone-dark/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-10 pointer-events-none">
-                                        <h3 className="text-white text-3xl font-medium tracking-tight translate-y-4 group-hover:translate-y-0 transition-transform duration-700 delay-100">
+                                    <div className="absolute inset-0 bg-gradient-to-t from-stone-dark/90 via-stone-dark/20 to-transparent xl:opacity-0 xl:group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-4 md:p-10 pointer-events-none opacity-100 sm:opacity-0 group-hover:opacity-100">
+                                        <h3 className="text-white text-base md:text-3xl font-medium tracking-tight translate-y-0 xl:translate-y-4 xl:group-hover:translate-y-0 transition-transform duration-700 delay-100 line-clamp-2 md:line-clamp-none">
                                             {img.title}
                                         </h3>
-                                        <div className="w-12 h-0.5 bg-brand-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-700 delay-200 origin-left mt-2"></div>
+                                        <div className="w-8 md:w-12 h-0.5 bg-brand-gold scale-x-100 xl:scale-x-0 xl:group-hover:scale-x-100 transition-transform duration-700 delay-200 origin-left mt-2"></div>
                                     </div>
                                 </motion.div>
                             ))}

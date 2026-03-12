@@ -11,7 +11,8 @@ import {
     Edit2,
     ChevronRight,
     Search,
-    Filter
+    Filter,
+    Loader2
 } from 'lucide-react'; // Ikon
 import ConfirmModal from '../../../components/admin/ConfirmModal';
 import Toast from '../../../components/admin/Toast';
@@ -59,6 +60,8 @@ const ManageAnnouncements = () => {
         }
     };
 
+    const [togglingId, setTogglingId] = useState(null); // State for item being toggled
+
     // Fungsi hapus (Sekarang menggunakan modal kustom)
     const handleDelete = (id, title) => {
         setModalConfig({
@@ -101,6 +104,7 @@ const ManageAnnouncements = () => {
 
     const toggleStatus = async (id, currentStatus) => {
         try {
+            setTogglingId(id); // Set ID item yang sedang loading
             const token = localStorage.getItem('admin_token');
             const response = await fetch(`http://localhost:5000/api/announcements/${id}`, {
                 method: 'PUT',
@@ -125,11 +129,14 @@ const ManageAnnouncements = () => {
                 message: 'Gagal merubah status',
                 type: 'error'
             });
+        } finally {
+            setTogglingId(null); // Reset setelah selesai
         }
     };
 
     const filteredItems = announcements.filter(item => {
-        return item.title.toLowerCase().includes(searchTerm.toLowerCase());
+        const title = item.title || "";
+        return title.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
     return (
@@ -181,50 +188,59 @@ const ManageAnnouncements = () => {
                         key={item.id}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="bg-white border border-slate-200 rounded-2xl p-5 flex items-center gap-5 shadow-sm hover:shadow-md transition-all group overflow-hidden relative"
+                        className="bg-white border border-slate-200 rounded-2xl p-5 flex items-center justify-between gap-5 shadow-sm hover:shadow-md transition-all group overflow-hidden relative"
                     >
-                        {/* Status Icon */}
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border ${item.is_active ? 'bg-emerald-50 border-emerald-100 text-emerald-500' : 'bg-slate-50 border-slate-100 text-slate-400'}`}>
-                            <Megaphone className="w-6 h-6" />
-                        </div>
-
-                        {/* Content */}
-                        <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-3 mb-1.5">
-                                <span className={`px-2 py-0.5 text-[9px] font-black rounded uppercase tracking-widest border ${item.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-50 text-slate-500 border-slate-100'}`}>
-                                    {item.is_active ? 'Aktif' : 'Nonaktif'}
-                                </span>
-                                <span className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest">
-                                    {new Date(item.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
-                                </span>
+                        <div className="flex items-center gap-5 flex-1 min-w-0 z-10">
+                            {/* Status Icon */}
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border ${item.is_active ? 'bg-emerald-50 border-emerald-100 text-emerald-500' : 'bg-slate-50 border-slate-100 text-slate-400'}`}>
+                                <Megaphone className="w-6 h-6" />
                             </div>
-                            <h3 className="text-sm font-black text-[#1E293B] tracking-tight group-hover:text-[#2563EB] transition-colors truncate">{item.title}</h3>
+
+                            {/* Content */}
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-3 mb-1.5">
+                                    <span className={`px-2 py-0.5 text-[9px] font-black rounded uppercase tracking-widest border ${item.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-50 text-slate-500 border-slate-100'}`}>
+                                        {item.is_active ? 'Aktif' : 'Nonaktif'}
+                                    </span>
+                                    <span className="text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest">
+                                        {new Date(item.created_at || new Date()).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                    </span>
+                                </div>
+                                <h3 className="text-sm font-black text-[#1E293B] tracking-tight group-hover:text-[#2563EB] transition-colors truncate">{item.title}</h3>
+                            </div>
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center gap-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center gap-2.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                             <button
                                 onClick={() => toggleStatus(item.id, item.is_active)}
-                                className={`p-2.5 bg-white border border-slate-200 rounded-xl transition-all shadow-sm ${item.is_active ? 'text-emerald-500 border-emerald-100' : 'text-[#64748B]'}`}
+                                disabled={togglingId === item.id}
+                                className={`p-2.5 bg-white border border-slate-200 rounded-xl transition-all shadow-sm ${item.is_active ? 'text-emerald-500 border-emerald-100 hover:bg-emerald-50' : 'text-[#64748B] hover:bg-slate-50'} disabled:opacity-50 disabled:cursor-not-allowed`}
                             >
-                                {item.is_active ? <Eye className="w-4.5 h-4.5" /> : <EyeOff className="w-4.5 h-4.5" />}
+                                {togglingId === item.id ? (
+                                    <Loader2 className="w-4.5 h-4.5 animate-spin" />
+                                ) : item.is_active ? (
+                                    <Eye className="w-4.5 h-4.5" />
+                                ) : (
+                                    <EyeOff className="w-4.5 h-4.5" />
+                                )}
                             </button>
                             <button
                                 onClick={() => navigate(`/admin/announcements/edit/${item.id}`)}
-                                className="p-2.5 bg-white border border-slate-200 rounded-xl text-[#64748B] hover:text-[#2563EB] transition-all shadow-sm"
+                                className="p-2.5 bg-white border border-slate-200 rounded-xl text-[#64748B] hover:text-[#2563EB] hover:bg-blue-50 transition-all shadow-sm"
                             >
                                 <Edit2 className="w-4.5 h-4.5" />
                             </button>
                             <button
                                 onClick={() => handleDelete(item.id, item.title)}
-                                className="p-2.5 bg-white border border-slate-200 rounded-xl text-red-300 hover:text-red-500 transition-all shadow-sm"
+                                className="p-2.5 bg-white border border-slate-200 rounded-xl text-red-400 hover:text-red-600 hover:bg-red-50 transition-all shadow-sm"
                             >
                                 <Trash2 className="w-4.5 h-4.5" />
                             </button>
                         </div>
 
                         {/* Decoration Icon */}
-                        <Megaphone className="w-12 h-12 absolute -right-4 -bottom-4 text-slate-100 opacity-5 rotate-12" />
+                        <Megaphone className="w-32 h-32 absolute -right-6 -bottom-6 text-slate-900 opacity-[0.02] transform -rotate-12 pointer-events-none" />
                     </motion.div>
                 ))}
             </div>

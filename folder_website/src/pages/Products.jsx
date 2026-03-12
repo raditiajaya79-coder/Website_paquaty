@@ -5,7 +5,13 @@ import { ArrowRight } from 'lucide-react';
 import { COMPANY_INFO } from '../data/products'; // Info perusahaan
 import { generatePageTitle } from '../utils/seo';
 import { useLanguage } from '../context/LanguageContext';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import useSWR from 'swr';
+
+/**
+ * Fetcher standar untuk SWR
+ */
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 /**
  * Products — Halaman katalog semua produk
@@ -15,26 +21,16 @@ import React, { useState, useEffect } from 'react';
 const Products = () => {
     const { t } = useLanguage();
 
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        fetchProducts();
-    }, []);
-
-    const fetchProducts = async () => {
-        try {
-            const response = await fetch('http://localhost:5000/api/products');
-            if (response.ok) {
-                const data = await response.json();
-                setProducts(data);
-            }
-        } catch (error) {
-            console.error('Failed to fetch products:', error);
-        } finally {
-            setLoading(false);
+    // SWR Hook untuk Data Fetching & Background Revalidation
+    const { data: products = [], isLoading: loading } = useSWR(
+        'http://localhost:5000/api/products',
+        fetcher,
+        {
+            // Opsi tambahan untuk polling background:
+            refreshInterval: 60000, // Cek tiap 60 detik otomatis
+            revalidateOnFocus: true, // Auto-update ketika pindah tab balik
         }
-    };
+    );
 
     const fadeIn = {
         initial: { opacity: 0, y: 20 },

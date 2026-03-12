@@ -1,46 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, User, MapPin } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
 import { useLanguage } from '../context/LanguageContext';
+import useSWR from 'swr';
+
+const fetcher = (url) => fetch(url).then(res => res.json());
+
 /**
  * Events — Halaman unifikasi Acara & Berita
  * Menampilkan Event utama (Hero/Banner) di atas, 
  * dan daftar Artikel di bawahnya.
- * Data saat ini dikosongkan karena beralih ke mode statis.
  */
 const Events = () => {
     const { t } = useLanguage();
-    const [events, setEvents] = useState([]);
-    const [articles, setArticles] = useState([]);
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    // SWR fetching untuk events
+    const { data: events = [], isLoading: eventsLoading } = useSWR(
+        'http://localhost:5000/api/events',
+        fetcher,
+        { refreshInterval: 60000, revalidateOnFocus: true }
+    );
 
-    const fetchData = async () => {
-        try {
-            setLoading(true);
-            const [eventsRes, articlesRes] = await Promise.all([
-                fetch('http://localhost:5000/api/events'),
-                fetch('http://localhost:5000/api/articles')
-            ]);
+    // SWR fetching untuk articles
+    const { data: articles = [], isLoading: articlesLoading } = useSWR(
+        'http://localhost:5000/api/articles',
+        fetcher,
+        { refreshInterval: 60000, revalidateOnFocus: true }
+    );
 
-            if (eventsRes.ok && articlesRes.ok) {
-                const eventsData = await eventsRes.json();
-                const articlesData = await articlesRes.json();
-                setEvents(eventsData);
-                setArticles(articlesData);
-            }
-        } catch (error) {
-            console.error('Failed to fetch events/articles:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const loading = eventsLoading || articlesLoading;
 
     // Logic penentuan Featured (Acara Utama)
     // Sesuai permintaan: Hanya tampilkan banner jika ada data 'events'

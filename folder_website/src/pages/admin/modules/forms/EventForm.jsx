@@ -11,7 +11,9 @@ import {
     ArrowLeft,
     Tag,
     Type,
-    Loader2
+    Loader2,
+    ChevronRight,
+    Trash2
 } from 'lucide-react'; // Ikon
 import Toast from '../../../../components/admin/Toast'; // Komponen Toast
 import ImageUploader from '../../../../components/admin/ImageUploader'; // Import uploader baru
@@ -33,7 +35,7 @@ const EventForm = () => {
         type: initialType,
         date: new Date().toISOString().split('T')[0],
         category: 'Wawasan',
-        content: '', // Konten artikel / Deskripsi event
+        content: [{ type: 'text', value: '' }], // Array of blocks: { type: 'text' | 'image', value: string }
         is_pinned: false,
         author: 'Admin Pakuaty', // Untuk Artikel
         location: '', // Untuk Event
@@ -62,12 +64,28 @@ const EventForm = () => {
             // Sanitasi data: Pastikan data adalah object sebelum di-spread
             const data = rawData && typeof rawData === 'object' ? rawData : {};
 
+            // Parse content field into blocks array
+            let parsedContent = [{ type: 'text', value: '' }];
+            const sourceContent = data.content || data.description || '';
+            try {
+                // Check if it's already a valid JSON array string
+                const maybeArray = JSON.parse(sourceContent);
+                if (Array.isArray(maybeArray)) {
+                    parsedContent = maybeArray;
+                } else {
+                    parsedContent = [{ type: 'text', value: sourceContent }];
+                }
+            } catch (e) {
+                // If it's plain text, wrap it in a single text block
+                parsedContent = [{ type: 'text', value: sourceContent }];
+            }
+
             setFormData({
                 title: data.title || '',
                 type: initialType,
                 date: data.date ? (new Date(data.date).toString() !== 'Invalid Date' ? new Date(data.date).toISOString().split('T')[0] : '') : '',
                 category: data.category || 'Wawasan',
-                content: data.content || data.description || '', // Mapping content/description agar seragam di frontend
+                content: parsedContent,
                 author: data.author || 'Admin Pakuaty',
                 location: data.location || '',
                 status: data.status || 'Upcoming',
@@ -79,6 +97,42 @@ const EventForm = () => {
             setToast({ show: true, message: err.message, type: 'error' });
             setTimeout(() => navigate('/admin/events'), 2000);
         }
+    };
+
+    // Helper functions for dynamic content blocks
+    const addBlock = (type) => {
+        setFormData(prev => ({
+            ...prev,
+            content: [...(Array.isArray(prev.content) ? prev.content : []), { type, value: '' }]
+        }));
+    };
+
+    const updateBlock = (index, value) => {
+        setFormData(prev => {
+            const updatedContent = [...prev.content];
+            updatedContent[index] = { ...updatedContent[index], value };
+            return { ...prev, content: updatedContent };
+        });
+    };
+
+    const removeBlock = (index) => {
+        setFormData(prev => {
+            const updatedContent = [...prev.content];
+            updatedContent.splice(index, 1);
+            return { ...prev, content: updatedContent };
+        });
+    };
+
+    const moveBlock = (index, direction) => {
+        setFormData(prev => {
+            const updatedContent = [...prev.content];
+            if (index + direction >= 0 && index + direction < updatedContent.length) {
+                const temp = updatedContent[index];
+                updatedContent[index] = updatedContent[index + direction];
+                updatedContent[index + direction] = temp;
+            }
+            return { ...prev, content: updatedContent };
+        });
     };
 
     // Handle Submit — Mengirim data ke API (POST/PUT)
@@ -96,11 +150,19 @@ const EventForm = () => {
 
             // Siapkan payload sesuai schema backend (Konversi content ke field yang sesuai)
             const payload = { ...formData };
+
+            // Serialize content blocks to JSON string
+            const serializedContent = JSON.stringify(formData.content);
+
             if (formData.type === 'Event') {
-                payload.description = formData.content; // Backend Event menggunakan field 'description'
+                payload.description = serializedContent; // Backend Event menggunakan field 'description'
             } else {
                 // Backend Artikel menggunakan 'content' dan 'excerpt'
-                payload.excerpt = formData.content.substring(0, 150) + '...'; // Potong otomatis untuk ringkasan
+                payload.content = serializedContent;
+                // Generate excerpt from the first text block
+                const firstTextBlock = formData.content.find(b => b.type === 'text');
+                const excerptSource = firstTextBlock ? firstTextBlock.value : '';
+                payload.excerpt = excerptSource.substring(0, 150) + (excerptSource.length > 150 ? '...' : '');
             }
 
             const response = await fetch(url, {
@@ -252,34 +314,107 @@ const EventForm = () => {
                             />
                         </div>
                     </div>
-                </div>
 
-                {/* Section 2: Editor Isi Konten (Flat) */}
-                <div className="space-y-4">
-                    <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Isi Konten & Narasi</label>
-                    <textarea
-                        rows="8"
-                        required
-                        value={formData.content}
-                        onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                        className="w-full bg-white border border-slate-200 rounded-2xl py-5 px-6 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm resize-none text-sm leading-relaxed"
-                        placeholder="Tulis isi artikel atau detail event di sini..."
-                    ></textarea>
-                </div>
-
-                {/* Section: Image Upload from Device */}
-                <div className="space-y-4">
-                    <ImageUploader
-                        label="Gambar Cover / Banner (Upload)"
-                        currentImage={formData.image}
-                        onUploadSuccess={(url) => setFormData({ ...formData, image: url })}
-                    />
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
-                            Rekomendasi: Gunakan gambar landscape dengan resolusi minimal 1280x720px untuk hasil terbaik.
-                        </p>
+                    {/* Section: Image Upload untuk Cover/Banner Utama */}
+                    <div className="flex flex-col md:flex-row gap-6 mt-8 pt-8 border-t border-slate-100">
+                        <div className="w-full md:w-1/2 lg:w-1/3 shrink-0">
+                            <ImageUploader
+                                label="Gambar Cover / Banner Utama"
+                                currentImage={formData.image}
+                                onUploadSuccess={(url) => setFormData({ ...formData, image: url })}
+                            />
+                        </div>
+                        <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 text-left flex-1 flex flex-col justify-center">
+                            <p className="text-[10px] sm:text-xs font-bold text-slate-500 leading-relaxed">
+                                <strong className="text-slate-700 text-sm">Info Gambar Cover</strong><br /><br />
+                                Gambar ini akan muncul sebagai <span className="text-blue-600">Thumbnail</span> (gambar kecil) di halaman daftar Artikel/Event, dan juga akan diletakkan sebagai <span className="text-blue-600">Banner Hero</span> berukuran besar paling atas ketika pengunjung mengeklik dan membaca detail halaman ini.
+                                <br /><br />
+                                <span className="inline-block bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest mt-2">Rekomendasi: Landscape (1280x720px)</span>
+                            </p>
+                        </div>
                     </div>
                 </div>
+
+                {/* Section 2: Editor Isi Konten Dinamis (Teks & Gambar Bebas) */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Isi Konten & Narasi Dinamis</label>
+                        <span className="text-[9px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded">Bisa tambah banyak gambar & teks</span>
+                    </div>
+
+                    <div className="space-y-6">
+                        {Array.isArray(formData.content) && formData.content.map((block, index) => (
+                            <div key={index} className="relative group bg-white border border-slate-200 p-5 rounded-2xl shadow-sm hover:border-blue-300 transition-all">
+                                {/* Block Controls */}
+                                <div className="absolute -top-3 -right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                    <button
+                                        type="button"
+                                        onClick={() => moveBlock(index, -1)}
+                                        disabled={index === 0}
+                                        className="p-1.5 bg-white border border-slate-200 text-slate-400 rounded-lg hover:text-blue-600 shadow-sm disabled:opacity-50"
+                                    >
+                                        <ChevronRight className="w-4 h-4 -rotate-90" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => moveBlock(index, 1)}
+                                        disabled={index === formData.content.length - 1}
+                                        className="p-1.5 bg-white border border-slate-200 text-slate-400 rounded-lg hover:text-blue-600 shadow-sm disabled:opacity-50"
+                                    >
+                                        <ChevronRight className="w-4 h-4 rotate-90" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeBlock(index)}
+                                        className="p-1.5 bg-white border border-red-200 text-red-500 rounded-lg hover:bg-red-50 shadow-sm"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                </div>
+
+                                {/* Block Content */}
+                                {block.type === 'text' ? (
+                                    <textarea
+                                        rows="4"
+                                        required
+                                        value={block.value}
+                                        onChange={(e) => updateBlock(index, e.target.value)}
+                                        className="w-full bg-slate-50/50 border border-slate-100 rounded-xl py-4 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all resize-y text-sm leading-relaxed"
+                                        placeholder="Tulis narasi di sini..."
+                                    ></textarea>
+                                ) : (
+                                    <div className="pt-2">
+                                        <ImageUploader
+                                            label={`Gambar Konten ${index + 1}`}
+                                            currentImage={block.value}
+                                            onUploadSuccess={(url) => updateBlock(index, url)}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Add Block Actions */}
+                    <div className="flex flex-wrap gap-3 pt-2">
+                        <button
+                            type="button"
+                            onClick={() => addBlock('text')}
+                            className="flex items-center gap-2 px-5 py-3 bg-white border border-dashed border-slate-300 rounded-xl text-xs font-black text-slate-500 uppercase tracking-widest hover:border-blue-400 hover:text-blue-600 transition-all"
+                        >
+                            <Type className="w-4 h-4" /> Tambah Paragraf
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => addBlock('image')}
+                            className="flex items-center gap-2 px-5 py-3 bg-white border border-dashed border-slate-300 rounded-xl text-xs font-black text-slate-500 uppercase tracking-widest hover:border-blue-400 hover:text-blue-600 transition-all"
+                        >
+                            <ImageIcon className="w-4 h-4" /> Tambah Gambar
+                        </button>
+                    </div>
+                </div>
+
+                {/* Section: Image Upload from Device has been moved up */}
 
 
 

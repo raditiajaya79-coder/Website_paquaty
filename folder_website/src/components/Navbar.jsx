@@ -36,13 +36,14 @@ const Navbar = () => {
         }
     }, [isMenuOpen]);
 
-    const isTransparent = false; // Always solid — hero section is no longer full-bleed
+    // Navbar transparan jika sedang di Home DAN belum di-scroll
+    const isTransparent = isHome && !isScrolled;
 
     // Style untuk link navbar (active/inactive + transparent/solid mode)
     const activeStyle = ({ isActive }) => {
         const base = "text-sm font-medium transition-all duration-300 relative group";
         if (isTransparent) {
-            return `${base} ${isActive ? 'text-white' : 'text-white/60 hover:text-brand-cyan hover:scale-105'}`;
+            return `${base} ${isActive ? 'text-brand-blue' : 'text-stone-dark/80 hover:text-brand-cyan hover:scale-105'}`;
         }
         return `${base} ${isActive ? 'text-brand-blue' : 'text-stone-dark/60 hover:text-brand-cyan hover:scale-105'}`;
     };

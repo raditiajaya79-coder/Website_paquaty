@@ -1,55 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, ArrowRight, Bell } from 'lucide-react';
+import useSWR from 'swr';
+
+const fetcher = (url) => fetch(url).then(res => res.json());
 
 /**
  * AnnouncementPopup — Pop-up Informasi Dinamis (Artisan Style)
  * Mengambil data dari /api/announcement dan menampilkan jika is_active true.
  */
 const AnnouncementPopup = () => {
-    const [data, setData] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
-    const [loading, setLoading] = useState(true);
+
+    // SWR fetching untuk pengumuman
+    const { data: announcements, isLoading } = useSWR(
+        'http://localhost:5000/api/announcements',
+        fetcher,
+        {
+            revalidateOnFocus: false, // Jangan re-fetch terus menerus untuk popup
+            dedupingInterval: 3600000 // Cache selama 1 jam
+        }
+    );
 
     useEffect(() => {
         const hasSeenPopup = sessionStorage.getItem('pakuaty_announcement_seen');
-        if (hasSeenPopup) {
-            setLoading(false);
-            return;
-        }
+        if (hasSeenPopup) return;
 
-        fetchAnnouncement();
-    }, []);
+        if (announcements) {
+            // Find the first active announcement
+            const activeAnnouncement = Array.isArray(announcements)
+                ? announcements.find(a => a.is_active)
+                : (announcements.is_active ? announcements : null);
 
-    const fetchAnnouncement = async () => {
-        try {
-            const response = await fetch('http://localhost:5000/api/announcements');
-            if (response.ok) {
-                const dataArray = await response.json();
-                // Find the first active announcement
-                const activeAnnouncement = Array.isArray(dataArray)
-                    ? dataArray.find(a => a.is_active)
-                    : (dataArray.is_active ? dataArray : null);
-
-                if (activeAnnouncement) {
-                    setData(activeAnnouncement);
-                    // Delay sedikit agar transisi halaman selesai
-                    setTimeout(() => setIsOpen(true), 1500);
-                }
+            if (activeAnnouncement) {
+                // Delay sedikit agar transisi halaman selesai
+                const timer = setTimeout(() => setIsOpen(true), 1500);
+                return () => clearTimeout(timer);
             }
-        } catch (error) {
-            console.error('Failed to fetch announcement:', error);
-        } finally {
-            setLoading(false);
         }
-    };
+    }, [announcements]);
+
+    const data = Array.isArray(announcements)
+        ? announcements.find(a => a.is_active)
+        : (announcements?.is_active ? announcements : null);
 
     const handleClose = () => {
         setIsOpen(false);
         sessionStorage.setItem('pakuaty_announcement_seen', 'true');
     };
 
-    if (loading || !data || !isOpen) return null;
+    if (isLoading || !data || !isOpen) return null;
 
     return (
         <AnimatePresence>

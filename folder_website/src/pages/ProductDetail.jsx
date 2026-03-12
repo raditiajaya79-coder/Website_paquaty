@@ -6,6 +6,9 @@ import { ArrowLeft, CheckCircle2, ShieldCheck, Globe2, MessageCircle, FileText, 
 import { generatePageTitle } from '../utils/seo';
 import { COMPANY_INFO } from '../data/products';
 import { useLanguage } from '../context/LanguageContext';
+import useSWR from 'swr';
+
+const fetcher = (url) => fetch(url).then(res => res.json());
 
 /**
  * ProductDetail — Halaman detail produk
@@ -16,37 +19,27 @@ const ProductDetail = () => {
     const { t, lang } = useLanguage();
     const { id } = useParams();
 
-    const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [selectedPackaging, setSelectedPackaging] = useState(null);
 
+    // SWR Data Fetching
+    const { data: product, isLoading: loading, error } = useSWR(
+        `http://localhost:5000/api/products/${id}`,
+        fetcher,
+        { refreshInterval: 60000, revalidateOnFocus: true }
+    );
+
+    // Set auto packaging to the first option when product loads
     useEffect(() => {
-        fetchProduct();
-    }, [id]);
+        if (product && product.packaging_options) {
+            const options = typeof product.packaging_options === 'string'
+                ? JSON.parse(product.packaging_options)
+                : (product.packaging_options || []);
 
-    const fetchProduct = async () => {
-        try {
-            setLoading(true);
-            const response = await fetch(`http://localhost:5000/api/products/${id}`);
-            if (response.ok) {
-                const data = await response.json();
-                setProduct(data);
-
-                // Parse packaging_options if it's a string (from DB)
-                const options = typeof data.packaging_options === 'string'
-                    ? JSON.parse(data.packaging_options)
-                    : (data.packaging_options || []);
-
-                if (options.length > 0) {
-                    setSelectedPackaging(options[0]);
-                }
+            if (options.length > 0 && !selectedPackaging) {
+                setSelectedPackaging(options[0]);
             }
-        } catch (error) {
-            console.error('Failed to fetch product:', error);
-        } finally {
-            setLoading(false);
         }
-    };
+    }, [product]);
 
     // Konfigurasi animasi
     const fadeIn = {

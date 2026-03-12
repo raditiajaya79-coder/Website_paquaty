@@ -60,7 +60,7 @@ const ImageUploader = ({ currentImage, onUploadSuccess, label = "Upload Gambar" 
             {label && <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">{label}</label>}
 
             <div
-                className={`relative group aspect-video bg-slate-50 border-2 border-dashed rounded-2xl overflow-hidden flex flex-col items-center justify-center transition-all ${error ? 'border-red-200 bg-red-50/10' : 'border-slate-200 hover:border-blue-300'}`}
+                className={`relative group bg-slate-50 border-2 border-dashed rounded-2xl overflow-hidden flex flex-col items-center justify-center transition-all min-h-[200px] max-h-[320px] aspect-video w-full ${error ? 'border-red-200 bg-red-50/10' : 'border-slate-200 hover:border-blue-300'}`}
             >
                 {/* Preview Image */}
                 {currentImage && !uploading ? (

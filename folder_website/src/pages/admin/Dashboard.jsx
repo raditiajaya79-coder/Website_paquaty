@@ -39,37 +39,46 @@ const Dashboard = () => {
     ];
 
     return (
-        <div className="space-y-5">
+        <div className="space-y-6">
             {/* Header Halaman */}
-            <div>
-                <h1 className="text-2xl font-black text-[#1E293B] tracking-tight">Ringkasan Dashboard</h1>
-                <p className="text-xs text-[#64748B] mt-1 font-bold">Selamat datang kembali, berikut rincian aktifitas terkini.</p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/60 pb-5">
+                <div>
+                    <h1 className="text-xl sm:text-2xl font-black text-[#1E293B] tracking-tight">Ringkasan Dashboard</h1>
+                    <p className="text-[10px] sm:text-xs text-[#64748B] mt-0.5 font-bold uppercase tracking-wider opacity-70">Selamat datang kembali, berikut rincian aktifitas terkini.</p>
+                </div>
+                <div className="hidden sm:block">
+                    <span className="px-3 py-1 bg-white border border-slate-200 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest shadow-sm">
+                        {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </span>
+                </div>
             </div>
 
             {/* Stats Grid — Kartu-kartu statistik utama */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
                 {statsConfig.map((item, index) => (
                     <motion.div
                         key={index}
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all group min-h-[140px] flex flex-col justify-center"
+                        className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full"
                     >
                         {loading ? (
-                            <div className="flex items-center justify-center h-full">
-                                <Loader2 className="w-6 h-6 text-slate-300 animate-spin" />
+                            <div className="flex items-center justify-center py-4">
+                                <Loader2 className="w-5 h-5 text-slate-300 animate-spin" />
                             </div>
                         ) : (
                             <>
-                                <div className="flex justify-between items-start mb-4">
-                                    <div className={`p-3.5 rounded-2xl ${item.color}/10 border border-${item.color.split('-')[1]}-200`}>
-                                        <item.icon className={`w-6 h-6 text-${item.color.split('-')[1]}-600`} />
+                                <div className="flex justify-between items-start mb-3 sm:mb-6">
+                                    <div className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl ${item.color}/10 border border-${item.color.split('-')[1]}-200`}>
+                                        <item.icon className={`w-5 h-5 sm:w-6 sm:h-6 text-${item.color.split('-')[1]}-600`} />
                                     </div>
-                                    <span className="text-[10px] text-[#64748B] font-black uppercase tracking-wider">{item.trend}</span>
+                                    <span className="text-[8px] sm:text-[10px] text-[#64748B] font-black uppercase tracking-wider text-right">{item.trend}</span>
                                 </div>
-                                <h3 className="text-2xl font-black text-[#1E293B] mb-1">{statsData ? statsData[item.key] : '0'}</h3>
-                                <p className="text-[#64748B] text-xs font-bold">{item.label}</p>
+                                <div>
+                                    <h3 className="text-xl sm:text-2xl font-black text-[#1E293B] mb-0.5">{statsData ? statsData[item.key] : '0'}</h3>
+                                    <p className="text-[#64748B] text-[10px] sm:text-xs font-bold uppercase tracking-tight opacity-80">{item.label}</p>
+                                </div>
                             </>
                         )}
                     </motion.div>
@@ -77,45 +86,48 @@ const Dashboard = () => {
             </div>
 
             {/* Main Grid — Layout dua kolom untuk detail tambahan */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
                 {/* Kolom Kiri: News/Announcements Preview */}
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-[#1e40af] rounded-2xl p-7 overflow-hidden relative shadow-lg shadow-blue-900/10">
+                <div className="lg:col-span-2 space-y-5 sm:space-y-6">
+                    <div className="bg-[#1e40af] rounded-2xl sm:rounded-[2rem] p-6 sm:p-8 overflow-hidden relative shadow-lg shadow-blue-900/10">
+                        {/* Decorative background element */}
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+
                         <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
                             <div className="flex-1 text-center md:text-left">
-                                <h2 className="text-lg font-black text-white mb-1 tracking-tight">Pantau Perkembangan Bisnis</h2>
-                                <p className="text-blue-100/80 mb-4 text-[12px] font-semibold">Kelola semua konten website Anda di satu tempat secara efisien.</p>
-                                <div className="flex gap-3 justify-center md:justify-start">
-                                    <button className="px-5 py-2 bg-white text-[#1e40af] rounded-xl font-black text-xs shadow-xl shadow-blue-900/10 hover:bg-blue-50 transition-colors">Laporan Detil</button>
-                                    <button className="px-5 py-2 bg-blue-400/20 border border-white/20 text-white rounded-xl font-bold text-xs hover:bg-white/10 transition-colors">Bantuan</button>
+                                <h2 className="text-lg sm:text-xl font-black text-white mb-2 tracking-tight">Pantau Perkembangan Bisnis</h2>
+                                <p className="text-blue-100/80 mb-6 text-[11px] sm:text-[13px] font-medium leading-relaxed max-w-md">Kelola semua konten website Anda di satu tempat secara efisien dengan sistem manajemen terpusat.</p>
+                                <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                                    <button className="px-6 py-2.5 bg-white text-[#1e40af] rounded-xl font-black text-[11px] shadow-xl shadow-blue-900/10 hover:bg-blue-50 transition-all active:scale-95">Laporan Detil</button>
+                                    <button className="px-6 py-2.5 bg-blue-400/20 border border-white/20 text-white rounded-xl font-bold text-[11px] hover:bg-white/10 transition-all active:scale-95 backdrop-blur-sm">Bantuan</button>
                                 </div>
                             </div>
-                            <div className="w-1/4 hidden md:flex justify-center">
-                                <div className="p-6 bg-white/10 rounded-full border border-white/10 backdrop-blur-sm">
-                                    <TrendingUp className="w-12 h-12 text-white" />
+                            <div className="w-1/3 hidden md:flex justify-center">
+                                <div className="p-8 bg-white/10 rounded-full border border-white/10 backdrop-blur-md">
+                                    <TrendingUp className="w-14 h-14 text-white" />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-                        <div className="flex justify-between items-center mb-5 px-1">
-                            <h3 className="font-black text-[#1E293B] text-sm">Log Aktivitas Terbaru</h3>
-                            <button className="text-[11px] font-black text-[#2563EB] hover:underline uppercase tracking-widest">Lihat Semua</button>
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm">
+                        <div className="flex justify-between items-center mb-6 px-1">
+                            <h3 className="font-black text-[#1E293B] text-sm uppercase tracking-wider">Log Aktivitas Terbaru</h3>
+                            <button className="text-[10px] font-black text-[#2563EB] hover:underline uppercase tracking-widest bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 transition-all">Lihat Semua</button>
                         </div>
                         <div className="space-y-4">
                             {statsData?.activityLogs?.length > 0 ? (
                                 statsData.activityLogs.map((log, i) => (
-                                    <div key={log.id} className="flex items-center gap-4 p-3.5 rounded-2xl border border-transparent hover:border-slate-200 hover:bg-slate-50 transition-all">
-                                        <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100">
-                                            <Users className="w-6 h-6 text-[#2563EB]" />
+                                    <div key={log.id} className="flex items-center gap-4 p-4 rounded-2xl border border-transparent hover:border-slate-200 hover:bg-slate-50/50 transition-all group">
+                                        <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100 group-hover:scale-110 transition-transform">
+                                            <Users className="w-5 h-5 sm:w-6 sm:h-6 text-[#2563EB]" />
                                         </div>
                                         <div className="flex-1">
-                                            <p className="text-sm font-bold text-[#1E293B]">
+                                            <p className="text-xs sm:text-sm font-bold text-[#1E293B]">
                                                 {log.admin_name} <span className="font-normal text-slate-500">melakukan</span> {log.action}{' '}
-                                                <span className="text-[#2563EB]">"{log.target_name}"</span>
+                                                <span className="text-[#2563EB] font-black italic">"{log.target_name}"</span>
                                             </p>
-                                            <p className="text-[11px] text-[#64748B] font-black uppercase tracking-widest mt-0.5">
+                                            <p className="text-[9px] sm:text-[10px] text-[#64748B] font-black uppercase tracking-widest mt-1 opacity-70">
                                                 {new Date(log.created_at).toLocaleString('id-ID', {
                                                     day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
                                                 })}
@@ -124,7 +136,7 @@ const Dashboard = () => {
                                     </div>
                                 ))
                             ) : (
-                                <div className="text-center py-10 text-slate-400 font-bold text-xs italic">
+                                <div className="text-center py-12 text-slate-300 font-bold text-xs italic bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
                                     Belum ada aktivitas yang tercatat.
                                 </div>
                             )}
@@ -134,20 +146,26 @@ const Dashboard = () => {
 
                 {/* Kolom Kanan: Quick Access / Calendar */}
                 <div className="space-y-6">
-                    <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5">
-                        <h3 className="font-black text-[#1E293B] text-base mb-4">Quick Links</h3>
-                        <div className="grid grid-cols-2 gap-4">
-                            {['Produk Baru', 'Gallery Upload', 'Sertifikat', 'Event'].map((item, i) => (
-                                <button key={i} className="p-4 bg-slate-50 border border-slate-100 rounded-2xl text-[10px] font-black text-[#64748B] text-center hover:bg-[#2563EB] hover:text-white transition-all uppercase tracking-widest">{item}</button>
+                    <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5 sm:p-6">
+                        <h3 className="font-black text-[#1E293B] text-sm uppercase tracking-wider mb-5">Akses Cepat</h3>
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                            {[
+                                { label: 'Produk Baru', color: 'hover:bg-blue-600' },
+                                { label: 'Gallery', color: 'hover:bg-indigo-600' },
+                                { label: 'Sertifikat', color: 'hover:bg-amber-600' },
+                                { label: 'Event Baru', color: 'hover:bg-emerald-600' }
+                            ].map((item, i) => (
+                                <button key={i} className={`p-4 bg-slate-50 border border-slate-100 rounded-2xl text-[10px] font-black text-[#64748B] text-center hover:text-white transition-all uppercase tracking-widest active:scale-95 ${item.color}`}>{item.label}</button>
                             ))}
                         </div>
                     </div>
 
-                    <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5">
-                        <h3 className="font-black text-[#1E293B] text-base mb-4">Pengumuman Internal</h3>
-                        <div className="bg-orange-50 border border-orange-100 p-4 rounded-2xl text-center">
-                            <p className="text-[11px] text-orange-900 leading-relaxed font-bold italic">
-                                "Pembaruan database akan dilakukan pada malam Minggu jam 23:00 WIB. Harap simpan pekerjaan Anda."
+                    <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5 sm:p-6">
+                        <h3 className="font-black text-[#1E293B] text-sm uppercase tracking-wider mb-4">Pengumuman</h3>
+                        <div className="bg-orange-50 border border-orange-100 p-5 rounded-2xl relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-16 h-16 bg-orange-200/20 rounded-full -mr-8 -mt-8"></div>
+                            <p className="text-[11px] text-orange-900 leading-relaxed font-bold italic relative z-10">
+                                "Pembaruan database akan dilakukan pada malam Minggu jam 23:00 WIB. Harap simpan pekerjaan Anda demi keamanan data."
                             </p>
                         </div>
                     </div>

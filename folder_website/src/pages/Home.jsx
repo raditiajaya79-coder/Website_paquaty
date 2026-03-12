@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sprout, Microscope, Container, Store, ShoppingCart } from 'lucide-react';
+import { ArrowRight, ShoppingCart } from 'lucide-react';
 import { PRODUCTS } from '../data/products';
 import CTA from '../components/CTA';
+import JourneySection from '../components/JourneySection';
 import { useLanguage } from '../context/LanguageContext';
 
 // ─── FLAVOR CONFIGURATION (Vibrant palette from previous versions) ──────────
@@ -77,7 +78,7 @@ const Home = () => {
         if (!isRevealed) return;
         const interval = setInterval(() => {
             setActiveIndex((current) => (current + 1) % HERO_FLAVORS.length);
-        }, 5000); 
+        }, 5000);
         return () => clearInterval(interval);
     }, [isRevealed]);
 
@@ -116,7 +117,7 @@ const Home = () => {
 
                 {/* Vignette overlay */}
                 <div className="absolute inset-0 pointer-events-none z-[1]"
-                     style={{ background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.15) 100%)" }} />
+                    style={{ background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.15) 100%)" }} />
 
                 {/* ── Background Massive Text (Watermark) ── */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-[2]">
@@ -147,20 +148,20 @@ const Home = () => {
                             <motion.div
                                 key={`${activeIndex}-ornament-${idx}`}
                                 initial={{ opacity: 0, y: -400, rotate: 0 }}
-                                animate={{ 
-                                    opacity: 1, 
-                                    y: 0, 
+                                animate={{
+                                    opacity: 1,
+                                    y: 0,
                                     rotate: idx % 2 === 0 ? 15 : -15,
                                 }}
                                 exit={{ opacity: 0, y: 400 }}
-                                transition={{ 
+                                transition={{
                                     y: { duration: 1, delay: idx * 0.1, ease: [0.175, 0.885, 0.32, 1.15] },
                                     opacity: { duration: 0.5, delay: idx * 0.1 },
                                 }}
                                 className="absolute w-32 h-32 md:w-60 md:h-60 select-none"
                                 style={ORNAMENT_POSITIONS[idx]}
                             >
-                                <motion.img 
+                                <motion.img
                                     src={imgPath}
                                     alt="ornament"
                                     animate={{ y: [0, -15, 0], scale: [1, 1.05, 1], rotate: [0, 5, 0] }}
@@ -178,15 +179,15 @@ const Home = () => {
                         <motion.div
                             key={`product-${activeIndex}`}
                             initial={{ opacity: 0, y: -800, scale: 0.5, rotate: 0 }}
-                            animate={{ 
-                                opacity: 1, 
-                                y: 0, 
-                                scale: 1, 
+                            animate={{
+                                opacity: 1,
+                                y: 0,
+                                scale: 1,
                                 rotate: activeFlavor.tilt,
                             }}
                             exit={{ opacity: 0, y: 800, scale: 1.1 }}
-                            transition={{ 
-                                duration: 1.2, 
+                            transition={{
+                                duration: 1.2,
                                 ease: [0.175, 0.885, 0.32, 1.1],
                             }}
                             className="relative w-80 h-80 md:w-[820px] md:h-[820px] flex items-center justify-center"
@@ -194,7 +195,7 @@ const Home = () => {
                             <motion.img
                                 src={activeProduct?.image}
                                 alt={activeProduct?.name}
-                                animate={{ 
+                                animate={{
                                     y: [0, -20, 0],
                                     rotate: [activeFlavor.tilt, activeFlavor.tilt + 1.5, activeFlavor.tilt],
                                 }}
@@ -224,14 +225,14 @@ const Home = () => {
                                         ))}
                                     </h1>
                                 </div>
-                                
+
                                 <p className="text-sm md:text-base font-medium opacity-70 max-w-xs leading-relaxed">
                                     Experience the future of traditional culture. Crunchy, savory, and purely artisan.
                                 </p>
 
                                 <div className="flex items-center gap-4 mt-4">
-                                    <Link 
-                                        to="/products" 
+                                    <Link
+                                        to="/products"
                                         className="group inline-flex items-center gap-4 bg-white text-stone-dark px-10 py-5 rounded-full shadow-2xl hover:bg-brand-cyan hover:text-white transition-all duration-300 active:scale-95"
                                     >
                                         <span className="text-xs font-black uppercase tracking-widest">Order Now</span>
@@ -250,14 +251,14 @@ const Home = () => {
                                 onClick={() => setActiveIndex(idx)}
                                 className="group relative flex items-center justify-end h-8"
                             >
-                                <motion.span 
+                                <motion.span
                                     className={`text-sm font-black uppercase tracking-[0.2em] transition-all duration-300 whitespace-nowrap ${activeIndex === idx ? 'opacity-100' : 'opacity-20 hover:opacity-50'}`}
                                     style={{ color: activeFlavor.textColor }}
                                 >
                                     {flavor.name}
                                 </motion.span>
                                 {activeIndex === idx && (
-                                    <motion.div 
+                                    <motion.div
                                         layoutId="activeDot"
                                         className="absolute -right-4 w-1.5 h-1.5 rounded-full"
                                         style={{ backgroundColor: activeFlavor.textColor }}
@@ -269,20 +270,20 @@ const Home = () => {
 
                     {/* ── Mobile Page Indicator ── */}
                     <div className="absolute bottom-8 right-6 flex items-center gap-2 lg:hidden">
-                         {HERO_FLAVORS.map((_, idx) => (
-                            <div 
+                        {HERO_FLAVORS.map((_, idx) => (
+                            <div
                                 key={idx}
                                 className={`h-1 rounded-full transition-all duration-500 ${activeIndex === idx ? 'w-8 bg-white' : 'w-2 bg-white/30'}`}
                                 style={{ backgroundColor: activeIndex === idx ? activeFlavor.textColor : undefined }}
                             />
-                         ))}
+                        ))}
                     </div>
                 </div>
 
                 {/* ── Shutter Intro Animation ── */}
                 {!hasPlayedIntro && (
                     <div className="absolute inset-0 z-[100] pointer-events-none flex flex-col">
-                         <motion.div
+                        <motion.div
                             initial={{ y: 0 }}
                             animate={{ y: isRevealed ? "-100%" : 0 }}
                             transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: 0.5 }}
@@ -317,7 +318,7 @@ const Home = () => {
             ════════════════════════════════════════ */}
             <div className="relative z-10 bg-white py-6 md:py-8 border-y border-stone-border/10">
                 <div className="max-w-[100vw] overflow-hidden flex">
-                    <motion.div 
+                    <motion.div
                         animate={{ x: [0, -1000] }}
                         transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
                         className="flex whitespace-nowrap gap-16 items-center px-6"
@@ -338,7 +339,7 @@ const Home = () => {
                 <div className="max-w-7xl mx-auto px-6 relative">
                     {/* Background Text Overlay - More subtle and proportional */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-                        <motion.h2 
+                        <motion.h2
                             initial={{ opacity: 0, scale: 0.95 }}
                             whileInView={{ opacity: 0.2, scale: 1 }}
                             transition={{ duration: 1.5 }}
@@ -351,15 +352,15 @@ const Home = () => {
                     <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 items-center gap-12 lg:gap-8">
                         {/* Left Side: Inset Visual - Clean Crop */}
                         <div className="lg:col-span-4 flex justify-center lg:justify-start">
-                            <motion.div 
+                            <motion.div
                                 initial={{ x: -60, opacity: 0 }}
                                 whileInView={{ x: 0, opacity: 1 }}
                                 transition={{ duration: 0.8 }}
                                 className="w-full max-w-[340px] aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-xl relative group"
                             >
-                                <img 
-                                    src="/images/artisan_inset.png" 
-                                    alt="Artisan Process" 
+                                <img
+                                    src="/images/artisan_inset.png"
+                                    alt="Artisan Process"
                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                 />
                             </motion.div>
@@ -373,9 +374,9 @@ const Home = () => {
                                 transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
                                 className="relative w-full max-w-[280px] lg:max-w-[340px]"
                             >
-                                <img 
-                                    src={PRODUCTS[0].image} 
-                                    alt="Pakuaty Original" 
+                                <img
+                                    src={PRODUCTS[0].image}
+                                    alt="Pakuaty Original"
                                     className="w-full h-auto drop-shadow-[0_45px_70px_rgba(0,0,0,0.25)] rotate-[-4deg]"
                                 />
                             </motion.div>
@@ -390,13 +391,13 @@ const Home = () => {
                                 className="max-w-sm"
                             >
                                 <h3 className="text-3xl md:text-4xl font-black text-stone-dark leading-[1.1] mb-2 tracking-tighter">
-                                    Pakuaty Artisan?<br/>
+                                    Pakuaty Artisan?<br />
                                     Let's Get Into It.
                                 </h3>
                                 <p className="text-stone-dark/70 text-sm md:text-base leading-relaxed font-semibold">
                                     It's not what you think. Pakuaty means taking standard Indonesian tempe tradition and refining it into a global-standard snack—thick, crunchy, and packed with bold artisan flavors.
                                 </p>
-                                <Link 
+                                <Link
                                     to="/products"
                                     className="mt-6 inline-flex items-center gap-3 bg-stone-dark text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[11px] hover:bg-brand-blue transition-all duration-300 shadow-lg"
                                 >
@@ -409,6 +410,7 @@ const Home = () => {
                 </div>
             </section>
 
+            <JourneySection />
             <CTA />
         </div>
     );
