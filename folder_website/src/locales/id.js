@@ -245,7 +245,7 @@ export const id = {
     "cta.button": "Hubungi Tim Penjualan",
 
     // Footer
-    "footer.desc": "Menghubungkan petani organik terbaik dunia dengan pasar global yang sadar. Kualitas, transparansi, dan kepercayaan dalam setiap pengiriman.",
+    "footer.desc": "Menjaga keluhuran seni fermentasi Indonesia sembari berbagi warisan luhur dengan dunia. Biji kedelai murni, dedikasi pengrajin, dan kerenyahan yang memaku hati pada kemurnian alam.",
     "footer.col1_title": "Perusahaan",
     "footer.col2_title": "Pertanyaan",
     "footer.col3_title": "Legal",

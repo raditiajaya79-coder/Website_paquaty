@@ -245,7 +245,7 @@ export const en = {
     "cta.button": "Contact Sales Team",
 
     // Footer
-    "footer.desc": "Connecting the world's finest organic farmers with conscientious global markets. Quality, transparency, and trust in every shipment.",
+    "footer.desc": "Preserving the timeless art of Indonesian fermentation while sharing our heritage with the world. Pure beans, artisan dedication, and a crunch that pins your heart to the roots of nature.",
     "footer.col1_title": "Company",
     "footer.col2_title": "Inquiries",
     "footer.col3_title": "Legal",

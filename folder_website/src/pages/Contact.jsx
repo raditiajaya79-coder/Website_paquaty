@@ -36,6 +36,28 @@ const Contact = () => {
                     <div className="grid lg:grid-cols-2 gap-16 items-start">
                         <motion.div {...fadeIn} transition={{ delay: 0.1 }}>
                             <div className="space-y-12">
+                                {/* Global Office Hours - Moved to Top */}
+                                <div className="p-8 md:p-10 bg-white border border-stone-border/30 rounded-[2.5rem] relative overflow-hidden transition-all duration-700 shadow-2xl">
+                                    <div className="flex items-center gap-4 mb-5">
+                                        <div className="w-10 h-10 bg-brand-gold rounded-full flex items-center justify-center">
+                                            <Clock className="w-5 h-5 text-stone-dark" />
+                                        </div>
+                                        <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-stone-dark/60">{t('contact.hours_label')}</span>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <p className="text-stone-dark font-medium flex justify-between text-sm md:text-base">
+                                            <span>{t('contact.monday_friday')}</span>
+                                            <span className="text-brand-blue">09:00 - 18:00</span>
+                                        </p>
+                                        <p className="text-stone-dark font-medium flex justify-between text-sm md:text-base">
+                                            <span>{t('contact.saturday')}</span>
+                                            <span className="text-brand-blue">09:00 - 13:00</span>
+                                        </p>
+                                        <p className="text-[10px] text-stone-dark/40 font-bold uppercase tracking-wider pt-4 border-t border-stone-border/30">{t('contact.time_zone')}</p>
+                                    </div>
+                                </div>
+
+                                {/* Contact Items - Moved Below */}
                                 <div className="flex gap-6 group">
                                     <div className="w-14 h-14 bg-white border border-stone-border rounded-2xl flex items-center justify-center text-brand-blue shadow-sm group-hover:border-brand-blue transition-colors">
                                         <MapPin className="w-6 h-6" />
@@ -72,26 +94,6 @@ const Contact = () => {
                                             +62 812-8799-0370<br />
                                             +62 821-4220-5147
                                         </p>
-                                    </div>
-                                </div>
-
-                                <div className="p-10 bg-white border border-stone-border/30 rounded-[2.5rem] relative overflow-hidden group hover:shadow-2xl transition-all duration-700 shadow-soft">
-                                    <div className="flex items-center gap-4 mb-6">
-                                        <div className="w-10 h-10 bg-brand-gold rounded-full flex items-center justify-center">
-                                            <Clock className="w-5 h-5 text-stone-dark" />
-                                        </div>
-                                        <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-stone-dark/60">{t('contact.hours_label')}</span>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <p className="text-stone-dark font-medium flex justify-between">
-                                            <span>{t('contact.monday_friday')}</span>
-                                            <span className="text-brand-blue">09:00 - 18:00</span>
-                                        </p>
-                                        <p className="text-stone-dark font-medium flex justify-between">
-                                            <span>{t('contact.saturday')}</span>
-                                            <span className="text-brand-blue">09:00 - 13:00</span>
-                                        </p>
-                                        <p className="text-[10px] text-stone-dark/40 font-bold uppercase tracking-wider pt-4 border-t border-stone-border/30">{t('contact.time_zone')}</p>
                                     </div>
                                 </div>
                             </div>

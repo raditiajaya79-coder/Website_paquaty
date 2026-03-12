@@ -2,6 +2,7 @@
 // Semua halaman didefinisikan di sini sebagai routes
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import ScrollToTop from './components/ScrollToTop.jsx';
 import ProtectedRoute from './components/admin/ProtectedRoute.jsx';
 
 // Layout — wrapper yang menyediakan Navbar + Footer di semua halaman publik
@@ -50,6 +51,7 @@ function App() {
     return (
         // AnimatePresence — Memungkinkan animasi transisi halaman
         <AnimatePresence mode="wait">
+            <ScrollToTop />
             <Routes location={location}>
                 {/* 
             Route parent dengan MainLayout sebagai wrapper
