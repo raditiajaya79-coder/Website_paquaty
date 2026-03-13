@@ -18,7 +18,7 @@ exports.getStats = async (req, res) => {
         FROM activity_logs l
         JOIN admins a ON l.admin_id = a.id
         ORDER BY l.created_at DESC
-        LIMIT 5
+        LIMIT 50
       `)
     ]);
 
@@ -33,5 +33,38 @@ exports.getStats = async (req, res) => {
   } catch (error) {
     console.error(`[DASHBOARD] ❌ Stats Error: ${error.message}`);
     res.status(500).json({ error: 'Gagal memuat statistik dashboard.' });
+  }
+};
+
+/**
+ * deleteLog — Menghapus satu log aktivitas berdasarkan ID.
+ * @route DELETE /api/dashboard/logs/:id
+ */
+exports.deleteLog = async (req, res) => {
+  try {
+    const { id } = req.params; // Ambil ID dari parameter URL
+    const result = await pool.query('DELETE FROM activity_logs WHERE id = $1', [id]); // Hapus dari database
+    // Cek apakah ada baris yang terhapus
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Log tidak ditemukan.' });
+    }
+    res.json({ message: 'Log berhasil dihapus.' });
+  } catch (error) {
+    console.error(`[DASHBOARD] ❌ Delete Log Error: ${error.message}`);
+    res.status(500).json({ error: 'Gagal menghapus log.' });
+  }
+};
+
+/**
+ * deleteAllLogs — Menghapus SEMUA log aktivitas dari database.
+ * @route DELETE /api/dashboard/logs
+ */
+exports.deleteAllLogs = async (req, res) => {
+  try {
+    await pool.query('DELETE FROM activity_logs'); // Hapus semua baris
+    res.json({ message: 'Semua log berhasil dihapus.' });
+  } catch (error) {
+    console.error(`[DASHBOARD] ❌ Delete All Logs Error: ${error.message}`);
+    res.status(500).json({ error: 'Gagal menghapus semua log.' });
   }
 };

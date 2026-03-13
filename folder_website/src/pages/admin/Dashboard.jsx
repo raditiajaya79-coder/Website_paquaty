@@ -1,6 +1,6 @@
 import React from 'react'; // React library
 import { motion } from 'framer-motion'; // Animasi
-import { TrendingUp, Package, Image, Users, Award, Calendar, Loader2 } from 'lucide-react'; // Ikon stats
+import { TrendingUp, Package, Image, Users, Award, Calendar, Loader2, Trash2, X } from 'lucide-react'; // Ikon stats + hapus
 import { Link } from 'react-router-dom'; // Komponen navigasi internal
 /**
  * Dashboard Component — Halaman ringkasan statistik admin.
@@ -9,6 +9,55 @@ import { Link } from 'react-router-dom'; // Komponen navigasi internal
 const Dashboard = () => {
     const [statsData, setStatsData] = React.useState(null); // State untuk data dari API
     const [loading, setLoading] = React.useState(true); // State loading
+    const [showAllLogs, setShowAllLogs] = React.useState(false); // Toggle tampilkan semua log atau hanya 3
+
+    /**
+     * handleDeleteLog — Hapus satu log aktivitas berdasarkan ID.
+     * Optimistic UI: hapus dari state dulu, lalu kirim request ke backend.
+     */
+    const handleDeleteLog = async (logId) => {
+        // Simpan state lama untuk rollback jika gagal
+        const prevLogs = statsData.activityLogs;
+        // Optimistic: langsung hapus dari tampilan
+        setStatsData(prev => ({
+            ...prev,
+            activityLogs: prev.activityLogs.filter(log => log.id !== logId)
+        }));
+        try {
+            const token = localStorage.getItem('admin_token');
+            const res = await fetch(`http://localhost:5000/api/dashboard/logs/${logId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!res.ok) throw new Error('Gagal menghapus log');
+        } catch (err) {
+            // Rollback jika request gagal
+            console.error('[Dashboard] Delete log error:', err);
+            setStatsData(prev => ({ ...prev, activityLogs: prevLogs }));
+        }
+    };
+
+    /**
+     * handleDeleteAllLogs — Hapus SEMUA log aktivitas.
+     */
+    const handleDeleteAllLogs = async () => {
+        if (!window.confirm('Hapus semua log aktivitas? Aksi ini tidak bisa dibatalkan.')) return;
+        const prevLogs = statsData.activityLogs;
+        // Optimistic: kosongkan tampilan
+        setStatsData(prev => ({ ...prev, activityLogs: [] }));
+        setShowAllLogs(false); // Reset toggle
+        try {
+            const token = localStorage.getItem('admin_token');
+            const res = await fetch('http://localhost:5000/api/dashboard/logs', {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!res.ok) throw new Error('Gagal menghapus semua log');
+        } catch (err) {
+            console.error('[Dashboard] Delete all logs error:', err);
+            setStatsData(prev => ({ ...prev, activityLogs: prevLogs }));
+        }
+    };
 
     // Ambil statistik saat komponen dimuat
     React.useEffect(() => {
@@ -31,11 +80,13 @@ const Dashboard = () => {
     }, []);
 
     // Konfigurasi visual kartu statistik
+    // Class Tailwind HARUS ditulis lengkap — TIDAK boleh interpolated (bg-${x}-500)
+    // karena Tailwind hanya generate class yang tertulis eksplisit di source code.
     const statsConfig = [
-        { label: 'Total Produk', key: 'totalProducts', icon: Package, color: 'bg-blue-500', trend: 'Tersedia' },
-        { label: 'Galeri Foto', key: 'totalGalleries', icon: Image, color: 'bg-indigo-500', trend: 'Tersedia' },
-        { label: 'Event Berlangsung', key: 'totalEvents', icon: Calendar, color: 'bg-emerald-500', trend: 'Aktif' },
-        { label: 'Sertifikat Aktif', key: 'totalCertificates', icon: Award, color: 'bg-amber-500', trend: 'Tersedia' },
+        { label: 'Total Produk', key: 'totalProducts', icon: Package, bgIcon: 'bg-blue-500/10', borderIcon: 'border-blue-200', textIcon: 'text-blue-600', trend: 'Tersedia' },
+        { label: 'Galeri Foto', key: 'totalGalleries', icon: Image, bgIcon: 'bg-indigo-500/10', borderIcon: 'border-indigo-200', textIcon: 'text-indigo-600', trend: 'Tersedia' },
+        { label: 'Event Berlangsung', key: 'totalEvents', icon: Calendar, bgIcon: 'bg-emerald-500/10', borderIcon: 'border-emerald-200', textIcon: 'text-emerald-600', trend: 'Aktif' },
+        { label: 'Sertifikat Aktif', key: 'totalCertificates', icon: Award, bgIcon: 'bg-amber-500/10', borderIcon: 'border-amber-200', textIcon: 'text-amber-600', trend: 'Tersedia' },
     ];
 
     return (
@@ -70,8 +121,8 @@ const Dashboard = () => {
                         ) : (
                             <>
                                 <div className="flex justify-between items-start mb-3 sm:mb-6">
-                                    <div className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl ${item.color}/10 border border-${item.color.split('-')[1]}-200`}>
-                                        <item.icon className={`w-5 h-5 sm:w-6 sm:h-6 text-${item.color.split('-')[1]}-600`} />
+                                    <div className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl ${item.bgIcon} border ${item.borderIcon}`}>
+                                        <item.icon className={`w-5 h-5 sm:w-6 sm:h-6 ${item.textIcon}`} />
                                     </div>
                                     <span className="text-[8px] sm:text-[10px] text-[#64748B] font-black uppercase tracking-wider text-right">{item.trend}</span>
                                 </div>
@@ -111,31 +162,69 @@ const Dashboard = () => {
                     </div>
 
                     <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm">
+                        {/* Header Log + Tombol Toggle */}
                         <div className="flex justify-between items-center mb-6 px-1">
                             <h3 className="font-black text-[#1E293B] text-sm uppercase tracking-wider">Log Aktivitas Terbaru</h3>
-                            <button className="text-[10px] font-black text-[#2563EB] hover:underline uppercase tracking-widest bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 transition-all">Lihat Semua</button>
+                            <div className="flex items-center gap-2">
+                                {/* Tombol Hapus Semua — muncul jika ada log */}
+                                {statsData?.activityLogs?.length > 0 && (
+                                    <button
+                                        onClick={handleDeleteAllLogs}
+                                        className="text-[10px] font-black text-red-500 hover:underline uppercase tracking-widest bg-red-50 px-3 py-1.5 rounded-lg border border-red-100 transition-all hover:bg-red-100"
+                                    >
+                                        Hapus Semua
+                                    </button>
+                                )}
+                                {/* Tombol Lihat Semua — muncul jika lebih dari 3 */}
+                                {statsData?.activityLogs?.length > 3 && (
+                                    <button
+                                        onClick={() => setShowAllLogs(!showAllLogs)}
+                                        className="text-[10px] font-black text-[#2563EB] hover:underline uppercase tracking-widest bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 transition-all"
+                                    >
+                                        {showAllLogs ? 'Tutup' : 'Lihat Semua'}
+                                    </button>
+                                )}
+                            </div>
                         </div>
-                        <div className="space-y-4">
+
+                        {/* Container log: tinggi SELALU tetap, scrollbar hidden di semua browser */}
+                        <div
+                            className="space-y-4 max-h-[280px] overflow-y-auto [&::-webkit-scrollbar]:hidden"
+                            style={{ scrollbarWidth: 'none' }}
+                        >
                             {statsData?.activityLogs?.length > 0 ? (
-                                statsData.activityLogs.map((log, i) => (
-                                    <div key={log.id} className="flex items-center gap-4 p-4 rounded-2xl border border-transparent hover:border-slate-200 hover:bg-slate-50/50 transition-all group">
+                                /* Jika belum expand, potong hanya 3 item pertama */
+                                (showAllLogs ? statsData.activityLogs : statsData.activityLogs.slice(0, 3)).map((log) => (
+                                    <div key={log.id} className="flex items-center gap-4 p-4 rounded-2xl border border-transparent hover:border-slate-200 hover:bg-slate-50/50 transition-all group relative">
+                                        {/* Avatar ikon */}
                                         <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100 group-hover:scale-110 transition-transform">
                                             <Users className="w-5 h-5 sm:w-6 sm:h-6 text-[#2563EB]" />
                                         </div>
+                                        {/* Detail log aktivitas */}
                                         <div className="flex-1">
                                             <p className="text-xs sm:text-sm font-bold text-[#1E293B]">
                                                 {log.admin_name} <span className="font-normal text-slate-500">melakukan</span> {log.action}{' '}
                                                 <span className="text-[#2563EB] font-black italic">"{log.target_name}"</span>
                                             </p>
+                                            {/* Timestamp aktivitas */}
                                             <p className="text-[9px] sm:text-[10px] text-[#64748B] font-black uppercase tracking-widest mt-1 opacity-70">
                                                 {new Date(log.created_at).toLocaleString('id-ID', {
                                                     day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
                                                 })}
                                             </p>
                                         </div>
+                                        {/* Tombol hapus — muncul saat hover */}
+                                        <button
+                                            onClick={() => handleDeleteLog(log.id)}
+                                            className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all"
+                                            title="Hapus log ini"
+                                        >
+                                            <X className="w-4 h-4" />
+                                        </button>
                                     </div>
                                 ))
                             ) : (
+                                /* Placeholder jika belum ada log */
                                 <div className="text-center py-12 text-slate-300 font-bold text-xs italic bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
                                     Belum ada aktivitas yang tercatat.
                                 </div>

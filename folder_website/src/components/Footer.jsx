@@ -119,11 +119,35 @@ const Footer = () => {
                         <div className="flex gap-4">
                             {footerContacts.map(contact => {
                                 const BrandIcon = FooterBrandIcons[contact.icon];
+                                // Smart URL generator: admin cukup masukkan data mentah
+                                const val = (contact.value || '').trim();
+                                let href = val; // Default: pakai value apa adanya
+                                // Jika sudah URL lengkap, langsung pakai
+                                if (!val.startsWith('http://') && !val.startsWith('https://')) {
+                                    // Generate URL berdasarkan platform
+                                    if (contact.icon === 'Mail') href = `mailto:${val}`;
+                                    else if (contact.icon === 'WhatsApp' || contact.icon === 'MessageCircle') {
+                                        let num = val.replace(/\D/g, '');
+                                        if (num.startsWith('0')) num = '62' + num.slice(1);
+                                        href = `https://wa.me/${num}`;
+                                    }
+                                    else if (contact.icon === 'Phone') {
+                                        let num = val.replace(/\D/g, '');
+                                        if (num.startsWith('0')) num = '62' + num.slice(1);
+                                        href = `tel:+${num}`;
+                                    }
+                                    else if (contact.icon === 'Instagram') href = `https://instagram.com/${val.replace(/^@/, '')}`;
+                                    else if (contact.icon === 'Facebook') href = `https://facebook.com/${val.replace(/^@/, '')}`;
+                                    else if (contact.icon === 'Tiktok') href = `https://tiktok.com/${val.startsWith('@') ? val : '@' + val}`;
+                                    else if (contact.icon === 'Twitter') href = `https://x.com/${val.replace(/^@/, '')}`;
+                                    else if (contact.icon === 'Shopee' || contact.icon === 'ShoppingBag') href = `https://shopee.co.id/${val}`;
+                                    else href = `https://${val}`;
+                                }
                                 return (
                                     <a
                                         key={contact.id}
-                                        href={contact.value.startsWith('http') ? contact.value : (contact.icon === 'Mail' ? `mailto:${contact.value}` : `https://${contact.value}`)}
-                                        target="_blank"
+                                        href={href}
+                                        target={contact.icon === 'Mail' || contact.icon === 'Phone' ? '_self' : '_blank'}
                                         rel="noopener noreferrer"
                                         className="w-12 h-12 rounded-full bg-stone-50 border border-stone-100 flex items-center justify-center transition-all duration-500 hover:bg-white hover:shadow-xl hover:-translate-y-1 hover:border-brand-gold/30 group"
                                     >

@@ -66,3 +66,81 @@ exports.login = async (req, res) => {
 exports.getCurrentAdmin = (req, res) => {
   res.json(req.admin); // Data admin sudah dimasukkan ke req oleh authMiddleware
 };
+
+/**
+ * updateUsername — Mengubah username admin yang sedang login.
+ * @route PUT /api/auth/username
+ * Validasi: username baru tidak boleh kosong dan tidak boleh duplikat.
+ */
+exports.updateUsername = async (req, res) => {
+  const { username } = req.body; // Ambil username baru dari body
+  const adminId = req.admin.id; // ID admin dari token JWT
+
+  try {
+    // Validasi: username tidak boleh kosong
+    if (!username || username.trim().length < 3) {
+      return res.status(400).json({ error: 'Username minimal 3 karakter.' });
+    }
+
+    // Cek apakah username sudah dipakai admin lain
+    const exists = await pool.query(
+      'SELECT id FROM admins WHERE username = $1 AND id != $2',
+      [username.trim(), adminId]
+    );
+    if (exists.rows.length > 0) {
+      return res.status(409).json({ error: 'Username sudah digunakan.' });
+    }
+
+    // Update username di database
+    await pool.query('UPDATE admins SET username = $1 WHERE id = $2', [username.trim(), adminId]);
+
+    res.json({ message: 'Username berhasil diperbarui.' });
+  } catch (error) {
+    console.error(`[AUTH] ❌ Update Username Error: ${error.message}`);
+    res.status(500).json({ error: 'Gagal memperbarui username.' });
+  }
+};
+
+/**
+ * updatePassword — Mengubah password admin yang sedang login.
+ * @route PUT /api/auth/password
+ * Validasi: password lama harus cocok, password baru minimal 6 karakter.
+ */
+exports.updatePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body; // Ambil password lama dan baru
+  const adminId = req.admin.id; // ID admin dari token JWT
+
+  try {
+    // Validasi: pastikan semua field terisi
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ error: 'Semua field password wajib diisi.' });
+    }
+
+    // Validasi: panjang password baru
+    if (newPassword.length < 6) {
+      return res.status(400).json({ error: 'Password baru minimal 6 karakter.' });
+    }
+
+    // Ambil password hash saat ini dari database
+    const result = await pool.query('SELECT password_hash FROM admins WHERE id = $1', [adminId]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Admin tidak ditemukan.' });
+    }
+
+    // Verifikasi password lama
+    const isMatch = await bcrypt.compare(currentPassword, result.rows[0].password_hash);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Password lama tidak cocok.' });
+    }
+
+    // Hash password baru dan simpan ke database
+    const salt = await bcrypt.genSalt(10); // Generate salt 10 rounds
+    const newHash = await bcrypt.hash(newPassword, salt); // Hash password baru
+    await pool.query('UPDATE admins SET password_hash = $1 WHERE id = $2', [newHash, adminId]);
+
+    res.json({ message: 'Password berhasil diperbarui.' });
+  } catch (error) {
+    console.error(`[AUTH] ❌ Update Password Error: ${error.message}`);
+    res.status(500).json({ error: 'Gagal memperbarui password.' });
+  }
+};

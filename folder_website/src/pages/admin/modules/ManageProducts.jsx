@@ -140,14 +140,6 @@ const ManageProducts = () => {
                         className="w-full bg-slate-50/50 border border-slate-100 rounded-xl py-4 pl-14 pr-6 text-sm font-semibold focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all placeholder:text-slate-400"
                     />
                 </div>
-                <div className="flex gap-3 px-2 pb-2 lg:p-0">
-                    <button className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-3.5 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-[#64748B] hover:bg-slate-50 transition-all uppercase tracking-widest">
-                        <Filter className="w-4 h-4" /> Filter
-                    </button>
-                    <button className="flex-1 lg:flex-none flex items-center justify-center px-6 py-3.5 bg-white border border-slate-200 rounded-xl text-[10px] font-black text-[#64748B] hover:bg-slate-50 transition-all uppercase tracking-widest">
-                        Urutkan
-                    </button>
-                </div>
             </div>
 
             {/* Product Table — Responsive Scroll */}
@@ -247,13 +239,9 @@ const ManageProducts = () => {
                     </table>
                 </div>
 
-                {/* Pagination — Responsive Styles */}
-                <div className="px-6 py-6 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] order-2 sm:order-1">Total: {products.length} item terdaftar</p>
-                    <div className="flex gap-4 order-1 sm:order-2 w-full sm:w-auto">
-                        <button className="flex-1 sm:flex-none px-8 py-2.5 bg-white border border-slate-200 rounded-2xl text-[10px] font-black text-slate-400 opacity-60 uppercase tracking-widest transition-all hover:bg-slate-100 disabled:cursor-not-allowed">Previous</button>
-                        <button className="flex-1 sm:flex-none px-8 py-2.5 bg-white border border-slate-200 rounded-2xl text-[10px] font-black text-slate-400 opacity-60 uppercase tracking-widest transition-all hover:bg-slate-100 disabled:cursor-not-allowed">Next</button>
-                    </div>
+                {/* Footer — Total item */}
+                <div className="px-6 py-5 bg-slate-50/50 border-t border-slate-100 flex items-center justify-center">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Total: {filteredProducts.length} dari {products.length} produk</p>
                 </div>
             </div>
 

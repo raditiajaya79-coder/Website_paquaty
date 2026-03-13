@@ -22,6 +22,10 @@ const upload = require('../middleware/upload'); // Import middleware upload
 // --- DASHBOARD ROUTES ---
 // Endpoint untuk mengambil ringkasan angka di dashboard (Admin Only)
 router.get('/dashboard/stats', auth, dashboardController.getStats);
+// Endpoint untuk menghapus semua log aktivitas (Admin Only)
+router.delete('/dashboard/logs', auth, dashboardController.deleteAllLogs);
+// Endpoint untuk menghapus satu log aktivitas berdasarkan ID (Admin Only)
+router.delete('/dashboard/logs/:id', auth, dashboardController.deleteLog);
 
 // --- UPLOAD ROUTES ---
 // Endpoint khusus untuk menerima file dari device
@@ -42,6 +46,9 @@ router.post('/upload', auth, upload.single('image'), (req, res) => {
 // --- AUTH ROUTES ---
 router.post('/auth/login', authController.login);
 router.get('/auth/me', auth, authController.getCurrentAdmin);
+// Endpoint update kredensial admin (Admin Only)
+router.put('/auth/username', auth, authController.updateUsername);
+router.put('/auth/password', auth, authController.updatePassword);
 
 // --- PRODUCT ROUTES ---
 router.get('/products', productController.getAllProducts); // Publik
