@@ -222,7 +222,7 @@ const Products = () => {
                             <p className="text-[#78716C] text-sm">Try a different search term</p>
                         </motion.div>
                     ) : (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
                             <AnimatePresence mode="popLayout">
                                 {filteredProducts.map((product, idx) => (
                                     <motion.div
@@ -234,10 +234,10 @@ const Products = () => {
                                         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: idx * 0.05 }}
                                     >
                                         <Link to={`/products/${product.id}`} className="block group h-full">
-                                            <div className="bg-white rounded-[2rem] border border-stone-border/50 hover:border-brand-gold/40 transition-all duration-700 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transform-gpu h-full flex flex-col">
+                                            <div className="bg-white rounded-[1.5rem] md:rounded-[2rem] border border-stone-border/50 hover:border-brand-gold/40 transition-all duration-700 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transform-gpu h-full flex flex-col">
 
                                                 {/* Image Area */}
-                                                <div className="relative overflow-hidden bg-gradient-to-br from-stone-50 to-neutral-100 aspect-square flex items-center justify-center p-8">
+                                                <div className="relative overflow-hidden bg-gradient-to-br from-stone-50 to-neutral-100 aspect-square flex items-center justify-center p-4 sm:p-8">
                                                     {/* Subtle radial glow behind product */}
                                                     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(0,0,0,0.04)_0%,_transparent_70%)]" />
                                                     <img
@@ -258,31 +258,31 @@ const Products = () => {
                                                 </div>
 
                                                 {/* Card Content */}
-                                                <div className="p-6 flex-1 flex flex-col gap-4">
+                                                <div className="p-4 md:p-6 flex-1 flex flex-col gap-3 md:gap-4">
                                                     <div>
-                                                        <h3 className="text-xl font-bold text-stone-dark tracking-tight">{product.name}</h3>
-                                                        <p className="text-brand-gold-dark text-sm font-medium mt-0.5">{product.grade}</p>
+                                                        <h3 className="text-base sm:text-lg md:text-xl font-bold text-stone-dark tracking-tight leading-tight line-clamp-2 min-h-[2.5rem] sm:min-h-0">{product.name}</h3>
+                                                        <p className="text-brand-gold-dark text-[10px] sm:text-xs md:text-sm font-medium mt-1 uppercase tracking-wider">{product.grade}</p>
                                                     </div>
 
                                                     {product.price && (
-                                                        <div className="flex items-baseline gap-2">
-                                                            <span className="text-2xl font-black text-stone-dark">
+                                                        <div className="flex flex-wrap items-baseline gap-1 md:gap-2">
+                                                            <span className="text-lg sm:text-xl md:text-2xl font-black text-stone-dark">
                                                                 Rp {formatPrice(product.price)}
                                                             </span>
                                                             {product.original_price && product.original_price > product.price && (
-                                                                <span className="text-xs text-[#A8A29E] line-through font-medium">
+                                                                <span className="text-[10px] md:text-xs text-[#A8A29E] line-through font-medium">
                                                                     Rp {formatPrice(product.original_price)}
                                                                 </span>
                                                             )}
                                                         </div>
                                                     )}
 
-                                                    <div className="mt-auto flex items-center justify-between pt-4 border-t border-stone-border/60">
+                                                    <div className="mt-auto flex items-center justify-between pt-3 md:pt-4 border-t border-stone-border/60">
                                                         <div>
-                                                            <p className="text-[10px] text-[#78716C] uppercase tracking-widest mb-0.5">{t('products.origin')}</p>
-                                                            <p className="text-sm font-semibold text-stone-dark">{product.origin}</p>
+                                                            <p className="text-[8px] md:text-[10px] text-[#78716C] uppercase tracking-widest mb-0.5 opacity-60">Origin</p>
+                                                            <p className="text-[10px] sm:text-xs md:text-sm font-bold text-stone-dark tracking-tight">{product.origin}</p>
                                                         </div>
-                                                        <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-blue opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-500">
+                                                        <div className="hidden sm:flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-blue opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-500">
                                                             View <ArrowRight className="w-3.5 h-3.5" />
                                                         </div>
                                                     </div>

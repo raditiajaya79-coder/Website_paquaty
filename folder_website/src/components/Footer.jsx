@@ -96,7 +96,7 @@ const Footer = () => {
     }, []);
 
     return (
-        <footer className="bg-brand-cream pt-24 pb-12 border-t border-brand-gold/20 relative overflow-hidden">
+        <footer className="bg-brand-cream pt-24 pb-12 border-t-2 border-brand-gold/30 relative overflow-hidden">
             {/* Soft Ambient Glows */}
             <div className="absolute bottom-0 right-0 w-[50rem] h-[50rem] bg-brand-gold/5 blur-[120px] rounded-full pointer-events-none translate-x-1/3 translate-y-1/3" />
             <div className="absolute top-0 left-0 w-[40rem] h-[40rem] bg-brand-blue/5 blur-[120px] rounded-full pointer-events-none -translate-x-1/3 -translate-y-1/3" />
@@ -162,7 +162,7 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <div className="pt-12 border-t border-stone-100 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div className="pt-12 border-t-2 border-brand-gold/20 flex flex-col md:flex-row justify-between items-center gap-6">
                     <p className="text-[10px] font-bold text-stone-dark/30 uppercase tracking-[0.2em] text-center md:text-left">
                         © {new Date().getFullYear()} {COMPANY_INFO.name}.
                         <span className="hidden sm:inline mx-2">•</span>
