@@ -37,7 +37,8 @@ const HERO_FLAVORS = [
         bgColor: "#E86A33",
         textColor: "#FFFFFF",
         tilt: -10,
-        ornaments: ["/images/ornaments/meat.png", "/images/ornaments/meat.png", "/images/ornaments/meat.png"]
+        ornamentScale: 1.3,
+        ornaments: ["/images/ornaments/bbq.png", "/images/ornaments/bbq.png", "/images/ornaments/bbq.png"]
     },
     {
         id: 4,
@@ -159,7 +160,10 @@ const Home = () => {
                                     opacity: { duration: 0.5, delay: idx * 0.1 },
                                 }}
                                 className="absolute w-32 h-32 md:w-60 md:h-60 select-none"
-                                style={ORNAMENT_POSITIONS[idx]}
+                                style={{
+                                    ...ORNAMENT_POSITIONS[idx],
+                                    scale: activeFlavor.ornamentScale || 1
+                                }}
                             >
                                 <motion.img
                                     src={imgPath}
@@ -178,17 +182,17 @@ const Home = () => {
                     <AnimatePresence mode="popLayout">
                         <motion.div
                             key={`product-${activeIndex}`}
-                            initial={{ opacity: 0, y: -800, scale: 0.5, rotate: 0 }}
+                            initial={{ opacity: 0, y: -700, scale: 0.6 }}
                             animate={{
                                 opacity: 1,
                                 y: 0,
                                 scale: 1,
                                 rotate: activeFlavor.tilt,
                             }}
-                            exit={{ opacity: 0, y: 800, scale: 1.1 }}
+                            exit={{ opacity: 0, y: 700, scale: 0.6 }}
                             transition={{
-                                duration: 1.2,
-                                ease: [0.175, 0.885, 0.32, 1.1],
+                                duration: 1.1,
+                                ease: [0.16, 1, 0.3, 1],
                             }}
                             className="relative w-80 h-80 md:w-[820px] md:h-[820px] flex items-center justify-center"
                         >
@@ -269,7 +273,7 @@ const Home = () => {
                     </div>
 
                     {/* ── Mobile Page Indicator ── */}
-                    <div className="absolute bottom-8 right-6 flex items-center gap-2 lg:hidden">
+                    <div className="absolute bottom-8 right-6 flex items-center gap-2 hidden sm:flex md:hidden">
                         {HERO_FLAVORS.map((_, idx) => (
                             <div
                                 key={idx}
@@ -356,7 +360,7 @@ const Home = () => {
                                 initial={{ x: -60, opacity: 0 }}
                                 whileInView={{ x: 0, opacity: 1 }}
                                 transition={{ duration: 0.8 }}
-                                className="w-full max-w-[340px] aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-xl relative group"
+                                className="hidden sm:block w-full max-w-[340px] aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-xl relative group"
                             >
                                 <img
                                     src="/images/artisan_inset.png"
