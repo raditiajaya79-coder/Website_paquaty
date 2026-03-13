@@ -1,36 +1,73 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import { COMPANY_INFO } from '../data/products'; // Info perusahaan
+import { ArrowRight, Search, X } from 'lucide-react';
+import { COMPANY_INFO } from '../data/products';
 import { generatePageTitle } from '../utils/seo';
 import { useLanguage } from '../context/LanguageContext';
-import React from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import useSWR from 'swr';
 
-/**
- * Fetcher standar untuk SWR
- */
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
-/**
- * Products — Halaman katalog semua produk
- * Menampilkan grid semua varian Keripik Tempe Pakuaty dengan harga.
- * Menggunakan data statis dan dukungan multi-bahasa.
- */
+// Custom funnel icon — 3 horizontal lines of decreasing width
+const FunnelIcon = () => (
+    <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="1" x2="18" y2="1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        <line x1="3" y1="7" x2="15" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        <line x1="6" y1="13" x2="12" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    </svg>
+);
+
 const Products = () => {
     const { t } = useLanguage();
+    const [searchQuery, setSearchQuery] = useState('');
+    const [activeType, setActiveType] = useState('All');
+    const [activeTag, setActiveTag] = useState('All');
+    const [filterOpen, setFilterOpen] = useState(false);
+    const filterRef = useRef(null);
 
-    // SWR Hook untuk Data Fetching & Background Revalidation
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handler = (e) => { if (filterRef.current && !filterRef.current.contains(e.target)) setFilterOpen(false); };
+        document.addEventListener('mousedown', handler);
+        return () => document.removeEventListener('mousedown', handler);
+    }, []);
+
     const { data: products = [], isLoading: loading } = useSWR(
         'http://localhost:5000/api/products',
         fetcher,
-        {
-            // Opsi tambahan untuk polling background:
-            refreshInterval: 60000, // Cek tiap 60 detik otomatis
-            revalidateOnFocus: true, // Auto-update ketika pindah tab balik
-        }
+        { refreshInterval: 60000, revalidateOnFocus: true }
     );
+
+    const productTypes = useMemo(() => {
+        const types = products.map((p) =>
+            p.grade?.toLowerCase().includes('mushroom') || p.grade?.toLowerCase().includes('jamur')
+                ? 'Keripik Jamur' : 'Keripik Tempe'
+        );
+        return ['All', ...new Set(types)];
+    }, [products]);
+
+    const productTags = useMemo(() => {
+        const tags = products.map((p) => p.tag).filter(Boolean);
+        return ['All', ...new Set(tags)];
+    }, [products]);
+
+    const filteredProducts = useMemo(() => {
+        return products.filter((p) => {
+            const q = searchQuery.toLowerCase();
+            const matchSearch = !q || p.name?.toLowerCase().includes(q) || p.grade?.toLowerCase().includes(q) || p.tag?.toLowerCase().includes(q);
+            const isJamur = p.grade?.toLowerCase().includes('mushroom') || p.grade?.toLowerCase().includes('jamur');
+            const matchType = activeType === 'All' || (isJamur ? 'Keripik Jamur' : 'Keripik Tempe') === activeType;
+            const matchTag = activeTag === 'All' || p.tag === activeTag;
+            return matchSearch && matchType && matchTag;
+        });
+    }, [products, searchQuery, activeType, activeTag]);
+
+    const hasActiveFilters = activeType !== 'All' || activeTag !== 'All' || searchQuery;
+    const hasFilterSelected = activeType !== 'All' || activeTag !== 'All';
+    const clearAll = () => { setSearchQuery(''); setActiveType('All'); setActiveTag('All'); };
+    const formatPrice = (price) => new Intl.NumberFormat('id-ID').format(price);
 
     const fadeIn = {
         initial: { opacity: 0, y: 20 },
@@ -39,17 +76,8 @@ const Products = () => {
         transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] }
     };
 
-    /**
-     * formatPrice — Format angka ke format Rupiah Indonesia
-     * Contoh: 12000 → "12.000"
-     */
-    const formatPrice = (price) => {
-        return new Intl.NumberFormat('id-ID').format(price);
-    };
-
     return (
         <>
-            {/* SEO metadata */}
             <Helmet>
                 <title>{generatePageTitle(t('seo.products_title'))}</title>
                 <meta name="description" content={t('seo.home_desc')} />
@@ -57,81 +85,213 @@ const Products = () => {
 
             <div className="bg-neutral-bone min-h-screen pt-24 pb-16 md:py-32 relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
-                    {/* Header section — judul dan deskripsi halaman */}
-                    <motion.div {...fadeIn} className="text-center mb-16 md:mb-24">
-                        <span className="text-brand-blue font-medium tracking-[0.4em] uppercase text-xs mb-6 block">{t('products.header_label')}</span>
-                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-medium text-stone-dark tracking-tight mb-8 leading-tight">
-                            {t('products.header_title')}<span className="text-brand-blue">{t('products.header_title_accent')}</span>
+
+                    {/* Header */}
+                    <motion.div {...fadeIn} className="text-center mb-12 md:mb-16">
+                        <span className="text-brand-blue font-bold tracking-[0.4em] uppercase text-xs mb-4 block">
+                            {t('products.header_label')}
+                        </span>
+                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-medium text-stone-dark tracking-tight mb-6 leading-tight">
+                            {t('products.header_title')}<span className="text-brand-blue italic">{t('products.header_title_accent')}</span>
                         </h1>
-                        <p className="text-lg md:text-xl text-[#57534E] font-light leading-relaxed max-w-2xl mx-auto">
+                        <p className="text-lg text-[#57534E] font-light leading-relaxed max-w-2xl mx-auto">
                             {t('products.header_desc')}
                         </p>
                     </motion.div>
 
+                    {/* Search Bar with Filter Button */}
+                    <motion.div {...fadeIn} transition={{ delay: 0.15 }} className="max-w-2xl mx-auto mb-12 md:mb-16">
+                        <div className="relative" ref={filterRef}>
+                            {/* Main bar */}
+                            <div className="flex items-center bg-white border-2 border-stone-border/50 rounded-2xl shadow-sm focus-within:border-brand-blue focus-within:shadow-md transition-all duration-300">
+                                {/* Search */}
+                                <div className="flex items-center flex-1 min-w-0 px-5 py-3.5">
+                                    <Search className="w-5 h-5 text-stone-dark/30 shrink-0 mr-3" />
+                                    <input
+                                        type="text"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder="Search products..."
+                                        className="flex-1 min-w-0 bg-transparent text-stone-dark placeholder:text-stone-dark/30 text-sm font-medium focus:outline-none"
+                                    />
+                                    {searchQuery && (
+                                        <button onClick={() => setSearchQuery('')} className="ml-2 text-stone-dark/30 hover:text-stone-dark transition-colors shrink-0">
+                                            <X className="w-4 h-4" />
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* Divider */}
+                                <div className="w-px h-7 bg-stone-border/60 shrink-0" />
+
+                                {/* Filter toggle button */}
+                                <button
+                                    onClick={() => setFilterOpen((v) => !v)}
+                                    className={`relative flex items-center gap-2 px-5 py-3.5 text-xs font-bold uppercase tracking-widest transition-colors duration-200 shrink-0 ${filterOpen || hasFilterSelected ? 'text-brand-blue' : 'text-stone-dark/50 hover:text-brand-blue'}`}
+                                >
+                                    <FunnelIcon />
+                                    <span className="hidden sm:inline">Filter</span>
+                                    {/* Blue dot indicator */}
+                                    {hasFilterSelected && (
+                                        <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-brand-blue" />
+                                    )}
+                                </button>
+                            </div>
+
+                            {/* Dropdown panel */}
+                            <AnimatePresence>
+                                {filterOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                                        transition={{ duration: 0.2, ease: 'easeOut' }}
+                                        className="absolute top-full left-0 right-0 mt-2 bg-white border border-stone-border/60 rounded-2xl shadow-xl overflow-hidden z-50"
+                                    >
+                                        <div className="p-5 grid sm:grid-cols-2 gap-6">
+                                            {/* Type */}
+                                            <div>
+                                                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-stone-dark/30 mb-3">Product Type</p>
+                                                <div className="flex flex-col gap-1.5">
+                                                    {productTypes.map((type) => (
+                                                        <button
+                                                            key={type}
+                                                            onClick={() => { setActiveType(type); }}
+                                                            className={`text-left px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${activeType === type ? 'bg-brand-blue text-white' : 'text-stone-dark/60 hover:bg-stone-50 hover:text-stone-dark'}`}
+                                                        >
+                                                            {type === 'All' ? 'All Types' : type}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            {/* Flavor / Tag */}
+                                            <div>
+                                                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-stone-dark/30 mb-3">Flavor / Tag</p>
+                                                <div className="flex flex-col gap-1.5">
+                                                    {productTags.map((tag) => (
+                                                        <button
+                                                            key={tag}
+                                                            onClick={() => { setActiveTag(tag); }}
+                                                            className={`text-left px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${activeTag === tag ? 'bg-brand-blue text-white' : 'text-stone-dark/60 hover:bg-stone-50 hover:text-stone-dark'}`}
+                                                        >
+                                                            {tag === 'All' ? 'All Flavors' : tag}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {hasFilterSelected && (
+                                            <div className="border-t border-stone-border/40 px-5 py-3 flex justify-end">
+                                                <button onClick={() => { setActiveType('All'); setActiveTag('All'); }} className="text-[10px] font-bold text-brand-blue/70 hover:text-brand-blue uppercase tracking-widest flex items-center gap-1">
+                                                    <X className="w-3 h-3" /> Clear filters
+                                                </button>
+                                            </div>
+                                        )}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+
+                        {/* Result count */}
+                        {!loading && (
+                            <div className="flex items-center justify-between mt-3 px-1">
+                                <p className="text-xs text-stone-dark/40 font-medium tracking-wide">
+                                    {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
+                                </p>
+                                {hasActiveFilters && (
+                                    <button onClick={clearAll} className="flex items-center gap-1 text-[10px] font-bold text-brand-blue/70 hover:text-brand-blue transition-colors uppercase tracking-widest">
+                                        <X className="w-3 h-3" /> Clear all
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </motion.div>
+                    {/* Product Grid */}
                     {loading ? (
                         <div className="flex justify-center py-20">
-                            <div className="w-12 h-12 border-4 border-brand-blue border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-12 h-12 border-4 border-brand-blue border-t-transparent rounded-full animate-spin" />
                         </div>
-                    ) : products.length === 0 ? (
-                        <div className="text-center py-20">
-                            <p className="text-[#78716C] font-medium tracking-widest uppercase text-xs">Belum ada produk yang tersedia.</p>
-                        </div>
+                    ) : filteredProducts.length === 0 ? (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="text-center py-24"
+                        >
+                            <p className="text-5xl mb-4">🔍</p>
+                            <p className="text-stone-dark font-semibold text-lg mb-2">No products found</p>
+                            <p className="text-[#78716C] text-sm">Try a different search term</p>
+                        </motion.div>
                     ) : (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                            {products.map((product) => (
-                                <Link to={`/products/${product.id}`} key={product.id} className="block group">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <AnimatePresence mode="popLayout">
+                                {filteredProducts.map((product, idx) => (
                                     <motion.div
-                                        {...fadeIn}
-                                        className="bg-white rounded-3xl border border-stone-border hover:border-brand-gold/50 transition-all duration-700 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transform-gpu h-full flex flex-col"
+                                        layout
+                                        key={product.id}
+                                        initial={{ opacity: 0, y: 24 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.95 }}
+                                        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: idx * 0.05 }}
                                     >
-                                        <div className="aspect-square relative overflow-hidden bg-stone-50/50 p-8 flex items-center justify-center">
-                                            <img
-                                                src={product.image}
-                                                alt={product.name}
-                                                className="max-w-full max-h-full object-contain transition-transform duration-1000 group-hover:scale-105 drop-shadow-2xl"
-                                            />
-                                            {product.tag && (
-                                                <span className="absolute top-6 left-6 z-20 px-4 py-1.5 rounded-full text-xs font-bold bg-brand-gold text-stone-dark shadow-lg">
-                                                    {product.tag}
-                                                </span>
-                                            )}
-                                        </div>
+                                        <Link to={`/products/${product.id}`} className="block group h-full">
+                                            <div className="bg-white rounded-[2rem] border border-stone-border/50 hover:border-brand-gold/40 transition-all duration-700 overflow-hidden hover:shadow-2xl hover:-translate-y-2 transform-gpu h-full flex flex-col">
 
-                                        <div className="p-6 flex-1 flex flex-col justify-between">
-                                            <div>
-                                                <h3 className="text-xl font-semibold text-stone-dark mb-1">{product.name}</h3>
-                                                <p className="text-brand-gold-dark text-sm font-medium mb-3">{product.grade}</p>
+                                                {/* Image Area */}
+                                                <div className="relative overflow-hidden bg-gradient-to-br from-stone-50 to-neutral-100 aspect-square flex items-center justify-center p-8">
+                                                    {/* Subtle radial glow behind product */}
+                                                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(0,0,0,0.04)_0%,_transparent_70%)]" />
+                                                    <img
+                                                        src={product.image}
+                                                        alt={product.name}
+                                                        className="relative z-10 max-w-full max-h-full object-contain transition-all duration-1000 group-hover:scale-110 drop-shadow-2xl"
+                                                    />
+                                                    {/* Tag Badge */}
+                                                    {product.tag && (
+                                                        <span className="absolute top-5 left-5 z-20 px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-brand-gold text-stone-dark shadow-md">
+                                                            {product.tag}
+                                                        </span>
+                                                    )}
+                                                    {/* Arrow hover indicator */}
+                                                    <div className="absolute bottom-5 right-5 z-20 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
+                                                        <ArrowRight className="w-4 h-4 text-stone-dark -rotate-45" />
+                                                    </div>
+                                                </div>
 
-                                                {product.price && (
-                                                    <div className="mb-6">
-                                                        <div className="flex items-baseline gap-3">
-                                                            <span className="text-xl font-bold text-stone-dark">
+                                                {/* Card Content */}
+                                                <div className="p-6 flex-1 flex flex-col gap-4">
+                                                    <div>
+                                                        <h3 className="text-xl font-bold text-stone-dark tracking-tight">{product.name}</h3>
+                                                        <p className="text-brand-gold-dark text-sm font-medium mt-0.5">{product.grade}</p>
+                                                    </div>
+
+                                                    {product.price && (
+                                                        <div className="flex items-baseline gap-2">
+                                                            <span className="text-2xl font-black text-stone-dark">
                                                                 Rp {formatPrice(product.price)}
                                                             </span>
                                                             {product.original_price && product.original_price > product.price && (
-                                                                <span className="text-xs text-[#A8A29E] line-through">
+                                                                <span className="text-xs text-[#A8A29E] line-through font-medium">
                                                                     Rp {formatPrice(product.original_price)}
                                                                 </span>
                                                             )}
                                                         </div>
-                                                        <p className="text-xs text-[#78716C] mt-1">/ {t('products.price_gram')}</p>
-                                                    </div>
-                                                )}
-                                            </div>
+                                                    )}
 
-                                            <div className="flex justify-between items-center pt-4 border-t border-stone-border mt-auto">
-                                                <div>
-                                                    <p className="text-[10px] text-[#78716C] uppercase tracking-widest mb-1">{t('products.origin')}</p>
-                                                    <p className="text-sm font-medium text-stone-dark">{product.origin}</p>
-                                                </div>
-                                                <div className="bg-neutral-50 hover:bg-brand-gold text-[#78716C] hover:text-stone-dark p-3 rounded-full transition-all group-hover:scale-110">
-                                                    <ArrowRight className="w-5 h-5 -rotate-45" />
+                                                    <div className="mt-auto flex items-center justify-between pt-4 border-t border-stone-border/60">
+                                                        <div>
+                                                            <p className="text-[10px] text-[#78716C] uppercase tracking-widest mb-0.5">{t('products.origin')}</p>
+                                                            <p className="text-sm font-semibold text-stone-dark">{product.origin}</p>
+                                                        </div>
+                                                        <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-blue opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-500">
+                                                            View <ArrowRight className="w-3.5 h-3.5" />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </Link>
                                     </motion.div>
-                                </Link>
-                            ))}
+                                ))}
+                            </AnimatePresence>
                         </div>
                     )}
                 </div>
@@ -141,3 +301,5 @@ const Products = () => {
 };
 
 export default Products;
+
+

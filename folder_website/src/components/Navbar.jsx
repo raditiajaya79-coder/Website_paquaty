@@ -113,7 +113,7 @@ const Navbar = () => {
     const activeStyle = ({ isActive }) => {
         const base = "text-sm font-medium transition-all duration-300 relative group";
         if (isTransparent) {
-            return `${base} ${isActive ? 'text-brand-blue' : 'text-stone-dark/80 hover:text-brand-cyan hover:scale-105'}`;
+            return `${base} ${isActive ? 'text-white' : 'text-white/80 hover:text-white hover:scale-105'}`;
         }
         return `${base} ${isActive ? 'text-brand-blue' : 'text-stone-dark/60 hover:text-brand-cyan hover:scale-105'}`;
     };
@@ -170,7 +170,7 @@ const Navbar = () => {
                     <div className={`flex items-center gap-1 p-1 rounded-full transition-all duration-500 border-2 ${isTransparent ? 'bg-white/5 border-white/10' : 'bg-stone-50 border-stone-border/30'}`}>
                         <button
                             onClick={() => switchLang('en')}
-                            className={`px-3 py-1.5 rounded-full text-[9px] font-black tracking-widest transition-all duration-300 ${lang === 'en'
+                            className={`px-2.5 py-1 rounded-full text-[9px] font-black tracking-widest transition-all duration-300 ${lang === 'en'
                                 ? 'bg-brand-gold text-stone-dark shadow-sm'
                                 : (isTransparent ? 'text-white/40 hover:text-white' : 'text-stone-dark/40 hover:text-stone-dark')
                                 }`}
@@ -179,7 +179,7 @@ const Navbar = () => {
                         </button>
                         <button
                             onClick={() => switchLang('id')}
-                            className={`px-3 py-1.5 rounded-full text-[9px] font-black tracking-widest transition-all duration-300 ${lang === 'id'
+                            className={`px-2.5 py-1 rounded-full text-[9px] font-black tracking-widest transition-all duration-300 ${lang === 'id'
                                 ? 'bg-brand-gold text-stone-dark shadow-sm'
                                 : (isTransparent ? 'text-white/40 hover:text-white' : 'text-stone-dark/40 hover:text-stone-dark')
                                 }`}
@@ -190,7 +190,7 @@ const Navbar = () => {
 
                     <Link
                         to="/contact"
-                        className={`hidden lg:flex items-center gap-2 px-7 py-3 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] transition-all duration-500 shadow-xl active:scale-95 ${isTransparent
+                        className={`hidden lg:flex items-center gap-2 px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-[0.15em] transition-all duration-500 shadow-xl active:scale-95 ${isTransparent
                             ? 'bg-white/10 text-white backdrop-blur-md border border-white/20 hover:bg-brand-cyan hover:text-white hover:border-brand-cyan'
                             : 'bg-brand-blue text-white hover:bg-brand-cyan hover:shadow-brand-cyan/30 shadow-brand-blue/10'
                             }`}
