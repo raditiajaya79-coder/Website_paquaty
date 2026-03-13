@@ -33,14 +33,29 @@ const Events = () => {
 
     const loading = eventsLoading || articlesLoading;
 
-    // Logic penentuan Featured (Acara Utama)
-    // Sesuai permintaan: Hanya tampilkan banner jika ada data 'events'
-    // Jika tidak ada 'events', container banner (FeaturedSection) akan disembunyikan
-    const featuredContent = events.length > 0 ? { ...events[0], type: 'event' } : null;
+    // Logic penentuan Featured (Acara Utama) berdasarkan status 'Sematkan' (is_pinned)
+    // 1. Gabungkan semua data (events & articles)
+    const allContent = [
+        ...events.map(e => ({ ...e, type: 'event' })),
+        ...articles.map(a => ({ ...a, type: 'article' }))
+    ];
+
+    // 2. Cari konten yang statusnya disematkan (is_pinned: true)
+    // Ambil yang paling baru (sort by date descending)
+    const pinnedContent = allContent
+        .filter(item => item.is_pinned === true || item.is_pinned === 1)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // 3. Set Featured Content: Prioritaskan yang disematkan, 
+    // jika tidak ada yang disematkan, gunakan Event terbaru (events[0]). 
+    // Jika event juga tidak ada, gunakan Article terbaru (articles[0]), jika kosong, maka null.
+    const featuredContent = pinnedContent.length > 0
+        ? pinnedContent[0]
+        : (events.length > 0 ? { ...events[0], type: 'event' } : (articles.length > 0 ? { ...articles[0], type: 'article' } : null));
 
     // Daftar Berita/Artikel yang akan ditampilkan di grid
-    // Jika tidak ada banner (featuredContent null), tampilkan semua artikel dari awal
-    const displayArticles = articles;
+    // Filter agar konten yang sudah tampil di Banner Utama (featuredContent) TIDAK muncul lagi di daftar bawah (mencegah ganda)
+    const displayArticles = articles.filter(article => featuredContent ? article.id !== featuredContent.id || featuredContent.type !== 'article' : true);
 
     // Konfigurasi animasi
     const fadeIn = {
@@ -149,10 +164,10 @@ const Events = () => {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 0.6, delay: idx * 0.1 }}
-                                    className="bg-white rounded-[2rem] border border-stone-border overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-700"
+                                    className="bg-white rounded-[2rem] border border-stone-border overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-700 h-full flex flex-col"
                                 >
                                     {/* Gambar artikel */}
-                                    <div className="aspect-[3/2] overflow-hidden relative">
+                                    <div className="aspect-[3/2] overflow-hidden relative shrink-0">
                                         <img
                                             src={article.image}
                                             alt={article.title}
@@ -164,7 +179,7 @@ const Events = () => {
                                     </div>
 
                                     {/* Konten card */}
-                                    <div className="p-6">
+                                    <div className="p-6 flex flex-col flex-1">
                                         <div className="flex items-center gap-6 text-[10px] font-bold uppercase tracking-widest text-[#78716C] mb-4">
                                             <div className="flex items-center gap-2">
                                                 <Calendar className="w-3 h-3 text-brand-gold-dark" />
@@ -184,9 +199,14 @@ const Events = () => {
                                             {article.excerpt}
                                         </p>
 
-                                        <div className="flex items-center gap-2 text-brand-blue text-xs font-bold uppercase tracking-widest group-hover:gap-4 transition-all duration-300">
-                                            Baca Selengkapnya
-                                            <ArrowRight className="w-4 h-4" />
+                                        <div className="mt-auto">
+                                            <Link
+                                                to={`/events/${article.id}`}
+                                                className="px-8 py-3.5 bg-brand-blue text-white rounded-xl text-xs font-bold uppercase tracking-widest shadow-xl shadow-brand-blue/20 hover:bg-blue-700 hover:-translate-y-1 transition-all duration-300 w-fit flex items-center gap-3"
+                                            >
+                                                Baca Selengkapnya
+                                                <ArrowRight className="w-4 h-4" />
+                                            </Link>
                                         </div>
                                     </div>
                                 </motion.div>

@@ -47,6 +47,64 @@ const ManageContact = () => {
         'MessageCircle': MessageCircle
     };
 
+    // Custom SVG Component untuk Logo Asli / Brand Icons
+    const CustomBrandIcons = {
+        Instagram: () => (
+            <svg viewBox="0 0 24 24" fill="url(#ig-grad)" className="w-7 h-7">
+                <defs>
+                    <linearGradient id="ig-grad" x1="100%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#405de6" />
+                        <stop offset="25%" stopColor="#5851db" />
+                        <stop offset="50%" stopColor="#833ab4" />
+                        <stop offset="75%" stopColor="#c13584" />
+                        <stop offset="90%" stopColor="#e1306c" />
+                        <stop offset="100%" stopColor="#fd1d1d" />
+                    </linearGradient>
+                </defs>
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+            </svg>
+        ),
+        Facebook: () => (
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7" style={{ color: '#1877F2' }}>
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+            </svg>
+        ),
+        WhatsApp: () => (
+            <svg viewBox="0 0 24 24" className="w-7 h-7">
+                <rect width="24" height="24" rx="5.5" fill="#25D366" />
+                <path fill="white" d="M12.022 5.09a7.221 7.221 0 0 0-6.173 10.98L5 19.182l3.201-.849A7.222 7.222 0 1 0 12.022 5.09zm3.84 9.873c-.167.472-.962.9-1.332.964-.343.06-.807.135-2.288-.445-1.78-.696-2.91-2.522-2.997-2.639-.089-.116-.714-.954-.714-1.819 0-.866.452-1.292.612-1.464.159-.172.348-.215.464-.215.116 0 .231.002.334.007.108.005.253-.042.395.302.146.353.498 1.221.543 1.312.046.091.076.198.018.314-.058.116-.089.186-.176.288-.088.102-.186.216-.264.301-.083.089-.172.188-.073.359.1.171.445.735.955 1.192.658.59 1.218.775 1.391.861.173.086.275.073.376-.044.101-.116.435-.508.551-.682.115-.174.23-.145.388-.086.159.059 1.003.473 1.176.56.173.085.289.128.332.2.043.071.043.411-.124.883z" />
+            </svg>
+        ),
+        Tiktok: () => (
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6" style={{ color: '#000000' }}>
+                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93v7.2c0 1.65-.63 3.26-1.78 4.41-1.24 1.25-3.03 1.96-4.8 1.89-1.76-.08-3.41-.89-4.54-2.2-1.17-1.35-1.72-3.17-1.52-4.94.2-1.76 1.11-3.32 2.51-4.4 1.41-1.09 3.22-1.52 4.96-1.19.16.03.32.07.48.11V5.09c0-1.69.01-3.38.01-5.07zm-2.02 8.71c-1.47.01-2.92.57-4 1.55-1.03.95-1.63 2.34-1.67 3.75-.02 1.48.51 2.92 1.48 4.02.99 1.11 2.45 1.75 3.96 1.79 1.5.03 2.97-.53 4.07-1.53 1.05-.96 1.67-2.33 1.72-3.76.01-1.89.01-3.79.02-5.69-.17-.03-.35-.06-.52-.08-1.5-.15-3.02.02-4.4.67-.23.11-.44.24-.66.38z" />
+            </svg>
+        ),
+        Twitter: () => (
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6" style={{ color: '#000000' }}>
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+        ),
+        Shopee: () => (
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7" style={{ color: '#EE4D2D' }}>
+                <path d="M7.747 16.335c0 1.218 1.413 2.15 3.985 2.15 2.89 0 3.846-1.125 3.846-2.15 0-.89-.861-1.47-3.003-1.859l-2.016-.372c-2.455-.45-3.69-1.545-3.69-3.416 0-2.333 2.05-3.956 5.09-3.956 3.19 0 4.885 1.77 4.885 3.88h-3.03c0-.98-.823-1.688-2.004-1.688-1.423 0-2.04.646-2.04 1.446 0 .806.777 1.258 2.21 1.503l2.808.513c2.407.45 3.69 1.55 3.69 3.518 0 2.288-1.956 4.148-5.32 4.148-3.06 0-5.463-1.413-5.463-4.147l3.052.23zM23.116 8.44L14.475 1A2.5 2.5 0 0012 0a2.5 2.5 0 00-2.475 1L.884 8.44C.358 8.892 0 9.535 0 10.237v9.42c0 1.94 1.573 3.512 3.513 3.512h16.974c1.94 0 3.513-1.572 3.513-3.513v-9.42c0-.702-.358-1.345-.884-1.797z" />
+            </svg>
+        )
+    };
+
+    // Preset Platform untuk kemudahan Admin saat tambah baru
+    const PRESET_PLATFORMS = [
+        { name: 'Instagram', icon: 'Instagram' },
+        { name: 'Facebook', icon: 'Facebook' },
+        { name: 'WhatsApp Sales', icon: 'WhatsApp' },
+        { name: 'Phone Inquiry', icon: 'Phone', color: 'text-blue-500' },
+        { name: 'Email', icon: 'Mail', color: 'text-slate-600' },
+        { name: 'Tiktok', icon: 'Tiktok' },
+        { name: 'Twitter/X', icon: 'Twitter' },
+        { name: 'Shopee/Tokopedia', icon: 'Shopee' },
+        { name: 'Website Lain', icon: 'Globe', color: 'text-slate-400' }
+    ];
+
     // Ambil data saat komponen pertama kali dibuka
     useEffect(() => {
         fetchContacts();
@@ -70,8 +128,18 @@ const ManageContact = () => {
 
     // Handle Perubahan Input Teks secara reaktif
     const handleInputChange = (id, newValue) => {
-        // Menggunakan loose equality (==) agar ID tetap cocok meskipun ada perbedaan tipe string vs number
         setSocials(socials.map(s => s.id == id ? { ...s, value: newValue } : s));
+    };
+
+    // Handle Perubahan Dropdown Platform
+    const handlePlatformChange = (id, newPlatformName) => {
+        const preset = PRESET_PLATFORMS.find(p => p.name === newPlatformName);
+        if (preset) {
+            setSocials(socials.map(s => s.id == id ? { ...s, platform: preset.name, icon: preset.icon, color: preset.color } : s));
+        } else {
+            // Jika memilih custom / mengetik manual (opsional fitur depan)
+            setSocials(socials.map(s => s.id == id ? { ...s, platform: newPlatformName } : s));
+        }
     };
 
     // Handle Toggle Visibilitas (Header/Footer) secara reaktif
@@ -84,13 +152,12 @@ const ManageContact = () => {
     const handleAdd = () => {
         const newItem = {
             id: Date.now(), // ID sementara untuk urutan render
-            platform: 'Platform Baru',
+            platform: 'Instagram', // Default preset pertama
             value: '',
-            icon: 'Globe',
-            color: 'text-slate-400',
+            icon: 'Instagram',
+            color: 'text-pink-500',
             show_in_header: false,
             show_in_footer: false,
-            isNew: true // Flag untuk penanda saat simpan (POST)
         };
         setSocials([...socials, newItem]); // Masukkan ke list state
     };
@@ -208,7 +275,10 @@ const ManageContact = () => {
             {/* Grid Daftar Kontak */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-12">
                 {socials.map((item) => {
-                    const IconToRender = iconComponents[item.icon] || Globe; // Pilih icon sesuai database atau default Globe
+                    // Cek jika icon ini adalah brand icon SVG custom
+                    const CustomBrandIcon = CustomBrandIcons[item.icon];
+                    const IconToRender = CustomBrandIcon || iconComponents[item.icon] || Globe;
+
                     return (
                         <motion.div
                             key={item.id}
@@ -218,12 +288,28 @@ const ManageContact = () => {
                         >
                             {/* Input Area */}
                             <div className="flex items-center gap-4">
-                                <div className={`p-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm ${item.color}`}>
-                                    <IconToRender className="w-6 h-6" />
+                                <div className={`p-3 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center w-12 h-12 ${CustomBrandIcon ? '' : item.color}`}>
+                                    {CustomBrandIcon ? <CustomBrandIcon /> : <IconToRender className="w-5 h-5" />}
                                 </div>
                                 <div className="flex-1 space-y-1.5">
                                     <div className="flex items-center justify-between">
-                                        <label className="text-[9px] font-black text-[#2563EB] uppercase tracking-widest ml-1">{item.platform}</label>
+                                        {/* Dropdown Pemilihan Platform */}
+                                        <select
+                                            value={item.platform}
+                                            onChange={(e) => handlePlatformChange(item.id, e.target.value)}
+                                            className="text-[9px] font-black text-[#2563EB] uppercase tracking-widest ml-1 bg-transparent border-none p-0 focus:ring-0 cursor-pointer hover:underline"
+                                        >
+                                            {/* Opsi Dropdown */}
+                                            {PRESET_PLATFORMS.map(preset => (
+                                                <option key={preset.name} value={preset.name} className="text-slate-700 font-bold">
+                                                    {preset.name}
+                                                </option>
+                                            ))}
+                                            {/* Fallback untuk platform custom usang yang tidak ada di preset */}
+                                            {!PRESET_PLATFORMS.find(p => p.name === item.platform) && (
+                                                <option value={item.platform} className="text-slate-700 font-bold">{item.platform}</option>
+                                            )}
+                                        </select>
                                         <button
                                             onClick={() => handleDelete(item.id, item.platform)}
                                             className="p-1.5 text-slate-300 hover:text-red-500 transition-colors"

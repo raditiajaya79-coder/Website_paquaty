@@ -1,7 +1,7 @@
 import React from 'react'; // React library
 import { motion } from 'framer-motion'; // Animasi
 import { TrendingUp, Package, Image, Users, Award, Calendar, Loader2 } from 'lucide-react'; // Ikon stats
-
+import { Link } from 'react-router-dom'; // Komponen navigasi internal
 /**
  * Dashboard Component — Halaman ringkasan statistik admin.
  * Menampilkan kartu informasi utama untuk memberikan gambaran cepat.
@@ -32,10 +32,10 @@ const Dashboard = () => {
 
     // Konfigurasi visual kartu statistik
     const statsConfig = [
-        { label: 'Total Produk', key: 'totalProducts', icon: Package, color: 'bg-blue-500', trend: '+5 bulan ini' },
-        { label: 'Galeri Foto', key: 'totalGalleries', icon: Image, color: 'bg-indigo-500', trend: 'Baru ditambahkan' },
-        { label: 'Event Berlangsung', key: 'totalEvents', icon: Calendar, color: 'bg-emerald-500', trend: 'On track' },
-        { label: 'Sertifikat Aktif', key: 'totalCertificates', icon: Award, color: 'bg-amber-500', trend: '+1 valid' },
+        { label: 'Total Produk', key: 'totalProducts', icon: Package, color: 'bg-blue-500', trend: 'Tersedia' },
+        { label: 'Galeri Foto', key: 'totalGalleries', icon: Image, color: 'bg-indigo-500', trend: 'Tersedia' },
+        { label: 'Event Berlangsung', key: 'totalEvents', icon: Calendar, color: 'bg-emerald-500', trend: 'Aktif' },
+        { label: 'Sertifikat Aktif', key: 'totalCertificates', icon: Award, color: 'bg-amber-500', trend: 'Tersedia' },
     ];
 
     return (
@@ -98,8 +98,8 @@ const Dashboard = () => {
                                 <h2 className="text-lg sm:text-xl font-black text-white mb-2 tracking-tight">Pantau Perkembangan Bisnis</h2>
                                 <p className="text-blue-100/80 mb-6 text-[11px] sm:text-[13px] font-medium leading-relaxed max-w-md">Kelola semua konten website Anda di satu tempat secara efisien dengan sistem manajemen terpusat.</p>
                                 <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                                    <button className="px-6 py-2.5 bg-white text-[#1e40af] rounded-xl font-black text-[11px] shadow-xl shadow-blue-900/10 hover:bg-blue-50 transition-all active:scale-95">Laporan Detil</button>
-                                    <button className="px-6 py-2.5 bg-blue-400/20 border border-white/20 text-white rounded-xl font-bold text-[11px] hover:bg-white/10 transition-all active:scale-95 backdrop-blur-sm">Bantuan</button>
+                                    <Link to="/admin/products" className="px-6 py-2.5 bg-white text-[#1e40af] rounded-xl font-black text-[11px] shadow-xl shadow-blue-900/10 hover:bg-blue-50 transition-all active:scale-95 text-center">Kelola Produk</Link>
+                                    <Link to="/admin/contact" className="px-6 py-2.5 bg-blue-400/20 border border-white/20 text-white rounded-xl font-bold text-[11px] hover:bg-white/10 transition-all active:scale-95 backdrop-blur-sm text-center">Pesan Masuk</Link>
                                 </div>
                             </div>
                             <div className="w-1/3 hidden md:flex justify-center">
@@ -150,22 +150,26 @@ const Dashboard = () => {
                         <h3 className="font-black text-[#1E293B] text-sm uppercase tracking-wider mb-5">Akses Cepat</h3>
                         <div className="grid grid-cols-2 gap-3 sm:gap-4">
                             {[
-                                { label: 'Produk Baru', color: 'hover:bg-blue-600' },
-                                { label: 'Gallery', color: 'hover:bg-indigo-600' },
-                                { label: 'Sertifikat', color: 'hover:bg-amber-600' },
-                                { label: 'Event Baru', color: 'hover:bg-emerald-600' }
+                                { label: 'Produk Baru', color: 'hover:bg-blue-600', path: '/admin/products/add' },
+                                { label: 'Gallery', color: 'hover:bg-indigo-600', path: '/admin/gallery' },
+                                { label: 'Sertifikat', color: 'hover:bg-amber-600', path: '/admin/certificates' },
+                                { label: 'Event Baru', color: 'hover:bg-emerald-600', path: '/admin/events/add' }
                             ].map((item, i) => (
-                                <button key={i} className={`p-4 bg-slate-50 border border-slate-100 rounded-2xl text-[10px] font-black text-[#64748B] text-center hover:text-white transition-all uppercase tracking-widest active:scale-95 ${item.color}`}>{item.label}</button>
+                                <Link to={item.path} key={i} className={`p-4 bg-slate-50 border border-slate-100 rounded-2xl text-[10px] font-black text-[#64748B] flex items-center justify-center hover:text-white transition-all uppercase tracking-widest active:scale-95 ${item.color}`}>{item.label}</Link>
                             ))}
                         </div>
                     </div>
 
+                    {/* Widget Panduan Singkat - Memberi arahan dasar penggunaan panel admin */}
                     <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5 sm:p-6">
-                        <h3 className="font-black text-[#1E293B] text-sm uppercase tracking-wider mb-4">Pengumuman</h3>
-                        <div className="bg-orange-50 border border-orange-100 p-5 rounded-2xl relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-16 h-16 bg-orange-200/20 rounded-full -mr-8 -mt-8"></div>
-                            <p className="text-[11px] text-orange-900 leading-relaxed font-bold italic relative z-10">
-                                "Pembaruan database akan dilakukan pada malam Minggu jam 23:00 WIB. Harap simpan pekerjaan Anda demi keamanan data."
+                        <h3 className="font-black text-[#1E293B] text-sm uppercase tracking-wider mb-4">Panduan Singkat</h3>
+                        <div className="bg-blue-50 border border-blue-100 p-5 rounded-2xl relative overflow-hidden">
+                            {/* Efek dekoratif lingkaran di pojok kanan atas */}
+                            <div className="absolute top-0 right-0 w-16 h-16 bg-blue-200/30 rounded-full -mr-8 -mt-8"></div>
+
+                            {/* Teks panduan statis */}
+                            <p className="text-[11px] text-blue-900 leading-relaxed font-bold italic relative z-10">
+                                "Selamat datang di Panel Admin. Gunakan menu navigasi untuk mengelola konten katalog, detail produk, serta memantau log aktivitas."
                             </p>
                         </div>
                     </div>

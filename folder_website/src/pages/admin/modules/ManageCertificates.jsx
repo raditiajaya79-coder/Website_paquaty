@@ -12,7 +12,10 @@ import {
     Edit2,
     ChevronRight,
     Filter,
-    Shield
+    Shield,
+    Eye,
+    EyeOff,
+    Loader2
 } from 'lucide-react'; // Ikon
 import ConfirmModal from '../../../components/admin/ConfirmModal';
 import Toast from '../../../components/admin/Toast';
@@ -27,6 +30,7 @@ const ManageCertificates = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [isGlobalActive, setIsGlobalActive] = useState(true);
+    const [togglingId, setTogglingId] = useState(null); // Menyimpan ID sertifikat yang sedang di-toggle visibilitasnya
 
     // Modal & Toast States
     const [modalConfig, setModalConfig] = useState({
@@ -78,25 +82,47 @@ const ManageCertificates = () => {
             });
 
             if (response.ok) {
-                setToast({
-                    show: true,
-                    message: `Sertifikat "${title}" berhasil dihapus`,
-                    type: 'success'
-                });
+                setToast({ show: true, message: `Sertifikat "${title}" berhasil dihapus`, type: 'success' });
                 fetchCertificates();
             } else {
-                setToast({
-                    show: true,
-                    message: 'Gagal menghapus sertifikat',
-                    type: 'error'
-                });
+                setToast({ show: true, message: 'Gagal menghapus sertifikat', type: 'error' });
             }
         } catch (err) {
-            setToast({
-                show: true,
-                message: 'Terjadi kesalahan saat menghapus sertifikat',
-                type: 'error'
+            setToast({ show: true, message: 'Terjadi kesalahan saat menghapus sertifikat', type: 'error' });
+        }
+        setModalConfig({ isOpen: false, itemToDelete: null });
+    };
+
+    const handleToggleVisibility = async (cert) => {
+        if (togglingId) return; // Mencegah klik ganda saat loading
+        setTogglingId(cert.id);
+        const newStatus = !cert.is_active;
+
+        try {
+            const token = localStorage.getItem('admin_token');
+            const response = await fetch(`http://localhost:5000/api/certificates/${cert.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ ...cert, is_active: newStatus ? 1 : 0 })
             });
+
+            if (response.ok) {
+                setToast({
+                    show: true,
+                    message: `Status "${cert.title}" diubah menjadi ${newStatus ? 'Verified' : 'Draft'}`,
+                    type: 'success'
+                });
+                await fetchCertificates();
+            } else {
+                setToast({ show: true, message: 'Gagal mengubah status', type: 'error' });
+            }
+        } catch (err) {
+            setToast({ show: true, message: 'Kesalahan jaringan saat mengubah status', type: 'error' });
+        } finally {
+            setTogglingId(null);
         }
     };
 
@@ -115,8 +141,38 @@ const ManageCertificates = () => {
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                     <button
-                        onClick={() => setIsGlobalActive(!isGlobalActive)}
-                        className={`flex items-center justify-center gap-3 px-6 py-3.5 sm:py-4 border rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-widest transition-all shadow-sm ${isGlobalActive ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-slate-100 border-slate-200 text-slate-400 opacity-60'}`}
+                        onClick={async () => {
+                            const newStatus = !isGlobalActive;
+                            setIsGlobalActive(newStatus);
+                            setLoading(true);
+
+                            try {
+                                const token = localStorage.getItem('admin_token');
+                                // Menyimpan status keseluruhan dengan cara memperbarui massal semua id
+                                await Promise.all(certs.map(cert =>
+                                    fetch(`http://localhost:5000/api/certificates/${cert.id}`, {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'Authorization': `Bearer ${token}`
+                                        },
+                                        body: JSON.stringify({ ...cert, is_active: newStatus ? 1 : 0 })
+                                    })
+                                ));
+
+                                setToast({
+                                    show: true,
+                                    message: `Status Global berhasil diubah menjadi ${newStatus ? 'Aktif' : 'Draft'}`,
+                                    type: 'success'
+                                });
+                                fetchCertificates(); // Reload data
+                            } catch (err) {
+                                console.error('Gagal toggle status global', err);
+                                setIsGlobalActive(!newStatus); // Revert UI
+                                setLoading(false);
+                            }
+                        }}
+                        className={`flex items-center justify-center gap-3 px-6 py-3.5 sm:py-4 rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 shadow-lg active:scale-95 ${isGlobalActive ? 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-emerald-500/20' : 'bg-slate-400 text-white hover:bg-slate-500 shadow-slate-400/20'}`}
                     >
                         {isGlobalActive ? <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5" /> : <Shield className="w-4 h-4 sm:w-5 sm:h-5" />}
                         <span>Status: {isGlobalActive ? 'Aktif' : 'Draft'}</span>
@@ -221,6 +277,20 @@ const ManageCertificates = () => {
 
                             <div className="flex gap-2 sm:gap-3">
                                 <button
+                                    onClick={() => handleToggleVisibility(cert)}
+                                    title={cert.is_active ? "Sembunyikan Sertifikat" : "Tampilkan Sertifikat"}
+                                    disabled={togglingId === cert.id}
+                                    className={`p-2.5 bg-white border rounded-xl transition-all shadow-sm active:scale-95 shrink-0 disabled:opacity-50 disabled:cursor-not-allowed ${cert.is_active ? 'border-emerald-200 text-emerald-500 hover:bg-emerald-50' : 'border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-50'}`}
+                                >
+                                    {togglingId === cert.id ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : cert.is_active ? (
+                                        <Eye className="w-4 h-4" />
+                                    ) : (
+                                        <EyeOff className="w-4 h-4" />
+                                    )}
+                                </button>
+                                <button
                                     onClick={() => navigate(`/admin/certificates/edit/${cert.id}`)}
                                     className="flex-1 px-3 sm:px-4 py-2.5 bg-white border border-slate-200 rounded-xl font-black text-[9px] sm:text-[10px] text-[#64748B] uppercase tracking-widest hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all flex items-center justify-center gap-1.5 sm:gap-2 shadow-sm active:scale-95"
                                 >
@@ -236,8 +306,8 @@ const ManageCertificates = () => {
                         </div>
 
                         {/* Status Label on Top Right (Updated Design) */}
-                        <div className="absolute top-0 right-0 overflow-hidden w-16 h-16">
-                            <div className={`absolute top-4 -right-6 px-8 py-1 rotate-45 text-[7px] font-black uppercase tracking-[0.2em] text-white shadow-md text-center w-full ${cert.is_active ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-slate-400'}`}>
+                        <div className="absolute top-0 right-0 overflow-hidden w-[120px] h-[120px] rounded-tr-[2rem] z-10 pointer-events-none">
+                            <div className={`absolute top-[28px] -right-[35px] w-[160px] rotate-45 text-[9px] font-black uppercase tracking-[0.2em] text-white shadow-md text-center py-1.5 ${cert.is_active ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-slate-400'}`}>
                                 {cert.is_active ? 'Verified' : 'Draft'}
                             </div>
                         </div>
