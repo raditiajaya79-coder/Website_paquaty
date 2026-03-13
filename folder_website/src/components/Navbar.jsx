@@ -43,7 +43,7 @@ const Navbar = () => {
     const activeStyle = ({ isActive }) => {
         const base = "text-sm font-medium transition-all duration-300 relative group";
         if (isTransparent) {
-            return `${base} ${isActive ? 'text-brand-blue' : 'text-stone-dark/80 hover:text-brand-cyan hover:scale-105'}`;
+            return `${base} ${isActive ? 'text-white' : 'text-white/80 hover:text-white hover:scale-105'}`;
         }
         return `${base} ${isActive ? 'text-brand-blue' : 'text-stone-dark/60 hover:text-brand-cyan hover:scale-105'}`;
     };

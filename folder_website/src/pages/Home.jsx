@@ -125,15 +125,15 @@ const Home = () => {
                         <motion.div
                             key={`watermark-${activeIndex}`}
                             initial={{ opacity: 0, y: -150 }}
-                            animate={{ opacity: 0.07, y: 0 }}
+                            animate={{ opacity: activeFlavor.name === "Sapi Panggang" ? 0.25 : 0.12, y: 0 }}
                             exit={{ opacity: 0, y: 150 }}
                             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
                             className="flex flex-col items-center"
                         >
-                            <span className="text-[12vw] font-black opacity-20 -mb-12" style={{ color: activeFlavor.textColor }}>{activeIndex < 9 ? `0${activeIndex + 1}` : activeIndex + 1}</span>
+                            <span className="text-[12vw] font-black opacity-30 -mb-12" style={{ color: activeFlavor.textColor }}>{activeIndex < 9 ? `0${activeIndex + 1}` : activeIndex + 1}</span>
                             <h1
                                 style={{ color: activeFlavor.textColor }}
-                                className="text-[25vw] font-black tracking-tighter uppercase leading-none select-none whitespace-nowrap"
+                                className="text-[25vw] font-black tracking-tighter uppercase leading-none select-none whitespace-nowrap opacity-25"
                             >
                                 {activeFlavor.watermark}
                             </h1>
@@ -218,7 +218,7 @@ const Home = () => {
                                 className="flex flex-col gap-4 pointer-events-auto"
                             >
                                 <div className="flex flex-col gap-1">
-                                    <span className="text-[10px] md:text-sm font-black tracking-[0.5em] uppercase opacity-40">Global Artisan Snack</span>
+                                    <span className="text-[10px] md:text-sm font-black tracking-[0.5em] uppercase opacity-70">Global Artisan Snack</span>
                                     <h1 className="text-5xl md:text-8xl font-black leading-[0.9] tracking-tighter uppercase italic">
                                         {activeFlavor.tagline.split(' ').map((word, i) => (
                                             <span key={i} className="block">{word}</span>
@@ -226,7 +226,7 @@ const Home = () => {
                                     </h1>
                                 </div>
 
-                                <p className="text-sm md:text-base font-medium opacity-70 max-w-xs leading-relaxed">
+                                <p className="text-sm md:text-base font-medium opacity-90 max-w-xs leading-relaxed">
                                     Experience the future of traditional culture. Crunchy, savory, and purely artisan.
                                 </p>
 
