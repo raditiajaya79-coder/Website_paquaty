@@ -2,6 +2,7 @@ import React, { useState } from 'react'; // React hooks untuk state
 import { motion } from 'framer-motion'; // Framer motion untuk animasi
 import { Lock, User, Eye, EyeOff, ArrowRight } from 'lucide-react'; // Icon set Lucide
 import { useNavigate } from 'react-router-dom'; // Router navigation
+import { API_BASE_URL } from '../../utils/api';
 
 /**
  * Login Component — Halaman masuk khusus Admin
@@ -22,7 +23,7 @@ const Login = () => {
         setError('');
 
         try {
-            const response = await fetch('http://localhost:5000/api/auth/login', {
+            const response = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(credentials)

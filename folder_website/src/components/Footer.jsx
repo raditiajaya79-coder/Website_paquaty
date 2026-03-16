@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { COMPANY_INFO } from '../data/products';
 import { useLanguage } from '../context/LanguageContext';
-
+import { API_BASE_URL } from '../utils/api';
 const Footer = () => {
     const { t } = useLanguage();
     const [footerContacts, setFooterContacts] = useState([]);
@@ -79,7 +79,7 @@ const Footer = () => {
     useEffect(() => {
         const fetchFooterContacts = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/contact');
+                const response = await fetch(`${API_BASE_URL}/contact`);
                 if (response.ok) {
                     const data = await response.json();
                     if (Array.isArray(data)) {

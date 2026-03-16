@@ -4,7 +4,7 @@
  * Menyimpan dan mengirim JWT token secara otomatis di setiap request.
  */
 
-const API_BASE_URL = "http://localhost:5000/api"; // URL dasar backend Express
+export const API_BASE_URL = "https://api-pakuaty.kediritechnopark.com/api"; // URL dasar backend Express
 
 // === Manajemen Token JWT ===
 

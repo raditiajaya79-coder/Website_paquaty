@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { Instagram } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
 import { useLanguage } from '../context/LanguageContext';
+import { API_BASE_URL } from '../utils/api';
 
 /**
  * Gallery — Halaman Galeri Foto
@@ -23,7 +24,7 @@ const Gallery = () => {
     const fetchGallery = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/api/gallery');
+            const response = await fetch(`${API_BASE_URL}/gallery`);
             if (response.ok) {
                 const data = await response.json();
                 setImages(data);

@@ -13,9 +13,9 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 // Custom funnel icon — 3 horizontal lines of decreasing width
 const FunnelIcon = () => (
     <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <line x1="0" y1="1" x2="18" y2="1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-        <line x1="3" y1="7" x2="15" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-        <line x1="6" y1="13" x2="12" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        <line x1="0" y1="1" x2="18" y2="1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <line x1="3" y1="7" x2="15" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <line x1="6" y1="13" x2="12" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
 );
 
@@ -36,7 +36,7 @@ const Products = () => {
     }, []);
 
     const { data: products = [], isLoading: loading } = useSWR(
-        'http://localhost:5000/api/products',
+        'https://api-pakuaty.kediritechnopark.com/api/products',
         fetcher,
         { refreshInterval: 60000, revalidateOnFocus: true }
     );
@@ -258,41 +258,41 @@ const Products = () => {
                                                     </div>
                                                 </div>
 
-                                                 <div className="p-4 md:p-6 flex-1 flex flex-col gap-3 md:gap-4">
-                                                     <div>
-                                                         <h3 className="text-base sm:text-lg md:text-xl font-bold text-stone-dark tracking-tight leading-tight line-clamp-2 min-h-[2.5rem] sm:min-h-0">
-                                                             {(isEn && product.name_en) ? product.name_en : product.name}
-                                                         </h3>
-                                                         <p className="text-brand-gold-dark text-[10px] sm:text-xs md:text-sm font-medium mt-1 uppercase tracking-wider">
-                                                             {(isEn && product.grade_en) ? product.grade_en : product.grade}
-                                                         </p>
-                                                     </div>
+                                                <div className="p-4 md:p-6 flex-1 flex flex-col gap-3 md:gap-4">
+                                                    <div>
+                                                        <h3 className="text-base sm:text-lg md:text-xl font-bold text-stone-dark tracking-tight leading-tight line-clamp-2 min-h-[2.5rem] sm:min-h-0">
+                                                            {(isEn && product.name_en) ? product.name_en : product.name}
+                                                        </h3>
+                                                        <p className="text-brand-gold-dark text-[10px] sm:text-xs md:text-sm font-medium mt-1 uppercase tracking-wider">
+                                                            {(isEn && product.grade_en) ? product.grade_en : product.grade}
+                                                        </p>
+                                                    </div>
 
-                                                     {product.price && (
-                                                         <div className="flex flex-wrap items-baseline gap-1 md:gap-2">
-                                                             <span className="text-lg sm:text-xl md:text-2xl font-black text-stone-dark">
-                                                                 Rp {formatPrice(product.price)}
-                                                             </span>
-                                                             {product.original_price && product.original_price > product.price && (
-                                                                 <span className="text-[10px] md:text-xs text-[#A8A29E] line-through font-medium">
-                                                                     Rp {formatPrice(product.original_price)}
-                                                                 </span>
-                                                             )}
-                                                         </div>
-                                                     )}
+                                                    {product.price && (
+                                                        <div className="flex flex-wrap items-baseline gap-1 md:gap-2">
+                                                            <span className="text-lg sm:text-xl md:text-2xl font-black text-stone-dark">
+                                                                Rp {formatPrice(product.price)}
+                                                            </span>
+                                                            {product.original_price && product.original_price > product.price && (
+                                                                <span className="text-[10px] md:text-xs text-[#A8A29E] line-through font-medium">
+                                                                    Rp {formatPrice(product.original_price)}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    )}
 
-                                                     <div className="mt-auto flex items-center justify-between pt-3 md:pt-4 border-t border-stone-border/60">
-                                                         <div>
-                                                             <p className="text-[8px] md:text-[10px] text-[#78716C] uppercase tracking-widest mb-0.5 opacity-60">{t('products.origin_label')}</p>
-                                                             <p className="text-[10px] sm:text-xs md:text-sm font-bold text-stone-dark tracking-tight">
-                                                                 {(isEn && product.origin_en) ? product.origin_en : product.origin}
-                                                             </p>
-                                                         </div>
-                                                         <div className="hidden sm:flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-blue opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-500">
-                                                             {t('products.view_details')} <ArrowRight className="w-3.5 h-3.5" />
-                                                         </div>
-                                                     </div>
-                                                 </div>
+                                                    <div className="mt-auto flex items-center justify-between pt-3 md:pt-4 border-t border-stone-border/60">
+                                                        <div>
+                                                            <p className="text-[8px] md:text-[10px] text-[#78716C] uppercase tracking-widest mb-0.5 opacity-60">{t('products.origin_label')}</p>
+                                                            <p className="text-[10px] sm:text-xs md:text-sm font-bold text-stone-dark tracking-tight">
+                                                                {(isEn && product.origin_en) ? product.origin_en : product.origin}
+                                                            </p>
+                                                        </div>
+                                                        <div className="hidden sm:flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-blue opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-500">
+                                                            {t('products.view_details')} <ArrowRight className="w-3.5 h-3.5" />
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </Link>
                                     </motion.div>

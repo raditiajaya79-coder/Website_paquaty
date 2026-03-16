@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'; // Ikon
 import ConfirmModal from '../../../components/admin/ConfirmModal';
 import Toast from '../../../components/admin/Toast';
+import { API_BASE_URL } from '../../../utils/api';
 
 /**
  * ManageProducts Component — Halaman pengelolaan katalog produk.
@@ -42,7 +43,7 @@ const ManageProducts = () => {
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/api/products');
+            const response = await fetch(`${API_BASE_URL}/products`);
             if (!response.ok) throw new Error('Gagal mengambil data produk');
             const data = await response.json();
 
@@ -69,7 +70,7 @@ const ManageProducts = () => {
         const { id, name } = modalConfig.itemToDelete;
         try {
             const token = localStorage.getItem('admin_token');
-            const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/products/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`

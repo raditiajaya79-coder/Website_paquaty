@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ArrowRight, Menu, X, Phone, Mail, Globe, ShoppingBag, Video, MessageCircle, Link as LinkIcon } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { API_BASE_URL } from '../utils/api';
 const Navbar = () => {
     const { lang, switchLang, t } = useLanguage();
     const location = useLocation();
@@ -70,7 +71,7 @@ const Navbar = () => {
         const fetchInitialData = async () => {
             try {
                 // 1. Fetch Sertifikat
-                const certResponse = await fetch('http://localhost:5000/api/certificates');
+                const certResponse = await fetch(`${API_BASE_URL}/certificates`);
                 if (certResponse.ok) {
                     const certData = await certResponse.json();
                     const isActiveExists = Array.isArray(certData) && certData.some(cert => cert.is_active === 1 || cert.is_active === true);
@@ -78,7 +79,7 @@ const Navbar = () => {
                 }
 
                 // 2. Fetch Contacts untuk Navigasi (Header)
-                const contactResponse = await fetch('http://localhost:5000/api/contact');
+                const contactResponse = await fetch(`${API_BASE_URL}/contact`);
                 if (contactResponse.ok) {
                     const contactData = await contactResponse.json();
                     if (Array.isArray(contactData)) {

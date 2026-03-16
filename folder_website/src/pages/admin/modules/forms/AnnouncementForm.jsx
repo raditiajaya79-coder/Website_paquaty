@@ -16,6 +16,7 @@ import {
     Sparkles,
     Check
 } from 'lucide-react'; // Ikon
+import { API_BASE_URL } from '../../../../utils/api';
 
 const Toast = ({ message, type, onClose }) => (
     <motion.div
@@ -65,7 +66,7 @@ const AnnouncementForm = () => {
     const fetchAnnouncement = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:5000/api/announcements/${id}`);
+            const response = await fetch(`${API_BASE_URL}/announcements/${id}`);
             if (!response.ok) throw new Error('Gagal mengambil data pengumuman');
             const data = await response.json();
 
@@ -136,8 +137,8 @@ const AnnouncementForm = () => {
         try {
             const token = localStorage.getItem('admin_token');
             const url = isEditMode
-                ? `http://localhost:5000/api/announcements/${id}`
-                : 'http://localhost:5000/api/announcements';
+                ? `${API_BASE_URL}/announcements/${id}`
+                : `${API_BASE_URL}/announcements`;
             const method = isEditMode ? 'PUT' : 'POST';
 
             const response = await fetch(url, {

@@ -2,6 +2,7 @@ import React from 'react'; // React library
 import { motion } from 'framer-motion'; // Animasi
 import { TrendingUp, Package, Image, Users, Award, Calendar, Loader2, Trash2, X } from 'lucide-react'; // Ikon stats + hapus
 import { Link } from 'react-router-dom'; // Komponen navigasi internal
+import { API_BASE_URL } from '../../utils/api';
 /**
  * Dashboard Component — Halaman ringkasan statistik admin.
  * Menampilkan kartu informasi utama untuk memberikan gambaran cepat.
@@ -25,7 +26,7 @@ const Dashboard = () => {
         }));
         try {
             const token = localStorage.getItem('admin_token');
-            const res = await fetch(`http://localhost:5000/api/dashboard/logs/${logId}`, {
+            const res = await fetch(`${API_BASE_URL}/dashboard/logs/${logId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -48,7 +49,7 @@ const Dashboard = () => {
         setShowAllLogs(false); // Reset toggle
         try {
             const token = localStorage.getItem('admin_token');
-            const res = await fetch('http://localhost:5000/api/dashboard/logs', {
+            const res = await fetch(`${API_BASE_URL}/dashboard/logs`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -64,7 +65,7 @@ const Dashboard = () => {
         const fetchStats = async () => {
             try {
                 const token = localStorage.getItem('admin_token');
-                const response = await fetch('http://localhost:5000/api/dashboard/stats', {
+                const response = await fetch(`${API_BASE_URL}/dashboard/stats`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (!response.ok) throw new Error('Gagal memuat statistik');

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'; // Animasi scroll reveal
 import { MapPin, Mail, Phone, Send, Clock, Globe } from 'lucide-react'; // Ikon Lucide
 import { generatePageTitle } from '../utils/seo'; // Utilitas SEO
 import { useLanguage } from '../context/LanguageContext'; // Multi-bahasa
+import { API_BASE_URL } from '../utils/api';
 
 /**
  * ContactBrandIcons — Mapping nama ikon dari database ke komponen SVG brand asli.
@@ -177,7 +178,7 @@ const Contact = () => {
     useEffect(() => {
         const fetchContacts = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/contact'); // Request ke backend
+                const response = await fetch(`${API_BASE_URL}/contact`); // Request ke backend
                 if (!response.ok) throw new Error('Gagal memuat kontak');
                 const data = await response.json(); // Parse JSON response
                 if (Array.isArray(data)) {

@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { ShieldCheck, Award, CheckCircle2, X, Download, FileCheck, Landmark, FileBadge, Check } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
 import { useLanguage } from '../context/LanguageContext';
+import { API_BASE_URL } from '../utils/api';
 /**
  * Certificates — Halaman Sertifikasi & Kualitas
  * Data saat ini dikosongkan karena beralih ke mode statis tanpa dashboard admin.
@@ -21,7 +22,7 @@ const Certificates = () => {
     const fetchCertificates = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/api/certificates');
+            const response = await fetch(`${API_BASE_URL}/certificates`);
             if (response.ok) {
                 const data = await response.json();
                 // Filter is_active on the client side just in case, 

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'; // Ikon
 import ConfirmModal from '../../../components/admin/ConfirmModal';
 import Toast from '../../../components/admin/Toast';
+import { API_BASE_URL } from '../../../utils/api';
 
 /**
  * ManageAnnouncements Component — Pengelolaan pop-up pengumuman website utama.
@@ -46,7 +47,7 @@ const ManageAnnouncements = () => {
     const fetchAnnouncements = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/api/announcements');
+            const response = await fetch(`${API_BASE_URL}/announcements`);
             if (!response.ok) throw new Error('Gagal mengambil data pengumuman');
             const data = await response.json();
 
@@ -74,7 +75,7 @@ const ManageAnnouncements = () => {
         const { id, title } = modalConfig.itemToDelete;
         try {
             const token = localStorage.getItem('admin_token');
-            const response = await fetch(`http://localhost:5000/api/announcements/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/announcements/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -106,7 +107,7 @@ const ManageAnnouncements = () => {
         try {
             setTogglingId(id); // Set ID item yang sedang loading
             const token = localStorage.getItem('admin_token');
-            const response = await fetch(`http://localhost:5000/api/announcements/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/announcements/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

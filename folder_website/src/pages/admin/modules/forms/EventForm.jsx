@@ -19,6 +19,7 @@ import {
 import Toast from '../../../../components/admin/Toast';
 import ImageUploader from '../../../../components/admin/ImageUploader';
 import { translateText } from '../../../../utils/translate';
+import { API_BASE_URL } from '../../../../utils/api';
 
 /**
  * EventForm Component — Halaman khusus untuk buat/edit Agenda & Artikel.
@@ -62,7 +63,7 @@ const EventForm = () => {
         try {
             setLoading(true);
             const endpoint = initialType === 'Article' ? 'articles' : 'events';
-            const response = await fetch(`http://localhost:5000/api/${endpoint}/${id}`);
+            const response = await fetch(`${API_BASE_URL}/${endpoint}/${id}`);
             if (!response.ok) throw new Error('Gagal mengambil data');
             const rawData = await response.json();
 
@@ -72,7 +73,7 @@ const EventForm = () => {
             // Parse content field into blocks array
             let parsedContent = [{ type: 'text', value: '' }];
             let parsedContentEn = [{ type: 'text', value: '' }];
-            
+
             const sourceContent = data.content || data.description || '';
             const sourceContentEn = data.content_en || data.description_en || '';
 
@@ -206,8 +207,8 @@ const EventForm = () => {
             const token = localStorage.getItem('admin_token'); // Token auth admin
             const endpoint = formData.type === 'Article' ? 'articles' : 'events';
             const url = isEditMode
-                ? `http://localhost:5000/api/${endpoint}/${id}` // URL Edit
-                : `http://localhost:5000/api/${endpoint}`; // URL Create
+                ? `${API_BASE_URL}/${endpoint}/${id}` // URL Edit
+                : `${API_BASE_URL}/${endpoint}`; // URL Create
             const method = isEditMode ? 'PUT' : 'POST';
 
             // Siapkan payload sesuai schema backend (Konversi content ke field yang sesuai)

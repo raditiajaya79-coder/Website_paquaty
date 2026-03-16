@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'; // Ikon
 import ConfirmModal from '../../../components/admin/ConfirmModal';
 import Toast from '../../../components/admin/Toast';
+import { API_BASE_URL } from '../../../utils/api';
 
 /**
  * ManageEvents Component — Halaman pengelolaan Event & Artikel.
@@ -49,8 +50,8 @@ const ManageEvents = () => {
             setLoading(true);
             // Ambil data dari kedua endpoint secara paralel
             const [artRes, eveRes] = await Promise.all([
-                fetch('http://localhost:5000/api/articles'),
-                fetch('http://localhost:5000/api/events')
+                fetch(`${API_BASE_URL}/articles`),
+                fetch(`${API_BASE_URL}/events`)
             ]);
 
             // Konversi respon ke JSON
@@ -89,7 +90,7 @@ const ManageEvents = () => {
         try {
             const endpoint = type === 'Article' ? 'articles' : 'events';
             const token = localStorage.getItem('admin_token');
-            const response = await fetch(`http://localhost:5000/api/${endpoint}/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/${endpoint}/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -134,7 +135,7 @@ const ManageEvents = () => {
             const token = localStorage.getItem('admin_token');
             const payload = { ...item, is_pinned: newPinnedStatus === 1 };
 
-            const response = await fetch(`http://localhost:5000/api/${endpoint}/${item.id}`, {
+            const response = await fetch(`${API_BASE_URL}/${endpoint}/${item.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

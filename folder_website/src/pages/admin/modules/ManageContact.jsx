@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'; // Ikon Lucide
 import Toast from '../../../components/admin/Toast'; // Komponen Toast untuk feedback
 import ConfirmModal from '../../../components/admin/ConfirmModal'; // Modal Konfirmasi
+import { API_BASE_URL } from '../../../utils/api';
 
 /**
  * ManageContact Component — Manajemen link kontak & sosial media secara dinamis.
@@ -114,7 +115,7 @@ const ManageContact = () => {
     const fetchContacts = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/api/contact');
+            const response = await fetch(`${API_BASE_URL}/contact`);
             if (!response.ok) throw new Error('Gagal memuat data kontak');
             const data = await response.json();
             // Simpan data array ke state
@@ -172,8 +173,8 @@ const ManageContact = () => {
             const promises = socials.map(contact => {
                 const isNew = contact.isNew || typeof contact.id === 'number' && contact.id > 1000000000000; // Deteksi ID sementara Date.now()
                 const url = isNew
-                    ? 'http://localhost:5000/api/contact'
-                    : `http://localhost:5000/api/contact/${contact.id}`;
+                    ? `${API_BASE_URL}/contact`
+                    : `${API_BASE_URL}/contact/${contact.id}`;
                 const method = isNew ? 'POST' : 'PUT';
 
                 return fetch(url, {
@@ -226,7 +227,7 @@ const ManageContact = () => {
 
         try {
             const token = localStorage.getItem('admin_token');
-            const response = await fetch(`http://localhost:5000/api/contact/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/contact/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

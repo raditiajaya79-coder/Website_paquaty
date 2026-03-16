@@ -12,6 +12,7 @@ import {
     UploadCloud
 } from 'lucide-react'; // Ikon
 import ImageUploader from '../../../../components/admin/ImageUploader'; // Import uploader baru
+import { API_BASE_URL } from '../../../../utils/api';
 
 /**
  * GalleryForm Component — Halaman khusus untuk upload/edit foto Galeri.
@@ -33,7 +34,7 @@ const GalleryForm = () => {
     const fetchGalleryData = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:5000/api/gallery/${id}`);
+            const response = await fetch(`${API_BASE_URL}/gallery/${id}`);
             if (!response.ok) throw new Error('Gagal mengambil data dokumentasi'); // Perbaikan pesan error
             const rawData = await response.json(); // Ambil data mentah
 
@@ -70,8 +71,8 @@ const GalleryForm = () => {
         try {
             const token = localStorage.getItem('admin_token');
             const url = isEditMode
-                ? `http://localhost:5000/api/gallery/${id}`
-                : 'http://localhost:5000/api/gallery';
+                ? `${API_BASE_URL}/gallery/${id}`
+                : `${API_BASE_URL}/gallery`;
             const method = isEditMode ? 'PUT' : 'POST';
 
             const response = await fetch(url, {

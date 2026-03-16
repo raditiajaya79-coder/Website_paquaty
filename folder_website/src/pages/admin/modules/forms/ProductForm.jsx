@@ -16,6 +16,7 @@ import {
 import ImageUploader from '../../../../components/admin/ImageUploader';
 import { translateText } from '../../../../utils/translate';
 import Toast from '../../../../components/admin/Toast';
+import { API_BASE_URL } from '../../../../utils/api';
 
 /**
  * ProductForm Component — Halaman khusus untuk tambah/edit produk.
@@ -61,7 +62,7 @@ const ProductForm = () => {
     const fetchProductData = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:5000/api/products/${id}`);
+            const response = await fetch(`${API_BASE_URL}/products/${id}`);
             if (!response.ok) throw new Error('Gagal mengambil data produk');
             const data = await response.json();
 
@@ -130,8 +131,8 @@ const ProductForm = () => {
         try {
             const token = localStorage.getItem('admin_token');
             const url = isEditMode
-                ? `http://localhost:5000/api/products/${id}`
-                : 'http://localhost:5000/api/products';
+                ? `${API_BASE_URL}/products/${id}`
+                : `${API_BASE_URL}/products`;
             const method = isEditMode ? 'PUT' : 'POST';
 
             // Bersihkan data sebelum kirim (pastikan angka adalah angka)
@@ -152,10 +153,10 @@ const ProductForm = () => {
             });
 
             if (response.ok) {
-                setToast({ 
-                    show: true, 
-                    message: `Produk berhasil ${isEditMode ? 'diperbarui' : 'ditambahkan'}!`, 
-                    type: 'success' 
+                setToast({
+                    show: true,
+                    message: `Produk berhasil ${isEditMode ? 'diperbarui' : 'ditambahkan'}!`,
+                    type: 'success'
                 });
                 setTimeout(() => navigate('/admin/products'), 1500);
             } else {

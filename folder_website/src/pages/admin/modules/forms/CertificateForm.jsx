@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'; // Ikon
 import Toast from '../../../../components/admin/Toast'; // Komponen Toast
 import ImageUploader from '../../../../components/admin/ImageUploader'; // Import uploader baru
+import { API_BASE_URL } from '../../../../utils/api';
 
 /**
  * CertificateForm Component — Halaman khusus untuk buat/edit Sertifikat legalitas.
@@ -55,7 +56,7 @@ const CertificateForm = () => {
     const fetchCertificateData = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:5000/api/certificates/${id}`);
+            const response = await fetch(`${API_BASE_URL}/certificates/${id}`);
             if (!response.ok) throw new Error('Gagal mengambil data sertifikat');
             const rawData = await response.json();
 
@@ -90,8 +91,8 @@ const CertificateForm = () => {
         try {
             const token = localStorage.getItem('admin_token'); // Ambil token auth
             const url = isEditMode
-                ? `http://localhost:5000/api/certificates/${id}` // Endpoint update
-                : 'http://localhost:5000/api/certificates'; // Endpoint create
+                ? `${API_BASE_URL}/certificates/${id}` // Endpoint update
+                : `${API_BASE_URL}/certificates`; // Endpoint create
             const method = isEditMode ? 'PUT' : 'POST'; // Tentukan metode HTTP
 
             const response = await fetch(url, {

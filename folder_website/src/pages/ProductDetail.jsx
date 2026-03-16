@@ -7,6 +7,7 @@ import { generatePageTitle } from '../utils/seo';
 import { COMPANY_INFO } from '../data/products';
 import { useLanguage } from '../context/LanguageContext';
 import useSWR from 'swr';
+import { API_BASE_URL } from '../utils/api';
 
 const fetcher = (url) => fetch(url).then(res => res.json());
 
@@ -23,7 +24,7 @@ const ProductDetail = () => {
 
     // SWR Data Fetching
     const { data: product, isLoading: loading, error } = useSWR(
-        `http://localhost:5000/api/products/${id}`,
+        `${API_BASE_URL}/products/${id}`,
         fetcher,
         { refreshInterval: 60000, revalidateOnFocus: true }
     );

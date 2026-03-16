@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'; // Ikon
 import ConfirmModal from '../../../components/admin/ConfirmModal';
 import Toast from '../../../components/admin/Toast';
+import { API_BASE_URL } from '../../../utils/api';
 
 /**
  * ManageGallery Component — Halaman pengelolaan galeri foto.
@@ -45,7 +46,7 @@ const ManageGallery = () => {
     const fetchGallery = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/api/gallery');
+            const response = await fetch(`${API_BASE_URL}/gallery`);
             if (!response.ok) throw new Error('Gagal mengambil data galeri');
             const data = await response.json();
 
@@ -71,7 +72,7 @@ const ManageGallery = () => {
         const { id, title } = modalConfig.itemToDelete;
         try {
             const token = localStorage.getItem('admin_token');
-            const response = await fetch(`http://localhost:5000/api/gallery/${id}`, {
+            const response = await fetch(`${API_BASE_URL}/gallery/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

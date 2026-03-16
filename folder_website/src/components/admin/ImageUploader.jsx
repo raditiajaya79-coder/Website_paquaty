@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { UploadCloud, Loader2, Image as ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { API_BASE_URL } from '../../utils/api';
 
 /**
  * ImageUploader Component
@@ -31,7 +32,7 @@ const ImageUploader = ({ currentImage, onUploadSuccess, label = "Upload Gambar" 
 
         try {
             const token = localStorage.getItem('admin_token');
-            const response = await fetch('http://localhost:5000/api/upload', {
+            const response = await fetch(`${API_BASE_URL}/upload`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -46,7 +47,7 @@ const ImageUploader = ({ currentImage, onUploadSuccess, label = "Upload Gambar" 
 
             const data = await response.json();
             // data.url biasanya berisi "/uploads/filename.ext"
-            const fullUrl = `http://localhost:5000${data.url}`;
+            const fullUrl = `${API_BASE_URL}${data.url}`;
             onUploadSuccess(fullUrl); // Teruskan URL ke parent form
         } catch (err) {
             setError(err.message);

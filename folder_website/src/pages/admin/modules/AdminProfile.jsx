@@ -15,6 +15,7 @@ import {
     EyeOff
 } from 'lucide-react'; // Ikon
 import Toast from '../../../components/admin/Toast'; // Notifikasi feedback
+import { API_BASE_URL } from '../../../utils/api';
 
 /**
  * AdminProfile Component — Pengaturan akun administrator.
@@ -31,7 +32,7 @@ const AdminProfile = () => {
     const [newPassword, setNewPassword] = useState(''); // Input password baru
     const [confirmPassword, setConfirmPassword] = useState(''); // Input konfirmasi password
     const [savingPassword, setSavingPassword] = useState(false); // Loading state simpan password
-    
+
     // Visibility toggles
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
@@ -57,7 +58,7 @@ const AdminProfile = () => {
         setSavingUsername(true); // Aktifkan loading
         try {
             const token = localStorage.getItem('admin_token');
-            const res = await fetch('http://localhost:5000/api/auth/username', {
+            const res = await fetch(`${API_BASE_URL}/auth/username`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -109,7 +110,7 @@ const AdminProfile = () => {
         setSavingPassword(true); // Aktifkan loading
         try {
             const token = localStorage.getItem('admin_token');
-            const res = await fetch('http://localhost:5000/api/auth/password', {
+            const res = await fetch(`${API_BASE_URL}/auth/password`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

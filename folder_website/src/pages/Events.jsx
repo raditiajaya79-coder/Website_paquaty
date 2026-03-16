@@ -6,6 +6,7 @@ import { ArrowRight, Calendar, User, MapPin } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
 import { useLanguage } from '../context/LanguageContext';
 import useSWR from 'swr';
+import { API_BASE_URL } from '../utils/api';
 
 const fetcher = (url) => fetch(url).then(res => res.json());
 
@@ -20,14 +21,14 @@ const Events = () => {
 
     // SWR fetching untuk events
     const { data: events = [], isLoading: eventsLoading } = useSWR(
-        'http://localhost:5000/api/events',
+        `${API_BASE_URL}/events`,
         fetcher,
         { refreshInterval: 60000, revalidateOnFocus: true }
     );
 
     // SWR fetching untuk articles
     const { data: articles = [], isLoading: articlesLoading } = useSWR(
-        'http://localhost:5000/api/articles',
+        `${API_BASE_URL}/articles`,
         fetcher,
         { refreshInterval: 60000, revalidateOnFocus: true }
     );

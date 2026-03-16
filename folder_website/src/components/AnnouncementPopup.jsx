@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, ArrowRight, Bell } from 'lucide-react';
 import useSWR from 'swr';
-
+import { API_BASE_URL } from '../utils/api';
 const fetcher = (url) => fetch(url).then(res => res.json());
 
 /**
@@ -17,7 +17,7 @@ const AnnouncementPopup = () => {
 
     // SWR fetching untuk pengumuman
     const { data: announcements, isLoading } = useSWR(
-        'http://localhost:5000/api/announcements',
+        `${API_BASE_URL}/announcements`,
         fetcher,
         {
             revalidateOnFocus: false, // Jangan re-fetch terus menerus untuk popup
