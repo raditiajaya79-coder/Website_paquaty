@@ -326,7 +326,17 @@ const AnnouncementForm = () => {
                                     <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Pratinjau Gambar</label>
                                     <div className="relative group aspect-video bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl overflow-hidden flex flex-col items-center justify-center transition-all hover:border-blue-300">
                                         {formData.image ? (
-                                            <img src={formData.image} alt="Preview" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                            <img
+                                                src={formData.image || '/images/pure logo pakuaty.png'}
+                                                alt="Preview"
+                                                className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${(!formData.image || formData.image.includes('pure logo pakuaty.png')) ? 'opacity-20 grayscale' : ''}`}
+                                                onError={(e) => {
+                                                    if (!e.target.src.includes('pure%20logo%20pakuaty.png') && !e.target.src.includes('pure logo pakuaty.png')) {
+                                                        e.target.src = '/images/pure logo pakuaty.png';
+                                                        e.target.className += ' opacity-20 grayscale';
+                                                    }
+                                                }}
+                                            />
                                         ) : (
                                             <>
                                                 <ImageIcon className="w-8 h-8 text-slate-200 mb-2" />

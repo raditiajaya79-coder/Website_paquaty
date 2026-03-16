@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ArrowRight, Menu, X, Phone, Mail, Globe, ShoppingBag, Video, MessageCircle, Link as LinkIcon } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+
 const Navbar = () => {
     const { lang, switchLang, t } = useLanguage();
     const location = useLocation();
@@ -92,6 +93,7 @@ const Navbar = () => {
         };
         fetchInitialData();
     }, []);
+
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50); // Scroll > 50px → solid background
@@ -209,7 +211,7 @@ const Navbar = () => {
 
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        className={`md:hidden z-50 p-2 transition-all duration-500 rounded-full ${isMenuOpen ? 'bg-white/10 text-brand-gold rotate-90 shadow-[0_0_20_rgba(255,237,0,0.2)]' : (isTransparent ? 'text-white' : 'text-stone-dark')}`}
+                        className={`md:hidden z-50 p-2 transition-all duration-500 rounded-full ${isMenuOpen ? 'bg-white/10 text-brand-gold rotate-90 shadow-[0_0_20px_rgba(255,237,0,0.2)]' : (isTransparent ? 'text-white' : 'text-stone-dark')}`}
                     >
                         {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </button>
@@ -217,88 +219,86 @@ const Navbar = () => {
             </div>
 
             {/* Mobile Menu Overlay — Floating Glassmorphism Experience */}
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95, x: 10, y: -10 }}
-                animate={{
-                    opacity: isMenuOpen ? 1 : 0,
-                    scale: isMenuOpen ? 1 : 0.95,
-                    x: isMenuOpen ? 0 : 10,
-                    y: isMenuOpen ? 0 : -10,
-                    pointerEvents: isMenuOpen ? 'auto' : 'none'
-                }}
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                className="fixed top-20 right-4 w-[65vw] max-w-[240px] bg-white/75 backdrop-blur-3xl z-[120] md:hidden flex flex-col py-6 px-6 rounded-[1.5rem] border border-white/80 shadow-[0_20px_40px_rgba(0,0,0,0.15)] overflow-hidden"
-            >
-                {/* Mobile nav links — juga otomatis menyesuaikan */}
-                <div className="flex flex-col gap-2 relative z-10">
-                    {navLinks.map((link, idx) => (
-                        <motion.div
-                            key={link.path}
-                            initial={{ opacity: 0, x: 5 }}
-                            animate={{ opacity: isMenuOpen ? 1 : 0, x: isMenuOpen ? 0 : 5 }}
-                            transition={{ delay: 0.05 + (idx * 0.03) }}
-                        >
-                            <NavLink
-                                to={link.path}
-                                className={({ isActive }) => `text-lg font-bold tracking-tight transition-all duration-300 flex items-center gap-2 ${isActive ? 'text-brand-cyan' : 'text-stone-dark hover:text-brand-cyan'}`}
-                            >
-                                <span className="text-[7px] font-black text-brand-gold">0{idx + 1}</span>
-                                {link.name}
-                            </NavLink>
-                        </motion.div>
-                    ))}
-                </div>
-
-                <div className="mt-4 flex justify-center gap-4 py-3 bg-stone-50/50 rounded-xl mb-4">
-                    <button
-                        onClick={() => switchLang('en')}
-                        className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${lang === 'en' ? 'bg-brand-gold text-stone-dark shadow-sm' : 'text-stone-dark/30'}`}
+            <AnimatePresence>
+                {isMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95, x: 10, y: -10 }}
+                        animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, x: 10, y: -10 }}
+                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        className="fixed top-20 right-4 w-[65vw] max-w-[240px] bg-white/75 backdrop-blur-3xl z-[120] md:hidden flex flex-col py-6 px-6 rounded-[1.5rem] border border-white/80 shadow-[0_20px_40px_rgba(0,0,0,0.15)] overflow-hidden"
                     >
-                        EN
-                    </button>
-                    <button
-                        onClick={() => switchLang('id')}
-                        className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${lang === 'id' ? 'bg-brand-gold text-stone-dark shadow-sm' : 'text-stone-dark/30'}`}
-                    >
-                        ID
-                    </button>
-                </div>
-
-
-                {/* Mobile Header Contacts — Restored Original Circle Style */}
-                {headerContacts.length > 0 && (
-                    <div className="flex justify-center gap-4 mb-4 relative z-10">
-                        {headerContacts.map((contact, idx) => {
-                            const BrandIcon = NavbarBrandIcons[contact.icon];
-                            return (
-                                <motion.a
-                                    key={contact.id}
-                                    href={contact.value.startsWith('http') ? contact.value : (contact.icon === 'Phone' ? `tel:${contact.value}` : (contact.icon === 'Mail' ? `mailto:${contact.value}` : `https://${contact.value}`))}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: isMenuOpen ? 1 : 0, y: isMenuOpen ? 0 : 10 }}
-                                    transition={{ delay: 0.15 + (idx * 0.05) }}
-                                    className="p-2.5 rounded-full bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)] text-stone-dark hover:scale-110 active:scale-95 transition-all"
+                        <div className="flex flex-col gap-2 relative z-10">
+                            {navLinks.map((link, idx) => (
+                                <motion.div
+                                    key={link.path}
+                                    initial={{ opacity: 0, x: 5 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: idx * 0.05 }}
                                 >
-                                    {BrandIcon ? <BrandIcon /> : <NavbarBrandIcons.Default />}
-                                </motion.a>
-                            )
-                        })}
-                    </div>
+                                    <NavLink
+                                        to={link.path}
+                                        className={({ isActive }) => `text-lg font-bold tracking-tight transition-all duration-300 flex items-center gap-2 ${isActive ? 'text-brand-cyan' : 'text-stone-dark hover:text-brand-cyan'}`}
+                                    >
+                                        <span className="text-[7px] font-black text-brand-gold">0{idx + 1}</span>
+                                        {link.name}
+                                    </NavLink>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        <div className="mt-4 flex justify-center gap-4 py-3 bg-stone-50/50 rounded-xl mb-4">
+                            <button
+                                onClick={() => switchLang('en')}
+                                className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${lang === 'en' ? 'bg-brand-gold text-stone-dark shadow-sm' : 'text-stone-dark/30'}`}
+                            >
+                                EN
+                            </button>
+                            <button
+                                onClick={() => switchLang('id')}
+                                className={`px-4 py-2 rounded-lg text-[10px] font-black tracking-widest transition-all ${lang === 'id' ? 'bg-brand-gold text-stone-dark shadow-sm' : 'text-stone-dark/30'}`}
+                            >
+                                ID
+                            </button>
+                        </div>
+
+
+                        {/* Mobile Header Contacts — Restored Original Circle Style */}
+                        {headerContacts.length > 0 && (
+                            <div className="flex justify-center gap-4 mb-4 relative z-10">
+                                {headerContacts.map((contact, idx) => {
+                                    const BrandIcon = NavbarBrandIcons[contact.icon];
+                                    return (
+                                        <motion.a
+                                            key={contact.id}
+                                            href={(contact.value && contact.value.startsWith('http')) ? contact.value : (contact.icon === 'Phone' ? `tel:${contact.value}` : (contact.icon === 'Mail' ? `mailto:${contact.value}` : `https://${contact.value}`))}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: 0.15 + (idx * 0.05) }}
+                                            className="p-2.5 rounded-full bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)] text-stone-dark hover:scale-110 active:scale-95 transition-all"
+                                        >
+                                            {BrandIcon ? <BrandIcon /> : <NavbarBrandIcons.Default />}
+                                        </motion.a>
+                                    )
+                                })}
+                            </div>
+                        )}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.25 }}
+                            className="relative z-10"
+                        >
+                            <Link to="/contact" className="w-full py-3 bg-brand-gold text-stone-dark rounded-full font-black text-[7px] uppercase tracking-[0.15em] flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-transform">
+                                {t('nav.connect')}
+                                <ArrowRight className="w-3 h-3" />
+                            </Link>
+                        </motion.div>
+                    </motion.div>
                 )}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: isMenuOpen ? 1 : 0 }}
-                    transition={{ delay: 0.25 }}
-                    className="relative z-10"
-                >
-                    <button className="w-full py-3 bg-brand-gold text-stone-dark rounded-full font-black text-[7px] uppercase tracking-[0.15em] flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-transform">
-                        {t('nav.connect')}
-                        <ArrowRight className="w-3 h-3" />
-                    </button>
-                </motion.div>
-            </motion.div >
+            </AnimatePresence>
         </nav >
     );
 };

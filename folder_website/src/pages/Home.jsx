@@ -171,6 +171,12 @@ const Home = () => {
                                     animate={{ y: [0, -15, 0], scale: [1, 1.05, 1], rotate: [0, 5, 0] }}
                                     transition={{ duration: 3 + idx, repeat: Infinity, ease: "easeInOut" }}
                                     className="w-full h-full object-contain drop-shadow-2xl"
+                                    onError={(e) => {
+                                        if (e.target.src !== '/images/pure logo pakuaty.png') {
+                                            e.target.src = '/images/pure logo pakuaty.png';
+                                            e.target.className += ' opacity-10 grayscale scale-50';
+                                        }
+                                    }}
                                 />
                             </motion.div>
                         ))}
@@ -205,6 +211,12 @@ const Home = () => {
                                 }}
                                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                                 className="w-full h-full object-contain filter drop-shadow-[0_80px_120px_rgba(0,0,0,0.45)] transition-transform duration-700"
+                                onError={(e) => {
+                                    if (e.target.src !== '/images/pure logo pakuaty.png') {
+                                        e.target.src = '/images/pure logo pakuaty.png';
+                                        e.target.className += ' opacity-20 grayscale';
+                                    }
+                                }}
                             />
                         </motion.div>
                     </AnimatePresence>
@@ -366,6 +378,12 @@ const Home = () => {
                                     src="/images/artisan_inset.png"
                                     alt="Artisan Process"
                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                    onError={(e) => {
+                                        if (e.target.src !== '/images/pure logo pakuaty.png') {
+                                            e.target.src = '/images/pure logo pakuaty.png';
+                                            e.target.className += ' opacity-20 grayscale';
+                                        }
+                                    }}
                                 />
                             </motion.div>
                         </div>
@@ -382,6 +400,12 @@ const Home = () => {
                                     src={PRODUCTS[0].image}
                                     alt="Pakuaty Original"
                                     className="w-full h-auto drop-shadow-[0_45px_70px_rgba(0,0,0,0.25)] rotate-[-4deg]"
+                                    onError={(e) => {
+                                        if (e.target.src !== '/images/pure logo pakuaty.png') {
+                                            e.target.src = '/images/pure logo pakuaty.png';
+                                            e.target.className += ' opacity-20 grayscale';
+                                        }
+                                    }}
                                 />
                             </motion.div>
                         </div>

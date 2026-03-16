@@ -128,6 +128,12 @@ const ProductDetail = () => {
                                     src={product.detail_image || product.image}
                                     alt={product.name}
                                     className="max-w-full max-h-full object-contain drop-shadow-2xl"
+                                    onError={(e) => {
+                                        if (e.target.src !== '/images/pure logo pakuaty.png') {
+                                            e.target.src = '/images/pure logo pakuaty.png';
+                                            e.target.className += ' opacity-20 grayscale';
+                                        }
+                                    }}
                                 />
                             </div>
                             <div className="absolute top-8 left-8">
