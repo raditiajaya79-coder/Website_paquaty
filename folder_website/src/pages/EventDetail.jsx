@@ -52,7 +52,7 @@ const EventDetail = () => {
         return (
             <div className="bg-neutral-bone min-h-screen flex items-center justify-center p-6">
                 <div className="text-stone-dark/30 font-bold animate-pulse tracking-[0.2em] uppercase text-xs">
-                    Memuat {typeLabel}...
+                    {t('event.detail.loading')} {typeLabel}...
                 </div>
             </div>
         );
@@ -61,10 +61,10 @@ const EventDetail = () => {
     if (error || !data) {
         return (
             <div className="bg-neutral-bone min-h-screen flex flex-col items-center justify-center p-6 text-center">
-                <h2 className="text-2xl font-bold text-stone-dark mb-4">Konten Tidak Ditemukan</h2>
-                <p className="text-stone-dark/50 mb-8">{error || 'Data yang Anda cari mungkin sudah dihapus atau tidak tersedia.'}</p>
+                <h2 className="text-2xl font-bold text-stone-dark mb-4">{t('event.detail.not_found')}</h2>
+                <p className="text-stone-dark/50 mb-8">{error || t('event.detail.not_found_desc')}</p>
                 <Link to="/events" className="bg-brand-blue text-white px-8 py-3 rounded-xl font-bold">
-                    Kembali ke Daftar
+                    {t('event.detail.back')}
                 </Link>
             </div>
         );
@@ -83,7 +83,7 @@ const EventDetail = () => {
                     <motion.div {...fadeIn} className="mb-12">
                         <Link to="/events" className="inline-flex items-center gap-2 text-stone-dark/60 hover:text-brand-blue transition-all text-xs font-bold tracking-widest uppercase">
                             <ArrowLeft className="w-4 h-4" />
-                            Kembali ke Acara & Berita
+                            {t('event.detail.back')}
                         </Link>
                     </motion.div>
 
@@ -202,7 +202,7 @@ const EventDetail = () => {
                         className="mt-20 pt-12 border-t border-stone-border flex items-center justify-between"
                     >
                         <div className="flex items-center gap-4">
-                            <span className="text-sm font-bold uppercase tracking-widest text-stone-dark/60">Bagikan:</span>
+                            <span className="text-sm font-bold uppercase tracking-widest text-stone-dark/60">{t('event.detail.share')}</span>
                             <div className="flex gap-2">
                                 {[1, 2, 3].map(i => (
                                     <div key={i} className="w-10 h-10 rounded-full bg-white border border-stone-border flex items-center justify-center cursor-pointer hover:bg-brand-blue hover:text-white transition-all shadow-sm">
@@ -212,7 +212,7 @@ const EventDetail = () => {
                             </div>
                         </div>
                         <Link to="/events" className="text-brand-blue font-semibold hover:underline text-sm">
-                            Lihat Semua Berita
+                            {t('event.detail.view_all')}
                         </Link>
                     </motion.div>
                 </div>

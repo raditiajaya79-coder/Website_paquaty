@@ -73,7 +73,7 @@ const ProductDetail = () => {
             <div className="bg-neutral-bone min-h-screen pt-24 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-12 h-12 border-4 border-brand-blue border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-sm font-medium text-stone-dark/40">Memuat Detail Produk...</p>
+                    <p className="text-sm font-medium text-stone-dark/40">{t('event.detail.loading')}</p>
                 </div>
             </div>
         );
@@ -83,8 +83,8 @@ const ProductDetail = () => {
     if (!product) {
         return (
             <div className="pt-40 pb-20 text-center bg-neutral-bone min-h-screen">
-                <h2 className="text-2xl font-serif text-stone-dark mb-4">Produk Tidak Ditemukan</h2>
-                <Link to="/products" className="text-brand-gold-dark font-medium hover:underline">Kembali ke Katalog</Link>
+                <h2 className="text-2xl font-serif text-stone-dark mb-4">{t('event.detail.not_found')}</h2>
+                <Link to="/products" className="text-brand-gold-dark font-medium hover:underline">{t('product.detail.back')}</Link>
             </div>
         );
     }
@@ -215,7 +215,7 @@ const ProductDetail = () => {
 
                             {/* Deskripsi */}
                             <div className="mb-6">
-                                <h3 className="text-xs font-bold text-stone-dark uppercase tracking-widest mb-3">{lang === 'id' ? 'Deskripsi Produk' : 'Product Description'}</h3>
+                                <h3 className="text-xs font-bold text-stone-dark uppercase tracking-widest mb-3">{t('product.detail.description')}</h3>
                                 <p className="text-sm text-[#57534E] leading-[1.8] whitespace-pre-line">
                                     {(lang === 'en' && product.description_en) ? product.description_en : product.description}
                                 </p>
@@ -245,7 +245,7 @@ const ProductDetail = () => {
                                     {t('product.detail.order')}
                                     <MessageCircle className="w-4 h-4" />
                                 </button>
-                                <p className="text-center text-[10px] text-[#78716C]">{lang === 'id' ? `Terhubung langsung ke ${COMPANY_INFO.name} via WhatsApp` : `Connect directly to ${COMPANY_INFO.name} via WhatsApp`}</p>
+                                <p className="text-center text-[10px] text-[#78716C]">{t('product.detail.connected')}</p>
                             </div>
                         </motion.div>
                     </div>
