@@ -20,7 +20,8 @@ const FunnelIcon = () => (
 );
 
 const Products = () => {
-    const { t } = useLanguage();
+    const { t, lang } = useLanguage();
+    const isEn = lang === 'en';
     const [searchQuery, setSearchQuery] = useState('');
     const [activeType, setActiveType] = useState('All');
     const [activeTag, setActiveTag] = useState('All');
@@ -42,11 +43,11 @@ const Products = () => {
 
     const productTypes = useMemo(() => {
         const types = products.map((p) =>
-            p.grade?.toLowerCase().includes('mushroom') || p.grade?.toLowerCase().includes('jamur')
-                ? 'Keripik Jamur' : 'Keripik Tempe'
+            p.grade?.toLowerCase().includes('mushroom') || p.grade?.toLowerCase().includes('jamur') || p.grade_en?.toLowerCase().includes('mushroom')
+                ? t('products.type_mushroom') : t('products.type_tempe')
         );
         return ['All', ...new Set(types)];
-    }, [products]);
+    }, [products, t]);
 
     const productTags = useMemo(() => {
         const tags = products.map((p) => p.tag).filter(Boolean);
@@ -57,8 +58,8 @@ const Products = () => {
         return products.filter((p) => {
             const q = searchQuery.toLowerCase();
             const matchSearch = !q || p.name?.toLowerCase().includes(q) || p.grade?.toLowerCase().includes(q) || p.tag?.toLowerCase().includes(q);
-            const isJamur = p.grade?.toLowerCase().includes('mushroom') || p.grade?.toLowerCase().includes('jamur');
-            const matchType = activeType === 'All' || (isJamur ? 'Keripik Jamur' : 'Keripik Tempe') === activeType;
+            const isJamur = p.grade?.toLowerCase().includes('mushroom') || p.grade?.toLowerCase().includes('jamur') || p.grade_en?.toLowerCase().includes('mushroom');
+            const matchType = activeType === 'All' || (isJamur ? t('products.type_mushroom') : t('products.type_tempe')) === activeType;
             const matchTag = activeTag === 'All' || p.tag === activeTag;
             return matchSearch && matchType && matchTag;
         });
@@ -111,7 +112,7 @@ const Products = () => {
                                         type="text"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        placeholder="Search products..."
+                                        placeholder={t('products.search_placeholder')}
                                         className="flex-1 min-w-0 bg-transparent text-stone-dark placeholder:text-stone-dark/30 text-sm font-medium focus:outline-none"
                                     />
                                     {searchQuery && (
@@ -130,7 +131,7 @@ const Products = () => {
                                     className={`relative flex items-center gap-2 px-5 py-3.5 text-xs font-bold uppercase tracking-widest transition-colors duration-200 shrink-0 ${filterOpen || hasFilterSelected ? 'text-brand-blue' : 'text-stone-dark/50 hover:text-brand-blue'}`}
                                 >
                                     <FunnelIcon />
-                                    <span className="hidden sm:inline">Filter</span>
+                                    <span className="hidden sm:inline">{t('products.filter')}</span>
                                     {/* Blue dot indicator */}
                                     {hasFilterSelected && (
                                         <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-brand-blue" />
@@ -151,7 +152,7 @@ const Products = () => {
                                         <div className="p-5 grid sm:grid-cols-2 gap-6">
                                             {/* Type */}
                                             <div>
-                                                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-stone-dark/30 mb-3">Product Type</p>
+                                                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-stone-dark/30 mb-3">{t('products.filter_type')}</p>
                                                 <div className="flex flex-col gap-1.5">
                                                     {productTypes.map((type) => (
                                                         <button
@@ -159,14 +160,14 @@ const Products = () => {
                                                             onClick={() => { setActiveType(type); }}
                                                             className={`text-left px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${activeType === type ? 'bg-brand-blue text-white' : 'text-stone-dark/60 hover:bg-stone-50 hover:text-stone-dark'}`}
                                                         >
-                                                            {type === 'All' ? 'All Types' : type}
+                                                            {type === 'All' ? t('products.all_types') : type}
                                                         </button>
                                                     ))}
                                                 </div>
                                             </div>
                                             {/* Flavor / Tag */}
                                             <div>
-                                                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-stone-dark/30 mb-3">Flavor / Tag</p>
+                                                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-stone-dark/30 mb-3">{t('products.filter_flavor')}</p>
                                                 <div className="flex flex-col gap-1.5">
                                                     {productTags.map((tag) => (
                                                         <button
@@ -174,7 +175,7 @@ const Products = () => {
                                                             onClick={() => { setActiveTag(tag); }}
                                                             className={`text-left px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${activeTag === tag ? 'bg-brand-blue text-white' : 'text-stone-dark/60 hover:bg-stone-50 hover:text-stone-dark'}`}
                                                         >
-                                                            {tag === 'All' ? 'All Flavors' : tag}
+                                                            {tag === 'All' ? t('products.all_flavors') : tag}
                                                         </button>
                                                     ))}
                                                 </div>
@@ -183,7 +184,7 @@ const Products = () => {
                                         {hasFilterSelected && (
                                             <div className="border-t border-stone-border/40 px-5 py-3 flex justify-end">
                                                 <button onClick={() => { setActiveType('All'); setActiveTag('All'); }} className="text-[10px] font-bold text-brand-blue/70 hover:text-brand-blue uppercase tracking-widest flex items-center gap-1">
-                                                    <X className="w-3 h-3" /> Clear filters
+                                                    <X className="w-3 h-3" /> {t('products.clear_filters')}
                                                 </button>
                                             </div>
                                         )}
@@ -196,11 +197,11 @@ const Products = () => {
                         {!loading && (
                             <div className="flex items-center justify-between mt-3 px-1">
                                 <p className="text-xs text-stone-dark/40 font-medium tracking-wide">
-                                    {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
+                                    {filteredProducts.length} {filteredProducts.length !== 1 ? t('products.results_found_plural') : t('products.results_found')}
                                 </p>
                                 {hasActiveFilters && (
                                     <button onClick={clearAll} className="flex items-center gap-1 text-[10px] font-bold text-brand-blue/70 hover:text-brand-blue transition-colors uppercase tracking-widest">
-                                        <X className="w-3 h-3" /> Clear all
+                                        <X className="w-3 h-3" /> {t('products.clear_all')}
                                     </button>
                                 )}
                             </div>
@@ -218,8 +219,8 @@ const Products = () => {
                             className="text-center py-24"
                         >
                             <p className="text-5xl mb-4">🔍</p>
-                            <p className="text-stone-dark font-semibold text-lg mb-2">No products found</p>
-                            <p className="text-[#78716C] text-sm">Try a different search term</p>
+                            <p className="text-stone-dark font-semibold text-lg mb-2">{t('products.no_products')}</p>
+                            <p className="text-[#78716C] text-sm">{t('products.no_products_desc')}</p>
                         </motion.div>
                     ) : (
                         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
@@ -257,36 +258,41 @@ const Products = () => {
                                                     </div>
                                                 </div>
 
-                                                {/* Card Content */}
-                                                <div className="p-4 md:p-6 flex-1 flex flex-col gap-3 md:gap-4">
-                                                    <div>
-                                                        <h3 className="text-base sm:text-lg md:text-xl font-bold text-stone-dark tracking-tight leading-tight line-clamp-2 min-h-[2.5rem] sm:min-h-0">{product.name}</h3>
-                                                        <p className="text-brand-gold-dark text-[10px] sm:text-xs md:text-sm font-medium mt-1 uppercase tracking-wider">{product.grade}</p>
-                                                    </div>
+                                                 <div className="p-4 md:p-6 flex-1 flex flex-col gap-3 md:gap-4">
+                                                     <div>
+                                                         <h3 className="text-base sm:text-lg md:text-xl font-bold text-stone-dark tracking-tight leading-tight line-clamp-2 min-h-[2.5rem] sm:min-h-0">
+                                                             {(isEn && product.name_en) ? product.name_en : product.name}
+                                                         </h3>
+                                                         <p className="text-brand-gold-dark text-[10px] sm:text-xs md:text-sm font-medium mt-1 uppercase tracking-wider">
+                                                             {(isEn && product.grade_en) ? product.grade_en : product.grade}
+                                                         </p>
+                                                     </div>
 
-                                                    {product.price && (
-                                                        <div className="flex flex-wrap items-baseline gap-1 md:gap-2">
-                                                            <span className="text-lg sm:text-xl md:text-2xl font-black text-stone-dark">
-                                                                Rp {formatPrice(product.price)}
-                                                            </span>
-                                                            {product.original_price && product.original_price > product.price && (
-                                                                <span className="text-[10px] md:text-xs text-[#A8A29E] line-through font-medium">
-                                                                    Rp {formatPrice(product.original_price)}
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    )}
+                                                     {product.price && (
+                                                         <div className="flex flex-wrap items-baseline gap-1 md:gap-2">
+                                                             <span className="text-lg sm:text-xl md:text-2xl font-black text-stone-dark">
+                                                                 Rp {formatPrice(product.price)}
+                                                             </span>
+                                                             {product.original_price && product.original_price > product.price && (
+                                                                 <span className="text-[10px] md:text-xs text-[#A8A29E] line-through font-medium">
+                                                                     Rp {formatPrice(product.original_price)}
+                                                                 </span>
+                                                             )}
+                                                         </div>
+                                                     )}
 
-                                                    <div className="mt-auto flex items-center justify-between pt-3 md:pt-4 border-t border-stone-border/60">
-                                                        <div>
-                                                            <p className="text-[8px] md:text-[10px] text-[#78716C] uppercase tracking-widest mb-0.5 opacity-60">Origin</p>
-                                                            <p className="text-[10px] sm:text-xs md:text-sm font-bold text-stone-dark tracking-tight">{product.origin}</p>
-                                                        </div>
-                                                        <div className="hidden sm:flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-blue opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-500">
-                                                            View <ArrowRight className="w-3.5 h-3.5" />
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                     <div className="mt-auto flex items-center justify-between pt-3 md:pt-4 border-t border-stone-border/60">
+                                                         <div>
+                                                             <p className="text-[8px] md:text-[10px] text-[#78716C] uppercase tracking-widest mb-0.5 opacity-60">{t('products.origin_label')}</p>
+                                                             <p className="text-[10px] sm:text-xs md:text-sm font-bold text-stone-dark tracking-tight">
+                                                                 {(isEn && product.origin_en) ? product.origin_en : product.origin}
+                                                             </p>
+                                                         </div>
+                                                         <div className="hidden sm:flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-blue opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-500">
+                                                             {t('products.view_details')} <ArrowRight className="w-3.5 h-3.5" />
+                                                         </div>
+                                                     </div>
+                                                 </div>
                                             </div>
                                         </Link>
                                     </motion.div>
