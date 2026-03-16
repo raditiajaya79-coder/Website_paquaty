@@ -47,14 +47,14 @@ exports.getArticleById = async (req, res) => {
 
 exports.createArticle = async (req, res) => {
   // Menerima data artikel dari body request, termasuk status 'is_pinned'.
-  const { title, excerpt, content, date, author, category, image, is_pinned } = req.body;
+  const { title, title_en, excerpt, excerpt_en, content, content_en, date, author, category, image, is_pinned } = req.body;
   try {
     // Menambahkan artikel baru ke database.
     // `is_pinned || false` memastikan nilai default `false` jika `is_pinned` tidak disediakan.
     const result = await pool.query(
-      `INSERT INTO articles (title, excerpt, content, date, author, category, image, is_pinned)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-      [title, excerpt, content, date, author, category, image, is_pinned || false]
+      `INSERT INTO articles (title, title_en, excerpt, excerpt_en, content, content_en, date, author, category, image, is_pinned)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
+      [title, title_en, excerpt, excerpt_en, content, content_en, date, author, category, image, is_pinned || false]
     );
     
     // Catat aktivitas: Menambah Artikel
@@ -70,14 +70,14 @@ exports.createArticle = async (req, res) => {
 exports.updateArticle = async (req, res) => {
   const { id } = req.params;
   // Menerima data artikel yang diperbarui dari body request, termasuk status 'is_pinned'.
-  const { title, excerpt, content, date, author, category, image, is_pinned } = req.body;
+  const { title, title_en, excerpt, excerpt_en, content, content_en, date, author, category, image, is_pinned } = req.body;
   try {
     // Memperbarui artikel yang ada di database berdasarkan ID.
     // Menambahkan `is_pinned` ke daftar kolom yang dapat diperbarui.
     const result = await pool.query(
-      `UPDATE articles SET title=$1, excerpt=$2, content=$3, date=$4, author=$5, category=$6, image=$7, is_pinned=$8
-       WHERE id=$9 RETURNING *`,
-      [title, excerpt, content, date, author, category, image, is_pinned, id]
+      `UPDATE articles SET title=$1, title_en=$2, excerpt=$3, excerpt_en=$4, content=$5, content_en=$6, date=$7, author=$8, category=$9, image=$10, is_pinned=$11
+       WHERE id=$12 RETURNING *`,
+      [title, title_en, excerpt, excerpt_en, content, content_en, date, author, category, image, is_pinned, id]
     );
     
     // Catat aktivitas: Mengubah Artikel
@@ -151,14 +151,14 @@ exports.getEventById = async (req, res) => {
 
 exports.createEvent = async (req, res) => {
   // Menerima data event dari body request, termasuk status 'is_pinned'.
-  const { title, description, date, location, image, status, is_pinned } = req.body;
+  const { title, title_en, description, description_en, date, location, image, status, is_pinned } = req.body;
   try {
     // Menambahkan event baru ke database.
     // `is_pinned || false` memastikan nilai default `false` jika `is_pinned` tidak disediakan.
     const result = await pool.query(
-      `INSERT INTO events (title, description, date, location, image, status, is_pinned)
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [title, description, date, location, image, status, is_pinned || false]
+      `INSERT INTO events (title, title_en, description, description_en, date, location, image, status, is_pinned)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+      [title, title_en, description, description_en, date, location, image, status, is_pinned || false]
     );
     
     // Catat aktivitas: Menambah Event
@@ -174,14 +174,14 @@ exports.createEvent = async (req, res) => {
 exports.updateEvent = async (req, res) => {
   const { id } = req.params;
   // Menerima data event yang diperbarui dari body request, termasuk status 'is_pinned'.
-  const { title, description, date, location, image, status, is_pinned } = req.body;
+  const { title, title_en, description, description_en, date, location, image, status, is_pinned } = req.body;
   try {
     // Memperbarui event yang ada di database berdasarkan ID.
     // Menambahkan `is_pinned` ke daftar kolom yang dapat diperbarui.
     const result = await pool.query(
-      `UPDATE events SET title=$1, description=$2, date=$3, location=$4, image=$5, status=$6, is_pinned=$7
-       WHERE id=$8 RETURNING *`,
-      [title, description, date, location, image, status, is_pinned, id]
+      `UPDATE events SET title=$1, title_en=$2, description=$3, description_en=$4, date=$5, location=$6, image=$7, status=$8, is_pinned=$9
+       WHERE id=$10 RETURNING *`,
+      [title, title_en, description, description_en, date, location, image, status, is_pinned, id]
     );
     
     // Catat aktivitas: Mengubah Event

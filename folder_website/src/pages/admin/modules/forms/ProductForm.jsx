@@ -9,9 +9,13 @@ import {
     Star,
     Image as ImageIcon,
     Trash2,
-    ArrowLeft
+    ArrowLeft,
+    Wand2,
+    Loader2
 } from 'lucide-react'; // Ikon
-import ImageUploader from '../../../../components/admin/ImageUploader'; // Import uploader baru
+import ImageUploader from '../../../../components/admin/ImageUploader';
+import { translateText } from '../../../../utils/translate';
+import Toast from '../../../../components/admin/Toast';
 
 /**
  * ProductForm Component — Halaman khusus untuk tambah/edit produk.
@@ -25,13 +29,17 @@ const ProductForm = () => {
     // State untuk form data
     const [formData, setFormData] = useState({
         name: '',
+        name_en: '',
         grade: '',
+        grade_en: '',
         origin: 'Kediri, East Java',
         moq: '100 pcs',
         category: 'Tempe Chips',
+        category_en: '',
         price: '',
         original_price: '',
         description: '',
+        description_en: '',
         tag: '',
         is_bestseller: false,
         is_hero: false,
@@ -39,7 +47,9 @@ const ProductForm = () => {
         detail_image: '',
         packaging_options: []
     });
+    const [isTranslating, setIsTranslating] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
     // Ambil data produk jika dalam mode edit
     useEffect(() => {
@@ -66,8 +76,8 @@ const ProductForm = () => {
             });
             setLoading(false);
         } catch (err) {
-            alert('Error: ' + err.message);
-            navigate('/admin/products');
+            setToast({ show: true, message: 'Gagal memuat produk: ' + err.message, type: 'error' });
+            setTimeout(() => navigate('/admin/products'), 2000);
         }
     };
 
@@ -81,6 +91,38 @@ const ProductForm = () => {
     // but the inline click handlers in the JSX are already functional using packaging_options.
 
     // Handle Submit Form (Save to DB)
+    // Handle auto translation
+    const handleTranslate = async () => {
+        if (!formData.name && !formData.grade && !formData.description) {
+            setToast({ show: true, message: 'Harap isi setidaknya satu field dalam Bahasa Indonesia.', type: 'error' });
+            return;
+        }
+
+        setIsTranslating(true);
+        try {
+            const [name_en, grade_en, category_en, description_en] = await Promise.all([
+                translateText(formData.name),
+                translateText(formData.grade),
+                translateText(formData.category),
+                translateText(formData.description)
+            ]);
+
+            setFormData(prev => ({
+                ...prev,
+                name_en,
+                grade_en,
+                category_en,
+                description_en
+            }));
+            setToast({ show: true, message: 'Penerjemahan otomatis berhasil!', type: 'success' });
+        } catch (error) {
+            console.error('Auto-translation failed:', error);
+            setToast({ show: true, message: 'Gagal menerjemahkan secara otomatis.', type: 'error' });
+        } finally {
+            setIsTranslating(false);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -110,14 +152,18 @@ const ProductForm = () => {
             });
 
             if (response.ok) {
-                alert(isEditMode ? 'Produk berhasil diperbarui' : 'Produk berhasil ditambahkan');
-                navigate('/admin/products');
+                setToast({ 
+                    show: true, 
+                    message: `Produk berhasil ${isEditMode ? 'diperbarui' : 'ditambahkan'}!`, 
+                    type: 'success' 
+                });
+                setTimeout(() => navigate('/admin/products'), 1500);
             } else {
                 const errorData = await response.json();
-                alert('Gagal menyimpan: ' + (errorData.error || 'Unknown error'));
+                setToast({ show: true, message: 'Gagal menyimpan: ' + (errorData.error || 'Terjadi kesalahan'), type: 'error' });
             }
         } catch (err) {
-            alert('Kesalahan jaringan: ' + err.message);
+            setToast({ show: true, message: 'Kesalahan jaringan: ' + err.message, type: 'error' });
         } finally {
             setLoading(false);
         }
@@ -156,31 +202,92 @@ const ProductForm = () => {
                 <div className="space-y-5">
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {/* Nama Produk */}
-                        <div className="space-y-2.5">
-                            <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Nama Produk</label>
-                            <input
-                                type="text"
-                                required
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
-                                placeholder="Original Tempe Chips"
-                            />
+                        <div className="space-y-4">
+                            <div className="space-y-2.5">
+                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Nama Produk (ID)</label>
+                                <input
+                                    type="text"
+                                    required
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
+                                    placeholder="Keripik Tempe Original"
+                                />
+                            </div>
                         </div>
-                        {/* Kategori */}
-                        <div className="space-y-2.5">
-                            <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Kategori</label>
-                            <input
-                                type="text"
-                                required
-                                name="category"
-                                value={formData.category}
-                                onChange={handleChange}
-                                className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
-                                placeholder="Kripik Tempe"
-                            />
+
+                        <div className="space-y-4">
+                            <div className="space-y-2.5">
+                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Product Name (EN)</label>
+                                <input
+                                    type="text"
+                                    name="name_en"
+                                    value={formData.name_en}
+                                    onChange={handleChange}
+                                    className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
+                                    placeholder="Original Tempe Chips"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-4">
+                            <div className="space-y-2.5">
+                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Grade / Subtitle (ID)</label>
+                                <input
+                                    type="text"
+                                    name="grade"
+                                    value={formData.grade}
+                                    onChange={handleChange}
+                                    className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
+                                    placeholder="Camilan Tradisional"
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="space-y-2.5">
+                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Grade / Subtitle (EN)</label>
+                                <input
+                                    type="text"
+                                    name="grade_en"
+                                    value={formData.grade_en}
+                                    onChange={handleChange}
+                                    className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
+                                    placeholder="Traditional Snack"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-4">
+                            <div className="space-y-2.5">
+                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Kategori (ID)</label>
+                                <input
+                                    type="text"
+                                    required
+                                    name="category"
+                                    value={formData.category}
+                                    onChange={handleChange}
+                                    className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
+                                    placeholder="Kripik Tempe"
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="space-y-2.5">
+                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Category (EN)</label>
+                                <input
+                                    type="text"
+                                    name="category_en"
+                                    value={formData.category_en}
+                                    onChange={handleChange}
+                                    className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
+                                    placeholder="Tempe Chips"
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -267,17 +374,45 @@ const ProductForm = () => {
 
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                        {/* Deskripsi */}
-                        <div className="space-y-4">
-                            <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Deskripsi Lengkap</label>
-                            <textarea
-                                rows="10"
-                                name="description"
-                                value={formData.description}
-                                onChange={handleChange}
-                                className="w-full bg-white border border-slate-200 rounded-2xl py-5 px-6 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm resize-none text-sm leading-relaxed"
-                                placeholder="Detail produk..."
-                            ></textarea>
+                        <div className="space-y-6">
+                            <div className="space-y-3">
+                                <div className="flex justify-between items-center mb-1">
+                                    <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Deskripsi Lengkap (ID)</label>
+                                    <button
+                                        type="button"
+                                        onClick={handleTranslate}
+                                        disabled={isTranslating}
+                                        className="flex items-center gap-1.5 text-[10px] font-black text-brand-gold hover:text-brand-gold/80 transition-colors disabled:opacity-50 uppercase tracking-widest"
+                                    >
+                                        {isTranslating ? (
+                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                        ) : (
+                                            <Wand2 className="w-3 h-3" />
+                                        )}
+                                        Magic Auto-Translate
+                                    </button>
+                                </div>
+                                <textarea
+                                    rows="8"
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                    className="w-full bg-white border border-slate-200 rounded-2xl py-5 px-6 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm resize-none text-sm leading-relaxed"
+                                    placeholder="Detail produk lengkap..."
+                                ></textarea>
+                            </div>
+
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Full Description (EN)</label>
+                                <textarea
+                                    rows="8"
+                                    name="description_en"
+                                    value={formData.description_en}
+                                    onChange={handleChange}
+                                    className="w-full bg-white border border-slate-200 rounded-2xl py-5 px-6 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm resize-none text-sm leading-relaxed"
+                                    placeholder="Complete product details in English..."
+                                ></textarea>
+                            </div>
                         </div>
 
                         {/* Media */}
@@ -351,6 +486,14 @@ const ProductForm = () => {
                     </button>
                 </div>
             </form>
+
+            {/* Toast Feedback */}
+            <Toast
+                show={toast.show}
+                message={toast.message}
+                type={toast.type}
+                onClose={() => setToast({ ...toast, show: false })}
+            />
         </div>
     );
 };

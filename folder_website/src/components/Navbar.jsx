@@ -294,7 +294,7 @@ const Navbar = () => {
                     className="relative z-10"
                 >
                     <button className="w-full py-3 bg-brand-gold text-stone-dark rounded-full font-black text-[7px] uppercase tracking-[0.15em] flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-transform">
-                        Connect
+                        {t('nav.connect')}
                         <ArrowRight className="w-3 h-3" />
                     </button>
                 </motion.div>

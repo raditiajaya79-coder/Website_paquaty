@@ -13,10 +13,12 @@ import {
     Type,
     Loader2,
     ChevronRight,
-    Trash2
+    Trash2,
+    Wand2
 } from 'lucide-react'; // Ikon
-import Toast from '../../../../components/admin/Toast'; // Komponen Toast
-import ImageUploader from '../../../../components/admin/ImageUploader'; // Import uploader baru
+import Toast from '../../../../components/admin/Toast';
+import ImageUploader from '../../../../components/admin/ImageUploader';
+import { translateText } from '../../../../utils/translate';
 
 /**
  * EventForm Component — Halaman khusus untuk buat/edit Agenda & Artikel.
@@ -32,16 +34,19 @@ const EventForm = () => {
 
     const [formData, setFormData] = useState({
         title: '',
+        title_en: '',
         type: initialType,
         date: new Date().toISOString().split('T')[0],
         category: 'Wawasan',
-        content: [{ type: 'text', value: '' }], // Array of blocks: { type: 'text' | 'image', value: string }
+        content: [{ type: 'text', value: '' }],
+        content_en: [{ type: 'text', value: '' }],
         is_pinned: false,
         author: 'Admin Pakuaty', // Untuk Artikel
         location: '', // Untuk Event
         status: 'Upcoming', // Untuk Event
         image: ''
     });
+    const [isTranslating, setIsTranslating] = useState(false);
     const [loading, setLoading] = useState(false);
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' }); // State untuk notifikasi feedback
 
@@ -66,26 +71,35 @@ const EventForm = () => {
 
             // Parse content field into blocks array
             let parsedContent = [{ type: 'text', value: '' }];
+            let parsedContentEn = [{ type: 'text', value: '' }];
+            
             const sourceContent = data.content || data.description || '';
+            const sourceContentEn = data.content_en || data.description_en || '';
+
             try {
-                // Check if it's already a valid JSON array string
                 const maybeArray = JSON.parse(sourceContent);
-                if (Array.isArray(maybeArray)) {
-                    parsedContent = maybeArray;
-                } else {
-                    parsedContent = [{ type: 'text', value: sourceContent }];
-                }
+                if (Array.isArray(maybeArray)) parsedContent = maybeArray;
+                else parsedContent = [{ type: 'text', value: sourceContent }];
             } catch (e) {
-                // If it's plain text, wrap it in a single text block
                 parsedContent = [{ type: 'text', value: sourceContent }];
+            }
+
+            try {
+                const maybeArrayEn = JSON.parse(sourceContentEn);
+                if (Array.isArray(maybeArrayEn)) parsedContentEn = maybeArrayEn;
+                else parsedContentEn = [{ type: 'text', value: sourceContentEn }];
+            } catch (e) {
+                parsedContentEn = [{ type: 'text', value: sourceContentEn }];
             }
 
             setFormData({
                 title: data.title || '',
+                title_en: data.title_en || '',
                 type: initialType,
                 date: data.date ? (new Date(data.date).toString() !== 'Invalid Date' ? new Date(data.date).toISOString().split('T')[0] : '') : '',
                 category: data.category || 'Wawasan',
                 content: parsedContent,
+                content_en: parsedContentEn,
                 author: data.author || 'Admin Pakuaty',
                 location: data.location || '',
                 status: data.status || 'Upcoming',
@@ -103,36 +117,84 @@ const EventForm = () => {
     const addBlock = (type) => {
         setFormData(prev => ({
             ...prev,
-            content: [...(Array.isArray(prev.content) ? prev.content : []), { type, value: '' }]
+            content: [...(Array.isArray(prev.content) ? prev.content : []), { type, value: '' }],
+            content_en: [...(Array.isArray(prev.content_en) ? prev.content_en : []), { type, value: '' }]
         }));
     };
 
-    const updateBlock = (index, value) => {
+    const updateBlock = (index, value, isEn = false) => {
         setFormData(prev => {
-            const updatedContent = [...prev.content];
+            const field = isEn ? 'content_en' : 'content';
+            const updatedContent = [...prev[field]];
             updatedContent[index] = { ...updatedContent[index], value };
-            return { ...prev, content: updatedContent };
+            return { ...prev, [field]: updatedContent };
         });
     };
 
     const removeBlock = (index) => {
         setFormData(prev => {
             const updatedContent = [...prev.content];
+            const updatedContentEn = [...prev.content_en];
             updatedContent.splice(index, 1);
-            return { ...prev, content: updatedContent };
+            updatedContentEn.splice(index, 1);
+            return { ...prev, content: updatedContent, content_en: updatedContentEn };
         });
     };
 
     const moveBlock = (index, direction) => {
         setFormData(prev => {
             const updatedContent = [...prev.content];
+            const updatedContentEn = [...prev.content_en];
             if (index + direction >= 0 && index + direction < updatedContent.length) {
+                // Move ID
                 const temp = updatedContent[index];
                 updatedContent[index] = updatedContent[index + direction];
                 updatedContent[index + direction] = temp;
+                // Move EN
+                const tempEn = updatedContentEn[index];
+                updatedContentEn[index] = updatedContentEn[index + direction];
+                updatedContentEn[index + direction] = tempEn;
             }
-            return { ...prev, content: updatedContent };
+            return { ...prev, content: updatedContent, content_en: updatedContentEn };
         });
+    };
+
+    // Handle Auto Translation for Events/Articles
+    const handleTranslate = async () => {
+        if (!formData.title && formData.content.every(b => !b.value)) {
+            setToast({ show: true, message: 'Harap isi judul atau konten terlebih dahulu.', type: 'error' });
+            return;
+        }
+
+        setIsTranslating(true);
+        try {
+            // Translate title
+            const title_en = await translateText(formData.title);
+
+            // Translate content blocks
+            const translatedBlocks = await Promise.all(
+                formData.content.map(async (block) => {
+                    if (block.type === 'text' && block.value.trim()) {
+                        const translatedValue = await translateText(block.value);
+                        return { ...block, value: translatedValue };
+                    }
+                    return { ...block }; // Return image block as-is
+                })
+            );
+
+            setFormData(prev => ({
+                ...prev,
+                title_en,
+                content_en: translatedBlocks
+            }));
+
+            setToast({ show: true, message: 'Penerjemahan otomatis berhasil!', type: 'success' });
+        } catch (error) {
+            console.error('Auto-translation failed:', error);
+            setToast({ show: true, message: 'Gagal menerjemahkan secara otomatis.', type: 'error' });
+        } finally {
+            setIsTranslating(false);
+        }
     };
 
     // Handle Submit — Mengirim data ke API (POST/PUT)
@@ -153,16 +215,22 @@ const EventForm = () => {
 
             // Serialize content blocks to JSON string
             const serializedContent = JSON.stringify(formData.content);
+            const serializedContentEn = JSON.stringify(formData.content_en);
 
             if (formData.type === 'Event') {
-                payload.description = serializedContent; // Backend Event menggunakan field 'description'
+                payload.description = serializedContent;
+                payload.description_en = serializedContentEn;
             } else {
-                // Backend Artikel menggunakan 'content' dan 'excerpt'
                 payload.content = serializedContent;
+                payload.content_en = serializedContentEn;
                 // Generate excerpt from the first text block
                 const firstTextBlock = formData.content.find(b => b.type === 'text');
                 const excerptSource = firstTextBlock ? firstTextBlock.value : '';
                 payload.excerpt = excerptSource.substring(0, 150) + (excerptSource.length > 150 ? '...' : '');
+
+                const firstTextBlockEn = formData.content_en.find(b => b.type === 'text');
+                const excerptSourceEn = firstTextBlockEn ? firstTextBlockEn.value : '';
+                payload.excerpt_en = excerptSourceEn.substring(0, 150) + (excerptSourceEn.length > 150 ? '...' : '');
             }
 
             const response = await fetch(url, {
@@ -266,41 +334,58 @@ const EventForm = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="md:col-span-2 space-y-2.5">
-                            <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Judul Utama</label>
-                            <input
-                                type="text"
-                                required
-                                name="title"
-                                value={formData.title}
-                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
-                                placeholder="Masukkan judul agenda..."
-                            />
+                        <div className="space-y-4">
+                            <div className="space-y-2.5">
+                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Judul Utama (ID)</label>
+                                <input
+                                    type="text"
+                                    required
+                                    name="title"
+                                    value={formData.title}
+                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                    className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
+                                    placeholder="Masukkan judul agenda..."
+                                />
+                            </div>
+                            <div className="space-y-2.5">
+                                <label className="text-[10px] font-black text-blue-500/60 uppercase tracking-widest ml-1 italic">Main Title (EN)</label>
+                                <input
+                                    type="text"
+                                    name="title_en"
+                                    value={formData.title_en}
+                                    onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
+                                    className="w-full bg-blue-50/30 border border-blue-100 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-50 transition-all shadow-sm text-sm"
+                                    placeholder="Enter event title in English..."
+                                />
+                            </div>
                         </div>
-                        <div className="space-y-2.5">
-                            <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Tanggal Pelaksanaan / Rilis</label>
-                            <input
-                                type="date"
-                                required
-                                name="date"
-                                value={formData.date}
-                                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                                className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
-                            />
+
+                        <div className="space-y-8">
+                            <div className="space-y-2.5">
+                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Tanggal Pelaksanaan / Rilis</label>
+                                <input
+                                    type="date"
+                                    required
+                                    name="date"
+                                    value={formData.date}
+                                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                                    className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
+                                />
+                            </div>
+                            <div className="space-y-2.5">
+                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">{formData.type === 'Article' ? 'Penulis' : 'Lokasi Event'}</label>
+                                <input
+                                    type="text"
+                                    required
+                                    name={formData.type === 'Article' ? 'author' : 'location'}
+                                    value={formData.type === 'Article' ? formData.author : formData.location}
+                                    onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
+                                    className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
+                                    placeholder={formData.type === 'Article' ? 'Nama Penulis' : 'Masukkan Lokasi'}
+                                />
+                            </div>
                         </div>
-                        <div className="space-y-2.5">
-                            <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">{formData.type === 'Article' ? 'Penulis' : 'Lokasi Event'}</label>
-                            <input
-                                type="text"
-                                required
-                                name={formData.type === 'Article' ? 'author' : 'location'}
-                                value={formData.type === 'Article' ? formData.author : formData.location}
-                                onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
-                                className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
-                                placeholder={formData.type === 'Article' ? 'Nama Penulis' : 'Masukkan Lokasi'}
-                            />
-                        </div>
+
                         <div className="space-y-2.5">
                             <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Kategori Konten</label>
                             <input
@@ -336,14 +421,29 @@ const EventForm = () => {
                 </div>
 
                 {/* Section 2: Editor Isi Konten Dinamis (Teks & Gambar Bebas) */}
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Isi Konten & Narasi Dinamis</label>
-                        <span className="text-[9px] font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded">Bisa tambah banyak gambar & teks</span>
+                <div className="space-y-6 pt-8 border-t border-slate-100">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="space-y-1">
+                            <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Isi Konten & Narasi Dinamis</label>
+                            <p className="text-[9px] font-bold text-slate-400 ml-1">Bisa tambah banyak gambar & teks dalam dua bahasa</p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={handleTranslate}
+                            disabled={isTranslating}
+                            className="flex items-center gap-1.5 text-[10px] font-black text-brand-gold hover:text-brand-gold/80 transition-colors disabled:opacity-50 uppercase tracking-widest"
+                        >
+                            {isTranslating ? (
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                                <Wand2 className="w-3 h-3" />
+                            )}
+                            Magic Auto-Translate
+                        </button>
                     </div>
 
                     <div className="space-y-6">
-                        {Array.isArray(formData.content) && formData.content.map((block, index) => (
+                        {formData.content.map((block, index) => (
                             <div key={index} className="relative group bg-white border border-slate-200 p-5 rounded-2xl shadow-sm hover:border-blue-300 transition-all">
                                 {/* Block Controls */}
                                 <div className="absolute -top-3 -right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
@@ -374,14 +474,23 @@ const EventForm = () => {
 
                                 {/* Block Content */}
                                 {block.type === 'text' ? (
-                                    <textarea
-                                        rows="4"
-                                        required
-                                        value={block.value}
-                                        onChange={(e) => updateBlock(index, e.target.value)}
-                                        className="w-full bg-slate-50/50 border border-slate-100 rounded-xl py-4 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all resize-y text-sm leading-relaxed"
-                                        placeholder="Tulis narasi di sini..."
-                                    ></textarea>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <textarea
+                                            rows="4"
+                                            required
+                                            value={block.value}
+                                            onChange={(e) => updateBlock(index, e.target.value, false)}
+                                            className="w-full bg-slate-50/50 border border-slate-100 rounded-xl py-4 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all resize-y text-sm leading-relaxed"
+                                            placeholder="Tulis narasi di sini (ID)..."
+                                        ></textarea>
+                                        <textarea
+                                            rows="4"
+                                            value={formData.content_en[index]?.value || ''}
+                                            onChange={(e) => updateBlock(index, e.target.value, true)}
+                                            className="w-full bg-blue-50/10 border border-blue-100/50 rounded-xl py-4 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-blue-50 transition-all resize-y text-sm leading-relaxed"
+                                            placeholder="Translate narrative here (EN)..."
+                                        ></textarea>
+                                    </div>
                                 ) : (
                                     <div className="pt-2">
                                         <ImageUploader

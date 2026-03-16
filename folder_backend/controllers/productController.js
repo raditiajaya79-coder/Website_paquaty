@@ -52,23 +52,23 @@ exports.getProductById = async (req, res) => {
 // @access  Private (Admin)
 exports.createProduct = async (req, res) => {
   const { 
-    name, grade, origin, moq, image, category, 
+    name, name_en, grade, grade_en, origin, moq, image, category, category_en,
     detail_image, tag, price, original_price, 
-    description, is_bestseller, is_hero, packaging_options 
+    description, description_en, is_bestseller, is_hero, packaging_options 
   } = req.body;
 
   try {
     const result = await pool.query(
       `INSERT INTO products (
-        name, grade, origin, moq, image, category, 
+        name, name_en, grade, grade_en, origin, moq, image, category, category_en,
         detail_image, tag, price, original_price, 
-        description, is_bestseller, is_hero, packaging_options
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) 
+        description, description_en, is_bestseller, is_hero, packaging_options
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) 
       RETURNING *`,
       [
-        name, grade, origin, moq, image, category, 
+        name, name_en, grade, grade_en, origin, moq, image, category, category_en,
         detail_image, tag, price, original_price, 
-        description, is_bestseller, is_hero, 
+        description, description_en, is_bestseller, is_hero, 
         typeof packaging_options === 'string' ? packaging_options : JSON.stringify(packaging_options)
       ]
     );
@@ -89,22 +89,23 @@ exports.createProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
   const { id } = req.params;
   const { 
-    name, grade, origin, moq, image, category, 
+    name, name_en, grade, grade_en, origin, moq, image, category, category_en,
     detail_image, tag, price, original_price, 
-    description, is_bestseller, is_hero, packaging_options 
+    description, description_en, is_bestseller, is_hero, packaging_options 
   } = req.body;
 
   try {
     const result = await pool.query(
       `UPDATE products SET 
-        name = $1, grade = $2, origin = $3, moq = $4, image = $5, category = $6, 
-        detail_image = $7, tag = $8, price = $9, original_price = $10, 
-        description = $11, is_bestseller = $12, is_hero = $13, packaging_options = $14
-       WHERE id = $15 RETURNING *`,
+        name = $1, name_en = $2, grade = $3, grade_en = $4, origin = $5, moq = $6, image = $7, 
+        category = $8, category_en = $9, detail_image = $10, tag = $11, price = $12, 
+        original_price = $13, description = $14, description_en = $15, 
+        is_bestseller = $16, is_hero = $17, packaging_options = $18
+       WHERE id = $19 RETURNING *`,
       [
-        name, grade, origin, moq, image, category, 
+        name, name_en, grade, grade_en, origin, moq, image, category, category_en,
         detail_image, tag, price, original_price, 
-        description, is_bestseller, is_hero, 
+        description, description_en, is_bestseller, is_hero, 
         typeof packaging_options === 'string' ? packaging_options : JSON.stringify(packaging_options),
         id
       ]

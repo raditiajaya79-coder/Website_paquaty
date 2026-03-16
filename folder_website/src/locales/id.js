@@ -8,6 +8,7 @@ export const id = {
     "nav.events": "Acara",
     "nav.contact": "Kontak",
     "nav.partner": "Jadi Mitra",
+    "nav.connect": "Hubungkan",
 
     // SEO
     "seo.home_title": "Keripik Tempe Premium Indonesia",
@@ -34,6 +35,16 @@ export const id = {
     "hero.microtag": "Biji unggul. Fermentasi alami. Renyah tiada tara.",
     "hero.explore": "Jelajahi Rasa Kami",
     "hero.story": "Tentang Kisah Kami",
+    "hero.global_artisan": "Camilan Artisan Global",
+    "hero.desc_text": "Rasakan masa depan budaya tradisional. Renyah, gurih, dan penuh keahlian artisan.",
+    "hero.order_now": "Pesan Sekarang",
+
+    // Hero Flavors
+    "flavor.1.tagline": "TRADISI MURNI",
+    "flavor.2.tagline": "SENSASI PEDAS",
+    "flavor.3.tagline": "AROMA ASAP",
+    "flavor.4.tagline": "KELEZATAN KEJU",
+    "flavor.5.tagline": "GURIH PANGGANG",
 
     // Home - Products Section
     "products.artisan": "Pengerjaan",
@@ -42,6 +53,28 @@ export const id = {
     "products.tagline2": "Renyah di Setiap Sisi",
     "products.desc": "Keripik tempe Pakuaty hadir dari perpaduan kedelai pilihan dan rempah nusantara yang kaya rasa.",
     "products.catalog": "Katalog Lengkap",
+
+    // Home - Journey Section
+    "journey.badge": "PROSES WARISAN KAMI",
+    "journey.title_part1": "Dari Kedelai Hingga",
+    "journey.title_part2": "Renyah",
+    "journey.step1_title": "Kedelai Unggul",
+    "journey.step1_desc": "Kedelai non-GMO lokal untuk kualitas tersegar.",
+    "journey.step2_title": "Fermentasi Alami",
+    "journey.step2_desc": "Proses fermentasi lambat tradisional selama 48 jam.",
+    "journey.step3_title": "Bumbu Mantap",
+    "journey.step3_desc": "Dibumbui tangan dengan racikan rempah warisan khas.",
+    "journey.step4_title": "Siap Ekspor",
+    "journey.step4_desc": "Segel vakum untuk menjamin kualitas ekspor internasional.",
+
+    // Home - Artisan Heritage
+    "home.artisan.title": "Artisan Pakuaty?",
+    "home.artisan.subtitle": "Mari Kita Simak.",
+    "home.artisan.desc": "Bukan seperti yang Anda bayangkan. Pakuaty berarti mengangkat tradisi tempe Indonesia dan menyempurnakannya menjadi camilan standar global—tebal, renyah, dan sarat rasa artisan yang berani.",
+    "home.artisan.cta": "Jelajahi Lebih Lanjut",
+
+    // Home - Marquee
+    "home.marquee": "Keripik Tempe Artisan Premium • Standar Ritel Global • Asli Indonesia •",
 
     // Home - Process Section
     "process.badge": "Seni Proses Pakuaty",
@@ -137,6 +170,11 @@ export const id = {
     "certs.footer_title": "Komitmen Kami Terhadap ",
     "certs.footer_title_accent": "Kepatuhan",
     "certs.footer_desc": "Setiap batch keripik tempe Pakuaty dipantau melalui sistem kualitas terintegrasi kami. Mulai dari pengadaan bahan baku hingga pengemasan ekspor akhir.",
+    "announcement.close": "Tutup",
+    "announcement.info": "Informasi",
+    "announcement.view_detail": "Lihat Detail",
+    "announcement.official": "Pengumuman Resmi",
+
     "certs.footer_point1": "100% Siap Ekspor",
     "certs.footer_point2": "Uji Lab Mingguan",
     "certs.footer_point3": "Jaminan Non-GMO",

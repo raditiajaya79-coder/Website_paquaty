@@ -9,7 +9,10 @@ const fetcher = (url) => fetch(url).then(res => res.json());
  * AnnouncementPopup — Pop-up Informasi Dinamis (Artisan Style)
  * Mengambil data dari /api/announcement dan menampilkan jika is_active true.
  */
+import { useLanguage } from '../context/LanguageContext';
+
 const AnnouncementPopup = () => {
+    const { lang, t } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
 
     // SWR fetching untuk pengumuman
@@ -74,7 +77,7 @@ const AnnouncementPopup = () => {
                         onClick={handleClose}
                         className="absolute top-6 right-8 z-30 text-[9px] font-black uppercase tracking-[0.3em] text-stone-dark/40 hover:text-brand-gold transition-colors"
                     >
-                        [ Tutup ]
+                        [ {t('announcement.close')} ]
                     </button>
 
                     <div className="flex flex-col">
@@ -83,7 +86,7 @@ const AnnouncementPopup = () => {
                             <div className="w-full h-56 overflow-hidden">
                                 <img
                                     src={data.image}
-                                    alt={data.title}
+                                    alt={lang === 'en' ? (data.title_en || data.title) : data.title}
                                     className="w-full h-full object-cover"
                                 />
                             </div>
@@ -91,15 +94,15 @@ const AnnouncementPopup = () => {
 
                         <div className="p-10 md:p-14 text-center">
                             <span className="text-brand-gold font-bold tracking-[0.5em] uppercase text-[9px] mb-4 block">
-                                Information
+                                {t('announcement.info')}
                             </span>
 
                             <h2 className="text-3xl font-serif font-medium text-stone-dark mb-6 leading-tight italic">
-                                {data.title}
+                                {lang === 'en' ? (data.title_en || data.title) : data.title}
                             </h2>
 
                             <p className="text-[#87817D] text-sm leading-relaxed mb-10 font-medium">
-                                {data.message}
+                                {lang === 'en' ? (data.message_en || data.message) : data.message}
                             </p>
 
                             <div className="flex justify-center">
@@ -110,7 +113,7 @@ const AnnouncementPopup = () => {
                                         rel="noopener noreferrer"
                                         className="px-10 py-4 border border-stone-dark/10 hover:border-brand-gold hover:bg-brand-gold hover:text-stone-dark transition-all duration-500 rounded-full font-black text-[9px] uppercase tracking-[0.4em] text-stone-dark flex items-center gap-3 group"
                                     >
-                                        {data.button_text || 'Lihat Detail'}
+                                        {(lang === 'en' ? (data.button_text_en || data.button_text) : data.button_text) || t('announcement.view_detail')}
                                         <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
                                     </a>
                                 ) : (
@@ -118,7 +121,7 @@ const AnnouncementPopup = () => {
                                         onClick={handleClose}
                                         className="px-10 py-4 bg-stone-dark text-white rounded-full font-black text-[9px] uppercase tracking-[0.4em] hover:bg-brand-blue transition-all"
                                     >
-                                        {data.button_text || 'Tutup'}
+                                        {(lang === 'en' ? (data.button_text_en || data.button_text) : data.button_text) || t('announcement.close')}
                                     </button>
                                 )}
                             </div>
@@ -126,7 +129,7 @@ const AnnouncementPopup = () => {
 
                         {/* Aesthetic Footer */}
                         <div className="w-full py-4 bg-stone-50 border-t border-stone-100 flex items-center justify-center gap-4">
-                            <span className="text-[8px] font-bold text-stone-dark/20 uppercase tracking-widest">Official Announcement</span>
+                            <span className="text-[8px] font-bold text-stone-dark/20 uppercase tracking-widest">{t('announcement.official')}</span>
                         </div>
                     </div>
                 </motion.div>

@@ -14,7 +14,7 @@ import { api } from '../utils/api';
 const EventDetail = () => {
     const { id } = useParams();
     const location = useLocation();
-    const { t } = useLanguage();
+    const { t, lang } = useLanguage();
 
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -73,8 +73,8 @@ const EventDetail = () => {
     return (
         <>
             <Helmet>
-                <title>{generatePageTitle(data.title)}</title>
-                <meta name="description" content={data.excerpt || data.description?.substring(0, 160)} />
+                <title>{generatePageTitle((lang === 'en' && data.title_en) ? data.title_en : data.title)}</title>
+                <meta name="description" content={((lang === 'en' && data.excerpt_en) ? data.excerpt_en : data.excerpt) || ((lang === 'en' && data.description_en) ? data.description_en : data.description)?.substring(0, 160)} />
             </Helmet>
 
             <div className="bg-neutral-bone min-h-screen pt-24 pb-16 md:pb-20">
@@ -97,7 +97,7 @@ const EventDetail = () => {
                         </div>
 
                         <h1 className="text-4xl md:text-6xl font-medium tracking-tight text-stone-dark mb-8 leading-[1.1]">
-                            {data.title}
+                            {(lang === 'en' && data.title_en) ? data.title_en : data.title}
                         </h1>
 
                         <div className="flex flex-wrap items-center gap-8 text-[10px] font-bold uppercase tracking-widest text-stone-dark/60">
@@ -144,15 +144,21 @@ const EventDetail = () => {
                         transition={{ delay: 0.3 }}
                         className="prose prose-stone max-w-none"
                     >
-                        {(data.excerpt || (isArticle && data.content)) && (
+                        {( (lang === 'en' ? (data.excerpt_en || data.excerpt) : data.excerpt) || (isArticle && (lang === 'en' ? (data.content_en || data.content) : data.content))) && (
                             <p className="text-xl md:text-2xl text-stone-dark/80 leading-relaxed mb-12 font-light italic border-l-4 border-brand-gold/30 pl-8">
-                                {data.excerpt || data.description?.substring(0, 200)}
+                                {(lang === 'en' ? (data.excerpt_en || data.excerpt) : data.excerpt) || (lang === 'en' ? (data.description_en || data.description) : data.description)?.substring(0, 200)}
                             </p>
                         )}
 
                         <div className="text-lg text-[#57534E] leading-[2] space-y-10 font-light">
                             {(() => {
-                                const content = isArticle ? data.content : data.description;
+                                let content = isArticle ? data.content : data.description;
+                                if (lang === 'en') {
+                                    const contentEn = isArticle ? data.content_en : data.description_en;
+                                    if (contentEn && contentEn !== '[]' && contentEn !== '""') {
+                                        content = contentEn;
+                                    }
+                                }
                                 if (!content) return null;
 
                                 try {

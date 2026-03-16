@@ -31,16 +31,20 @@ async function initializeDatabase() {
       CREATE TABLE IF NOT EXISTS products (
         id SERIAL PRIMARY KEY,              -- ID produk unik
         name VARCHAR(255) NOT NULL,         -- Nama produk (misal: "Original")
+        name_en VARCHAR(255),               -- Nama produk EN
         grade VARCHAR(255),                 -- Grade/subtitle (misal: "Classic Tempe Chip")
+        grade_en VARCHAR(255),              -- Grade/subtitle EN
         origin VARCHAR(255),                -- Asal produk (misal: "Kediri, East Java")
         moq VARCHAR(100),                   -- Minimum Order Quantity
         image TEXT,                         -- URL gambar utama (logo produk)
         category VARCHAR(100) DEFAULT 'Tempe Chips', -- Kategori produk
+        category_en VARCHAR(100),           -- Kategori produk EN
         detail_image TEXT,                  -- URL gambar detail (foto asli produk)
         tag VARCHAR(100),                   -- Label badge ("Best Seller", "Spicy", dll)
         price INTEGER DEFAULT 0,           -- Harga jual (dalam Rupiah)
         original_price INTEGER DEFAULT 0,  -- Harga asli sebelum diskon
         description TEXT,                   -- Deskripsi panjang produk
+        description_en TEXT,                -- Deskripsi panjang produk EN
         is_bestseller BOOLEAN DEFAULT false, -- Penanda produk terlaris
         is_hero BOOLEAN DEFAULT false,      -- Penanda produk utama di beranda
         packaging_options JSONB DEFAULT '[]'::jsonb, -- Opsi kemasan dalam format JSON
@@ -53,8 +57,11 @@ async function initializeDatabase() {
       CREATE TABLE IF NOT EXISTS articles (
         id SERIAL PRIMARY KEY,              -- ID artikel unik
         title VARCHAR(500) NOT NULL,        -- Judul artikel
+        title_en VARCHAR(500),              -- Judul artikel EN
         excerpt TEXT,                       -- Ringkasan singkat
         content TEXT,                       -- Isi lengkap artikel
+        content_en TEXT,                    -- Isi lengkap artikel EN
+        excerpt_en TEXT,                    -- Ringkasan singkat EN
         date VARCHAR(100),                  -- Tanggal publikasi (format teks)
         author VARCHAR(255),                -- Penulis artikel
         category VARCHAR(100),              -- Kategori (Process, Export, dll)
@@ -105,7 +112,9 @@ async function initializeDatabase() {
       CREATE TABLE IF NOT EXISTS events (
         id SERIAL PRIMARY KEY,              -- ID event unik
         title VARCHAR(500) NOT NULL,        -- Nama kegiatan
+        title_en VARCHAR(500),              -- Nama kegiatan EN
         description TEXT,                   -- Deskripsi kegiatan
+        description_en TEXT,                -- Deskripsi kegiatan EN
         date VARCHAR(100),                  -- Tanggal kegiatan
         location VARCHAR(500),              -- Lokasi kegiatan
         image TEXT,                         -- URL poster/gambar
@@ -141,9 +150,12 @@ async function initializeDatabase() {
       CREATE TABLE IF NOT EXISTS announcements (
         id SERIAL PRIMARY KEY,               -- ID unik
         title VARCHAR(255),                  -- Judul pengumuman
+        title_en VARCHAR(255),               -- Judul pengumuman EN
         message TEXT,                        -- Isi pesan pengumuman
+        message_en TEXT,                     -- Isi pesan pengumuman EN
         image TEXT,                          -- URL gambar (opsional)
         button_text VARCHAR(100),            -- Teks tombol (misal: "Lihat Detail")
+        button_text_en VARCHAR(100),         -- Teks tombol EN
         link TEXT,                           -- Link tujuan saat tombol diklik
         is_active BOOLEAN DEFAULT false,      -- Toggle aktif/nonaktif
         updated_at TIMESTAMP DEFAULT NOW()   -- Waktu pembaruan terakhir
@@ -156,9 +168,32 @@ async function initializeDatabase() {
       VALUES (1, 'Selamat Datang!', 'Terima kasih telah mengunjungi Pakuaty.', false)
       ON CONFLICT (id) DO NOTHING
     `);
-    // Memastikan kolom is_pinned ada pada tabel certificates (untuk kompatibilitas)
+    // Pastikan kolom bilingual ada pada tabel-tabel utama
     await client.query(`
-      ALTER TABLE certificates ADD COLUMN IF NOT EXISTS is_pinned BOOLEAN DEFAULT false;
+      ALTER TABLE products 
+      ADD COLUMN IF NOT EXISTS name_en VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS grade_en VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS category_en VARCHAR(100),
+      ADD COLUMN IF NOT EXISTS description_en TEXT;
+
+      ALTER TABLE articles 
+      ADD COLUMN IF NOT EXISTS title_en VARCHAR(500),
+      ADD COLUMN IF NOT EXISTS content_en TEXT,
+      ADD COLUMN IF NOT EXISTS excerpt_en TEXT,
+      ADD COLUMN IF NOT EXISTS is_pinned BOOLEAN DEFAULT false;
+
+      ALTER TABLE events 
+      ADD COLUMN IF NOT EXISTS title_en VARCHAR(500),
+      ADD COLUMN IF NOT EXISTS description_en TEXT,
+      ADD COLUMN IF NOT EXISTS is_pinned BOOLEAN DEFAULT false;
+
+      ALTER TABLE certificates 
+      ADD COLUMN IF NOT EXISTS is_pinned BOOLEAN DEFAULT false;
+
+      ALTER TABLE announcements
+      ADD COLUMN IF NOT EXISTS title_en VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS message_en TEXT,
+      ADD COLUMN IF NOT EXISTS button_text_en VARCHAR(100);
     `);
     
     // === Tabel Activity Logs — Rekam jejak aktivitas admin ===

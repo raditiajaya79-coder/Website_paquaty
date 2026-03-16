@@ -222,24 +222,24 @@ const Home = () => {
                                 className="flex flex-col gap-4 pointer-events-auto"
                             >
                                 <div className="flex flex-col gap-1">
-                                    <span className="text-[10px] md:text-sm font-black tracking-[0.5em] uppercase opacity-70">Global Artisan Snack</span>
+                                    <span className="text-[10px] md:text-sm font-black tracking-[0.5em] uppercase opacity-70">{t('hero.global_artisan')}</span>
                                     <h1 className="text-5xl md:text-8xl font-black leading-[0.9] tracking-tighter uppercase italic">
-                                        {activeFlavor.tagline.split(' ').map((word, i) => (
+                                        {(t(`flavor.${activeFlavor.id}.tagline`)).split(' ').map((word, i) => (
                                             <span key={i} className="block">{word}</span>
                                         ))}
                                     </h1>
                                 </div>
 
                                 <p className="text-sm md:text-base font-medium opacity-90 max-w-xs leading-relaxed">
-                                    Experience the future of traditional culture. Crunchy, savory, and purely artisan.
+                                    {t('hero.desc_text')}
                                 </p>
 
                                 <div className="flex items-center gap-4 mt-4">
                                     <Link
-                                        to="/products"
+                                        to={`/products/${activeFlavor.id}`}
                                         className="group inline-flex items-center gap-4 bg-white text-stone-dark px-10 py-5 rounded-full shadow-2xl hover:bg-brand-cyan hover:text-white transition-all duration-300 active:scale-95"
                                     >
-                                        <span className="text-xs font-black uppercase tracking-widest">Order Now</span>
+                                        <span className="text-xs font-black uppercase tracking-widest">{t('hero.order_now')}</span>
                                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                     </Link>
                                 </div>
@@ -259,7 +259,7 @@ const Home = () => {
                                     className={`text-sm font-black uppercase tracking-[0.2em] transition-all duration-300 whitespace-nowrap ${activeIndex === idx ? 'opacity-100' : 'opacity-20 hover:opacity-50'}`}
                                     style={{ color: activeFlavor.textColor }}
                                 >
-                                    {flavor.name}
+                                    {t(`product.${flavor.id}.name`)}
                                 </motion.span>
                                 {activeIndex === idx && (
                                     <motion.div
@@ -329,7 +329,7 @@ const Home = () => {
                     >
                         {[...Array(8)].map((_, i) => (
                             <span key={i} className="text-lg md:text-2xl font-black tracking-[0.25em] text-stone-dark/10 uppercase italic">
-                                Premium Artisan Tempe Chips • Global Retail Standard • Authentically Indonesian •
+                                {t('home.marquee')}
                             </span>
                         ))}
                     </motion.div>
@@ -395,17 +395,17 @@ const Home = () => {
                                 className="max-w-sm"
                             >
                                 <h3 className="text-3xl md:text-4xl font-black text-stone-dark leading-[1.1] mb-2 tracking-tighter">
-                                    Pakuaty Artisan?<br />
-                                    Let's Get Into It.
+                                    {t('home.artisan.title')}<br />
+                                    {t('home.artisan.subtitle')}
                                 </h3>
                                 <p className="text-stone-dark/70 text-sm md:text-base leading-relaxed font-semibold">
-                                    It's not what you think. Pakuaty means taking standard Indonesian tempe tradition and refining it into a global-standard snack—thick, crunchy, and packed with bold artisan flavors.
+                                    {t('home.artisan.desc')}
                                 </p>
                                 <Link
                                     to="/products"
                                     className="mt-6 inline-flex items-center gap-3 bg-stone-dark text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[11px] hover:bg-brand-blue transition-all duration-300 shadow-lg"
                                 >
-                                    Explore More
+                                    {t('home.artisan.cta')}
                                     <ArrowRight className="w-4 h-4" />
                                 </Link>
                             </motion.div>

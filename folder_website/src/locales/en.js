@@ -8,6 +8,7 @@ export const en = {
     "nav.events": "Events",
     "nav.contact": "Contact",
     "nav.partner": "Be a Partner",
+    "nav.connect": "Connect",
 
     // SEO
     "seo.home_title": "Premium Indonesian Tempe Chips",
@@ -34,6 +35,16 @@ export const en = {
     "hero.microtag": "Pure bean. Clean ferment. Perfect crunch.",
     "hero.explore": "Explore Our Flavour",
     "hero.story": "About Our Story",
+    "hero.global_artisan": "Global Artisan Snack",
+    "hero.desc_text": "Experience the future of traditional culture. Crunchy, savory, and purely artisan.",
+    "hero.order_now": "Order Now",
+
+    // Hero Flavors
+    "flavor.1.tagline": "PURE TRADITION",
+    "flavor.2.tagline": "SPICY KICK",
+    "flavor.3.tagline": "SMOKY BOLD",
+    "flavor.4.tagline": "CHEESY DELIGHT",
+    "flavor.5.tagline": "SAVORY ROAST",
 
     // Home - Products Section
     "products.artisan": "Artisan",
@@ -42,6 +53,28 @@ export const en = {
     "products.tagline2": "Crunch in Between",
     "products.desc": "Pakuaty tempe chips are crafted from premium fermented soybeans and seasoned with authentic Indonesian spices.",
     "products.catalog": "Full Catalog",
+
+    // Home - Journey Section
+    "journey.badge": "OUR HERITAGE PROCESS",
+    "journey.title_part1": "From Soybean to",
+    "journey.title_part2": "Crunch",
+    "journey.step1_title": "Premium Soybeans",
+    "journey.step1_desc": "Locally sourced non-GMO soybeans for the freshest quality.",
+    "journey.step2_title": "Natural Fermentation",
+    "journey.step2_desc": "Traditional 48-hour slow fermentation process.",
+    "journey.step3_title": "Bold Seasoning",
+    "journey.step3_desc": "Hand-seasoned with signature heritage spice blends.",
+    "journey.step4_title": "Export Ready",
+    "journey.step4_desc": "Vacuum-sealed to ensure international export quality.",
+
+    // Home - Artisan Heritage
+    "home.artisan.title": "Pakuaty Artisan?",
+    "home.artisan.subtitle": "Let's Get Into It.",
+    "home.artisan.desc": "It's not what you think. Pakuaty means taking standard Indonesian tempe tradition and refining it into a global-standard snack—thick, crunchy, and packed with bold artisan flavors.",
+    "home.artisan.cta": "Explore More",
+
+    // Home - Marquee
+    "home.marquee": "Premium Artisan Tempe Chips • Global Retail Standard • Authentically Indonesian •",
 
     // Home - Process Section
     "process.badge": "The Pakuaty Process",
@@ -137,6 +170,11 @@ export const en = {
     "certs.footer_title": "Our Commitment to ",
     "certs.footer_title_accent": "Compliance",
     "certs.footer_desc": "Every batch of Pakuaty tempe chips is monitored through our integrated quality system. From raw material sourcing to final export packaging.",
+    "announcement.close": "Close",
+    "announcement.info": "Information",
+    "announcement.view_detail": "View Details",
+    "announcement.official": "Official Announcement",
+
     "certs.footer_point1": "100% Export Ready",
     "certs.footer_point2": "Lab Tested Weekly",
     "certs.footer_point3": "Non-GMO Guaranteed",

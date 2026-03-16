@@ -61,7 +61,11 @@ async function seedDatabase() {
           { label: '50 Gram', value: '50g' },
           { label: '200 Gram', value: '200g' },
           { label: '325 Gram (Jar)', value: '325g-jar' }
-        ])
+        ]),
+        name_en: 'Original flavor',
+        grade_en: 'Classic Tempe Chip',
+        category_en: 'Snacks',
+        description_en: 'For those who love unique and different snacks, Pakuaty Original Tempe Chips are ready to be your loyal companion! \nMade from traditional recipes rich in authentic Indonesian cultural flavors, Pakuaty brings addiction-inducing deliciousness. It is crunchy, savory, and non-oily, reminding you of the timeless authenticity of tempe flavor. \nPakuaty, \nTry once, can\'t stop! 👍👍👍'
       },
       {
         name: 'Balado',
@@ -143,10 +147,17 @@ async function seedDatabase() {
     // Insert setiap produk, skip jika nama sudah ada
     for (const p of products) {
       await client.query(`
-        INSERT INTO products (name, grade, origin, moq, image, detail_image, tag, price, original_price, description, is_bestseller, is_hero, packaging_options)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        INSERT INTO products (
+          name, name_en, grade, grade_en, origin, moq, image, detail_image, tag, price, original_price, 
+          description, description_en, is_bestseller, is_hero, packaging_options, category, category_en
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
         ON CONFLICT DO NOTHING
-      `, [p.name, p.grade, p.origin, p.moq, p.image, p.detail_image, p.tag, p.price, p.original_price, p.description, p.is_bestseller, p.is_hero, p.packaging_options]);
+      `, [
+        p.name, p.name_en || null, p.grade, p.grade_en || null, p.origin, p.moq, p.image, p.detail_image, 
+        p.tag, p.price, p.original_price, p.description, p.description_en || null, 
+        p.is_bestseller, p.is_hero, p.packaging_options, p.category || 'Snacks', p.category_en || 'Snacks'
+      ]);
     }
     console.log(`   ✅ ${products.length} produk berhasil di-seed.\n`);
 
@@ -206,16 +217,24 @@ async function seedDatabase() {
         date: "Mar 10, 2026",
         author: "PR Team",
         category: "Event",
-        image: "/images/FOTO ALL KERIPIK TEMPE.jpg"
+        image: "/images/FOTO ALL KERIPIK TEMPE.jpg",
+        title_en: "Upcoming Event: Indonesian Food Expo 2026",
+        excerpt_en: "Join us in Jakarta this coming April as we showcase our latest flavor innovations and heritage craftsmanship at the national food exhibition.",
+        content_en: JSON.stringify([
+          { type: 'text', value: "Pakuaty will be a featured exhibitor at the Indonesian Food Expo 2026 in Jakarta this April. We will be showcasing our complete product line, including exciting new flavors currently in development. Visitors can experience live demonstrations of our traditional fermentation process and taste exclusive samples." }
+        ])
       }
     ];
 
     for (const a of articles) {
       await client.query(`
-        INSERT INTO articles (title, excerpt, content, date, author, category, image)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        INSERT INTO articles (title, title_en, excerpt, excerpt_en, content, content_en, date, author, category, image)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         ON CONFLICT DO NOTHING
-      `, [a.title, a.excerpt, a.content, a.date, a.author, a.category, a.image]);
+      `, [
+        a.title, a.title_en || null, a.excerpt, a.excerpt_en || null, 
+        a.content, a.content_en || null, a.date, a.author, a.category, a.image
+      ]);
     }
     console.log(`   ✅ ${articles.length} artikel berhasil di-seed.\n`);
 

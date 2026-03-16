@@ -1,8 +1,10 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { Sprout, Microscope, Package, Store } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const JourneySection = () => {
+    const { t } = useLanguage();
     const containerRef = useRef(null);
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -18,26 +20,26 @@ const JourneySection = () => {
         {
             id: '01',
             icon: Sprout,
-            title: 'Premium Soybeans',
-            desc: 'Locally sourced non-GMO soybeans for the freshest quality.'
+            title: t('journey.step1_title'),
+            desc: t('journey.step1_desc')
         },
         {
             id: '02',
             icon: Microscope,
-            title: 'Natural Fermentation',
-            desc: 'Traditional 48-hour slow fermentation process.'
+            title: t('journey.step2_title'),
+            desc: t('journey.step2_desc')
         },
         {
             id: '03',
             icon: Package,
-            title: 'Bold Seasoning',
-            desc: 'Hand-seasoned with signature heritage spice blends.'
+            title: t('journey.step3_title'),
+            desc: t('journey.step3_desc')
         },
         {
             id: '04',
             icon: Store,
-            title: 'Export Ready',
-            desc: 'Vacuum-sealed to ensure international export quality.'
+            title: t('journey.step4_title'),
+            desc: t('journey.step4_desc')
         }
     ];
 
@@ -54,7 +56,7 @@ const JourneySection = () => {
                 <div className="text-center mb-16">
                     <motion.div {...fadeIn} className="inline-block mb-4">
                         <span className="px-4 py-1.5 rounded-full bg-brand-blue/10 text-brand-blue text-xs font-bold tracking-[0.2em] uppercase border border-brand-blue/20">
-                            OUR HERITAGE PROCESS
+                            {t('journey.badge')}
                         </span>
                     </motion.div>
                     
@@ -63,7 +65,7 @@ const JourneySection = () => {
                         transition={{ ...fadeIn.transition, delay: 0.1 }}
                         className="text-4xl md:text-5xl font-black tracking-tighter"
                     >
-                        From Soybean to <span className="text-brand-gold italic">Crunch</span>
+                        {t('journey.title_part1')} <span className="text-brand-gold italic">{t('journey.title_part2')}</span>
                     </motion.h2>
                 </div>
 

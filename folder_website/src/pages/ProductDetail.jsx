@@ -101,8 +101,8 @@ const ProductDetail = () => {
         <>
             {/* SEO metadata */}
             <Helmet>
-                <title>{generatePageTitle(`${product.name} — Keripik Tempe Pakuaty`)}</title>
-                <meta name="description" content={`${product.name}. ${product.grade}. Harga Rp ${formatPrice(product.price || 0)}.`} />
+                <title>{generatePageTitle(`${(lang === 'en' && product.name_en) ? product.name_en : product.name} — Keripik Tempe Pakuaty`)}</title>
+                <meta name="description" content={`${(lang === 'en' && product.name_en) ? product.name_en : product.name}. ${(lang === 'en' && product.grade_en) ? product.grade_en : product.grade}. Harga Rp ${formatPrice(product.price || 0)}.`} />
             </Helmet>
 
             <div className="bg-neutral-bone min-h-screen pt-24 pb-16 md:pb-20 relative overflow-hidden">
@@ -151,10 +151,12 @@ const ProductDetail = () => {
                             </span>
 
                             <h1 className="text-3xl md:text-5xl font-serif font-medium text-stone-dark tracking-tight mb-1 leading-[1.1]">
-                                {product.name}
+                                {(lang === 'en' && product.name_en) ? product.name_en : product.name}
                             </h1>
 
-                            <p className="text-base text-[#78716C] font-light mb-5 italic">{product.grade}</p>
+                            <p className="text-base text-[#78716C] font-light mb-5 italic">
+                                {(lang === 'en' && product.grade_en) ? product.grade_en : product.grade}
+                            </p>
 
                             {/* Harga */}
                             {product.price && (
@@ -215,7 +217,7 @@ const ProductDetail = () => {
                             <div className="mb-6">
                                 <h3 className="text-xs font-bold text-stone-dark uppercase tracking-widest mb-3">{lang === 'id' ? 'Deskripsi Produk' : 'Product Description'}</h3>
                                 <p className="text-sm text-[#57534E] leading-[1.8] whitespace-pre-line">
-                                    {product.description}
+                                    {(lang === 'en' && product.description_en) ? product.description_en : product.description}
                                 </p>
                             </div>
 
