@@ -5,6 +5,12 @@
 const { Pool } = require('pg'); // Library PostgreSQL untuk Node.js
 require('dotenv').config(); // Memuat variabel dari file .env
 
+// Validasi environment variable sebelum inisialisasi pool
+if (!process.env.DATABASE_PUBLIC_URL) {
+  // Melempar error instruktif jika konfigurasi database tidak ditemukan
+  throw new Error('❌ DATABASE_PUBLIC_URL tidak ditemukan di file .env. Pastikan file .env sudah ada di folder_backend.');
+}
+
 // Membuat instance Pool dengan connection string dari environment variable
 const pool = new Pool({
   connectionString: process.env.DATABASE_PUBLIC_URL, // URL koneksi database Railway

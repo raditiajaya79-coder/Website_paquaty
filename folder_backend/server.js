@@ -55,7 +55,15 @@ async function startServer() {
       console.log(`🔑 Login admin di POST http://localhost:${PORT}/api/auth/login\n`);
     });
   } catch (error) {
-    console.error('❌ Gagal menjalankan server:', error.message);
+    // Log error dengan detail untuk membantu troubleshooting
+    console.error('\n❌ Gagal menjalankan server:');
+    console.error(`   Pesan: ${error.message}`);
+    
+    // Memberikan petunjuk spesifik jika error berkaitan dengan environment variable
+    if (error.message.includes('.env')) {
+      console.error('   👉 Petunjuk: Periksa file .env Anda. Gunakan .env.example sebagai referensi.\n');
+    }
+    
     process.exit(1); // Keluar dengan kode error jika gagal
   }
 }

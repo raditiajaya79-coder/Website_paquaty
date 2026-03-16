@@ -209,10 +209,18 @@ async function initializeDatabase() {
 
     console.log('✅ Semua tabel berhasil diinisialisasi');
   } catch (error) {
+    // Menangkap dan melaporkan detail kegagalan inisialisasi tabel
     console.error('❌ Gagal inisialisasi database:', error.message);
-    throw error; // Re-throw agar caller tahu ada error
+    
+    // Memberikan hint jika kemungkinan masalah ada pada izin akses (permission)
+    if (error.message.includes('permission denied')) {
+      console.error('   👉 Petunjuk: Pastikan user database memiliki izin CREATE TABLE.');
+    }
+    
+    throw error; // Lempar kembali ke server.js untuk penanganan exit
   } finally {
-    client.release(); // Kembalikan koneksi ke pool (wajib!)
+    // Selalu pastikan koneksi dilepaskan ke pool agar tidak terjadi kebocoran (leak)
+    if (client) client.release();
   }
 }
 
