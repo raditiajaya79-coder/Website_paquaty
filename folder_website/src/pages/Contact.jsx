@@ -181,10 +181,9 @@ const Contact = () => {
                 if (!response.ok) throw new Error('Gagal memuat kontak');
                 const data = await response.json(); // Parse JSON response
                 if (Array.isArray(data)) {
-                    // Filter: hanya kontak yang setidaknya satu toggle aktif
+                    // Filter: hanya kontak yang toggle header-nya aktif
                     const activeContacts = data.filter(item =>
-                        item.show_in_header === 1 || item.show_in_header === true ||
-                        item.show_in_footer === 1 || item.show_in_footer === true
+                        item.show_in_header === 1 || item.show_in_header === true
                     );
                     setContacts(activeContacts); // Simpan ke state
                 }
@@ -275,8 +274,17 @@ const Contact = () => {
                                 })}
                             </div>
 
-                            {/* Working Hours Mini Card — tetap hardcoded (bukan data dari tabel contact) */}
-                            <div className="mt-16 p-8 bg-white/50 backdrop-blur-md border border-stone-200/50 rounded-3xl relative overflow-hidden group">
+
+                        </motion.div>
+
+                        {/* RIGHT PANEL : Floating Contact Form */}
+                        <motion.div
+                            {...fadeIn}
+                            transition={{ delay: 0.3 }}
+                            className="relative lg:mt-10 space-y-8"
+                        >
+                            {/* Working Hours Mini Card — moved from left to right panel */}
+                            <div className="p-8 bg-white/50 backdrop-blur-md border border-stone-200/50 rounded-[2rem] relative overflow-hidden group shadow-sm">
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none" />
                                 <div className="flex items-center gap-3 mb-6 relative z-10">
                                     <Clock className="w-4 h-4 text-brand-gold" />
@@ -294,14 +302,7 @@ const Contact = () => {
                                     <p className="text-[9px] text-stone-dark/40 font-bold uppercase tracking-widest pt-3 text-right">{t('contact.time_zone')}</p>
                                 </div>
                             </div>
-                        </motion.div>
 
-                        {/* RIGHT PANEL : Floating Contact Form */}
-                        <motion.div
-                            {...fadeIn}
-                            transition={{ delay: 0.3 }}
-                            className="relative lg:mt-10"
-                        >
                             {/* Dekoratif background blur di belakang form */}
                             <div className="absolute -inset-4 bg-gradient-to-br from-brand-gold/20 via-transparent to-brand-blue/10 blur-2xl rounded-[3rem] -z-10" />
 

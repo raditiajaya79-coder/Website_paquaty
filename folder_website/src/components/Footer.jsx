@@ -96,22 +96,22 @@ const Footer = () => {
     }, []);
 
     return (
-        <footer className="bg-brand-cream pt-24 pb-12 border-t-2 border-brand-gold/30 relative overflow-hidden">
+        <footer className="bg-[#F1E4C3] pt-16 pb-12 border-t-2 border-brand-gold/60 relative overflow-hidden">
             {/* Soft Ambient Glows */}
             <div className="absolute bottom-0 right-0 w-[50rem] h-[50rem] bg-brand-gold/5 blur-[120px] rounded-full pointer-events-none translate-x-1/3 translate-y-1/3" />
             <div className="absolute top-0 left-0 w-[40rem] h-[40rem] bg-brand-blue/5 blur-[120px] rounded-full pointer-events-none -translate-x-1/3 -translate-y-1/3" />
 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
-                <div className="flex flex-col lg:flex-row justify-between items-start gap-16 mb-20">
+                <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-8">
                     <div className="max-w-md">
-                        <Link to="/" className="inline-block mb-10 group">
+                        <Link to="/" className="inline-block mb-3 group">
                             <img
                                 src="/images/pure logo pakuaty.png"
                                 alt="Pakuaty"
                                 className="h-12 w-auto object-contain group-hover:scale-105 transition-transform duration-500"
                             />
                         </Link>
-                        <p className="text-stone-dark/60 leading-relaxed text-sm font-light max-w-sm mb-10">
+                        <p className="text-stone-dark/70 leading-relaxed text-sm font-light max-w-sm mb-4">
                             {t('footer.desc')}
                         </p>
 
@@ -160,7 +160,7 @@ const Footer = () => {
 
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-x-12 gap-y-12 sm:gap-x-20">
                         <div>
-                            <h4 className="font-bold text-brand-blue mb-8 text-[10px] uppercase tracking-[0.3em]">{t('footer.col1_title')}</h4>
+                            <h4 className="font-bold text-brand-blue mb-4 text-[10px] uppercase tracking-[0.3em]">{t('footer.col1_title')}</h4>
                             <ul className="space-y-4">
                                 <li><Link to="/about" className="text-stone-dark/60 text-sm hover:text-brand-gold font-medium transition-colors">{t('footer.link_about')}</Link></li>
                                 <li><Link to="/products" className="text-stone-dark/60 text-sm hover:text-brand-gold font-medium transition-colors">{t('footer.link_products')}</Link></li>
@@ -169,7 +169,7 @@ const Footer = () => {
                             </ul>
                         </div>
                         <div>
-                            <h4 className="font-bold text-brand-blue mb-8 text-[10px] uppercase tracking-[0.3em]">{t('footer.col2_title')}</h4>
+                            <h4 className="font-bold text-brand-blue mb-4 text-[10px] uppercase tracking-[0.3em]">{t('footer.col2_title')}</h4>
                             <ul className="space-y-4">
                                 <li><a href="https://wa.me/6281287990370" target="_blank" rel="noopener noreferrer" className="text-stone-dark/60 text-sm hover:text-brand-gold font-medium transition-colors">{t('footer.inquiry_sales')}</a></li>
                                 <li><a href="https://wa.me/6282142205147" target="_blank" rel="noopener noreferrer" className="text-stone-dark/60 text-sm hover:text-brand-gold font-medium transition-colors">{t('footer.inquiry_global')}</a></li>
@@ -177,7 +177,7 @@ const Footer = () => {
                             </ul>
                         </div>
                         <div className="col-span-2 md:col-span-1">
-                            <h4 className="font-bold text-brand-blue mb-8 text-[10px] uppercase tracking-[0.3em]">{t('footer.col3_title')}</h4>
+                            <h4 className="font-bold text-brand-blue mb-4 text-[10px] uppercase tracking-[0.3em]">{t('footer.col3_title')}</h4>
                             <ul className="space-y-4">
                                 <li><a href="#" className="text-stone-dark/50 text-sm hover:text-brand-gold transition-colors">{t('footer.legal_terms')}</a></li>
                                 <li><a href="#" className="text-stone-dark/50 text-sm hover:text-brand-gold transition-colors">{t('footer.legal_privacy')}</a></li>
@@ -186,7 +186,7 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <div className="pt-12 border-t-2 border-brand-gold/20 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div className="pt-8 border-t-2 border-brand-gold/30 flex flex-col md:flex-row justify-between items-center gap-6">
                     <p className="text-[10px] font-bold text-stone-dark/30 uppercase tracking-[0.2em] text-center md:text-left">
                         © {new Date().getFullYear()} {COMPANY_INFO.name}.
                         <span className="hidden sm:inline mx-2">•</span>

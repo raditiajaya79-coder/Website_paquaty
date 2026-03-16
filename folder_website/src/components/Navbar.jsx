@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ArrowRight, Menu, X } from 'lucide-react';
+import { ArrowRight, Menu, X, Phone, Mail, Globe, ShoppingBag, Video, MessageCircle, Link as LinkIcon } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 const Navbar = () => {
     const { lang, switchLang, t } = useLanguage();
@@ -54,7 +54,15 @@ const Navbar = () => {
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 md:w-5 md:h-5" style={{ color: '#EE4D2D' }}>
                 <path d="M7.747 16.335c0 1.218 1.413 2.15 3.985 2.15 2.89 0 3.846-1.125 3.846-2.15 0-.89-.861-1.47-3.003-1.859l-2.016-.372c-2.455-.45-3.69-1.545-3.69-3.416 0-2.333 2.05-3.956 5.09-3.956 3.19 0 4.885 1.77 4.885 3.88h-3.03c0-.98-.823-1.688-2.004-1.688-1.423 0-2.04.646-2.04 1.446 0 .806.777 1.258 2.21 1.503l2.808.513c2.407.45 3.69 1.55 3.69 3.518 0 2.288-1.956 4.148-5.32 4.148-3.06 0-5.463-1.413-5.463-4.147l3.052.23zM23.116 8.44L14.475 1A2.5 2.5 0 0012 0a2.5 2.5 0 00-2.475 1L.884 8.44C.358 8.892 0 9.535 0 10.237v9.42c0 1.94 1.573 3.512 3.513 3.512h16.974c1.94 0 3.513-1.572 3.513-3.513v-9.42c0-.702-.358-1.345-.884-1.797z" />
             </svg>
-        )
+        ),
+        Phone: () => <Phone className="w-4 h-4 text-brand-blue" />,
+        Mail: () => <Mail className="w-4 h-4 text-brand-blue" />,
+        Globe: () => <Globe className="w-4 h-4 text-brand-blue" />,
+        ShoppingBag: () => <ShoppingBag className="w-4 h-4 text-brand-blue" />,
+        Video: () => <Video className="w-4 h-4 text-brand-blue" />,
+        MessageCircle: () => <MessageCircle className="w-4 h-4 text-brand-blue" />,
+        LinkIcon: () => <LinkIcon className="w-4 h-4 text-brand-blue" />,
+        Default: () => <Globe className="w-4 h-4 text-stone-dark/40" />
     };
 
     // Mengecek apakah ada sertifikat aktif dan kontak untuk header/footer
@@ -256,7 +264,8 @@ const Navbar = () => {
                     </button>
                 </div>
 
-                {/* Mobile Header Contacts */}
+
+                {/* Mobile Header Contacts — Restored Original Circle Style */}
                 {headerContacts.length > 0 && (
                     <div className="flex justify-center gap-4 mb-4 relative z-10">
                         {headerContacts.map((contact, idx) => {
@@ -264,7 +273,7 @@ const Navbar = () => {
                             return (
                                 <motion.a
                                     key={contact.id}
-                                    href={contact.value.startsWith('http') ? contact.value : `https://${contact.value}`}
+                                    href={contact.value.startsWith('http') ? contact.value : (contact.icon === 'Phone' ? `tel:${contact.value}` : (contact.icon === 'Mail' ? `mailto:${contact.value}` : `https://${contact.value}`))}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     initial={{ opacity: 0, y: 10 }}
@@ -272,13 +281,12 @@ const Navbar = () => {
                                     transition={{ delay: 0.15 + (idx * 0.05) }}
                                     className="p-2.5 rounded-full bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)] text-stone-dark hover:scale-110 active:scale-95 transition-all"
                                 >
-                                    {BrandIcon ? <BrandIcon /> : <div className="w-5 h-5 bg-slate-300 rounded-full"></div>}
+                                    {BrandIcon ? <BrandIcon /> : <NavbarBrandIcons.Default />}
                                 </motion.a>
                             )
                         })}
                     </div>
                 )}
-
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: isMenuOpen ? 1 : 0 }}
