@@ -70,7 +70,8 @@ const Certificates = () => {
     }
 
     // Jika tidak ada sertifikat aktif, tampilkan pesan kosong
-    if (certificates.length === 0) {
+    const activeCertificates = certificates.filter(c => c.is_active);
+    if (activeCertificates.length === 0) {
         return (
             <>
                 <Helmet>
@@ -115,11 +116,12 @@ const Certificates = () => {
 
                     {/* Certifications Grid — hanya sertifikat aktif yang ditampilkan */}
                     <div className="grid grid-cols-2 md:grid-cols-12 gap-4 md:gap-8">
-                        {certificates.filter(c => c.is_active).map((cert, idx) => {
-                            // Assign ikon, warna, dan span berdasarkan index (looping jika lebih dari 5)
-                            const IconComponent = iconMap[idx % iconMap.length];
-                            const colors = colorMap[idx % colorMap.length];
-                            const span = spanMap[idx % spanMap.length];
+                        {certificates.filter(c => c.is_active).map((cert) => {
+                            // Gunakan ID sebagai basis untuk ikon & warna agar stabil (tidak berubah saat filter berubah)
+                            const stableIdx = cert.id;
+                            const IconComponent = iconMap[stableIdx % iconMap.length];
+                            const colors = colorMap[stableIdx % colorMap.length];
+                            const span = spanMap[stableIdx % spanMap.length];
 
                             return (
                                 <motion.div
@@ -127,7 +129,7 @@ const Certificates = () => {
                                     initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
-                                    transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: idx * 0.1 }}
+                                    transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
                                     onClick={() => {
                                         if (window.innerWidth < 768) setSelectedCert({ ...cert, icon: IconComponent, ...colors });
                                     }}

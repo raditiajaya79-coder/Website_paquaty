@@ -203,6 +203,13 @@ export const id = {
     "gallery.follow_title": "Ikuti Perjalanan Kami",
     "gallery.follow_desc": "Tetap terhubung untuk update harian, konten di balik layar, dan peluncuran produk baru di saluran sosial kami.",
     "gallery.follow_cta": "Jelajahi di Instagram",
+    "gallery.search_placeholder": "Cari galeri...",
+    "gallery.filter": "Filter",
+    "gallery.all_categories": "Semua Kategori",
+    "gallery.results_found": "foto ditemukan",
+    "gallery.results_found_plural": "foto ditemukan",
+    "gallery.no_images": "Foto tidak ditemukan",
+    "gallery.no_images_desc": "Coba gunakan kata kunci atau kategori lain",
 
     "gallery.item1.title": "Luhur Tradisi",
     "gallery.item1.cat": "Proses",

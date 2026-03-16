@@ -69,6 +69,12 @@ const ImageUploader = ({ currentImage, onUploadSuccess, label = "Upload Gambar" 
                         src={currentImage}
                         alt="Preview"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        onError={(e) => {
+                            if (e.target.src !== '/images/pure logo pakuaty.png') {
+                                e.target.src = '/images/pure logo pakuaty.png';
+                                e.target.className += ' opacity-20 grayscale';
+                            }
+                        }}
                     />
                 ) : (
                     <div className="flex flex-col items-center justify-center p-6 text-center">

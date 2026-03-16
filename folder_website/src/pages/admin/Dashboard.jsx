@@ -1,8 +1,10 @@
 import React from 'react'; // React library
 import { motion } from 'framer-motion'; // Animasi
-import { TrendingUp, Package, Image, Users, Award, Calendar, Loader2, Trash2, X } from 'lucide-react'; // Ikon stats + hapus
+import { TrendingUp, Package, Image, Users, Award, Calendar, Loader2, Trash2, X, Bell } from 'lucide-react'; // Ikon stats + hapus
 import { Link } from 'react-router-dom'; // Komponen navigasi internal
 import { API_BASE_URL } from '../../utils/api';
+import ConfirmModal from '../../components/admin/ConfirmModal';
+import Toast from '../../components/admin/Toast';
 /**
  * Dashboard Component — Halaman ringkasan statistik admin.
  * Menampilkan kartu informasi utama untuk memberikan gambaran cepat.
@@ -11,12 +13,33 @@ const Dashboard = () => {
     const [statsData, setStatsData] = React.useState(null); // State untuk data dari API
     const [loading, setLoading] = React.useState(true); // State loading
     const [showAllLogs, setShowAllLogs] = React.useState(false); // Toggle tampilkan semua log atau hanya 3
+    
+    // Modal & Toast States
+    const [modalConfig, setModalConfig] = React.useState({
+        isOpen: false,
+        onConfirm: () => {},
+        title: '',
+        message: ''
+    });
+    const [toast, setToast] = React.useState({
+        show: false,
+        message: '',
+        type: 'success'
+    });
 
     /**
-     * handleDeleteLog — Hapus satu log aktivitas berdasarkan ID.
-     * Optimistic UI: hapus dari state dulu, lalu kirim request ke backend.
+     * handleDeleteLog — Trigger modal konfirmasi hapus satu log.
      */
-    const handleDeleteLog = async (logId) => {
+    const handleDeleteLog = (logId, action, target) => {
+        setModalConfig({
+            isOpen: true,
+            title: 'Hapus Log Aktivitas',
+            message: `Apakah Anda yakin ingin menghapus catatan log "${action} ${target}"?`,
+            onConfirm: () => performDeleteLog(logId)
+        });
+    };
+
+    const performDeleteLog = async (logId) => {
         // Simpan state lama untuk rollback jika gagal
         const prevLogs = statsData.activityLogs;
         // Optimistic: langsung hapus dari tampilan
@@ -31,18 +54,37 @@ const Dashboard = () => {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!res.ok) throw new Error('Gagal menghapus log');
+            
+            setToast({
+                show: true,
+                message: 'Log aktivitas berhasil dihapus',
+                type: 'success'
+            });
         } catch (err) {
             // Rollback jika request gagal
             console.error('[Dashboard] Delete log error:', err);
             setStatsData(prev => ({ ...prev, activityLogs: prevLogs }));
+            setToast({
+                show: true,
+                message: 'Gagal menghapus log aktivitas',
+                type: 'error'
+            });
         }
     };
 
     /**
-     * handleDeleteAllLogs — Hapus SEMUA log aktivitas.
+     * handleDeleteAllLogs — Trigger modal konfirmasi hapus semua log.
      */
-    const handleDeleteAllLogs = async () => {
-        if (!window.confirm('Hapus semua log aktivitas? Aksi ini tidak bisa dibatalkan.')) return;
+    const handleDeleteAllLogs = () => {
+        setModalConfig({
+            isOpen: true,
+            title: 'Hapus Semua Log',
+            message: 'Apakah Anda yakin ingin menghapus semua riwayat aktivitas? Tindakan ini tidak dapat dibatalkan.',
+            onConfirm: performDeleteAllLogs
+        });
+    };
+
+    const performDeleteAllLogs = async () => {
         const prevLogs = statsData.activityLogs;
         // Optimistic: kosongkan tampilan
         setStatsData(prev => ({ ...prev, activityLogs: [] }));
@@ -54,9 +96,20 @@ const Dashboard = () => {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!res.ok) throw new Error('Gagal menghapus semua log');
+            
+            setToast({
+                show: true,
+                message: 'Semua log aktivitas telah dibersihkan',
+                type: 'success'
+            });
         } catch (err) {
             console.error('[Dashboard] Delete all logs error:', err);
             setStatsData(prev => ({ ...prev, activityLogs: prevLogs }));
+            setToast({
+                show: true,
+                message: 'Gagal membersihkan log aktivitas',
+                type: 'error'
+            });
         }
     };
 
@@ -216,7 +269,7 @@ const Dashboard = () => {
                                         </div>
                                         {/* Tombol hapus — muncul saat hover */}
                                         <button
-                                            onClick={() => handleDeleteLog(log.id)}
+                                            onClick={() => handleDeleteLog(log.id, log.action, log.target_name)}
                                             className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all"
                                             title="Hapus log ini"
                                         >
@@ -265,6 +318,21 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
+            {/* Premium Components Integration */}
+            <ConfirmModal
+                isOpen={modalConfig.isOpen}
+                onClose={() => setModalConfig({ ...modalConfig, isOpen: false })}
+                onConfirm={modalConfig.onConfirm}
+                title={modalConfig.title}
+                message={modalConfig.message}
+            />
+
+            <Toast
+                show={toast.show}
+                message={toast.message}
+                type={toast.type}
+                onClose={() => setToast({ ...toast, show: false })}
+            />
         </div>
     );
 };

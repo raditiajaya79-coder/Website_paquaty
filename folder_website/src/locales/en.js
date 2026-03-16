@@ -203,6 +203,13 @@ export const en = {
     "gallery.follow_title": "Follow Our Journey",
     "gallery.follow_desc": "Stay connected for daily updates, behind-the-scenes content, and new product launches on our social channels.",
     "gallery.follow_cta": "Explore on Instagram",
+    "gallery.search_placeholder": "Search gallery...",
+    "gallery.filter": "Filter",
+    "gallery.all_categories": "All Categories",
+    "gallery.results_found": "image found",
+    "gallery.results_found_plural": "images found",
+    "gallery.no_images": "No images found",
+    "gallery.no_images_desc": "Try a different search term or category",
 
     "gallery.item1.title": "Heritage Fermentation",
     "gallery.item1.cat": "Process",

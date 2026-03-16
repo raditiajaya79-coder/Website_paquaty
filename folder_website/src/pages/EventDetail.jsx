@@ -161,36 +161,36 @@ const EventDetail = () => {
                                 }
                                 if (!content) return null;
 
-                                try {
-                                    // Coba parse sebagai JSON (Modul Dinamis Antigravity)
-                                    const blocks = JSON.parse(content);
-                                    if (Array.isArray(blocks)) {
-                                        return blocks.map((block, idx) => {
-                                            if (block.type === 'text') {
-                                                return (
-                                                    <p key={idx} className="whitespace-pre-line">
-                                                        {block.value}
-                                                    </p>
-                                                );
-                                            }
-                                            if (block.type === 'image') {
-                                                return (
-                                                    <div key={idx} className="my-12 relative rounded-[2rem] overflow-hidden shadow-xl border border-stone-200/50">
-                                                        <img 
-                                                            src={block.value} 
-                                                            alt="Content" 
-                                                            className="w-full h-auto object-cover max-h-[600px]"
-                                                        />
-                                                    </div>
-                                                );
-                                            }
-                                            return null;
-                                        });
+                                // Modul Dinamis Antigravity: Handle baik string JSON maupun Array langsung
+                                let blocks = content;
+                                if (typeof content === 'string') {
+                                    try {
+                                        blocks = JSON.parse(content);
+                                    } catch (e) {
+                                        // Fallback ke rendering teks biasa jika bukan JSON string yang valid
+                                        return <div className="whitespace-pre-line">{content}</div>;
                                     }
-                                } catch (e) {
-                                    // Fallback ke rendering teks biasa jika bukan JSON
-                                    return <div className="whitespace-pre-line">{content}</div>;
                                 }
+
+                                // Jika sudah berupa array (baik hasil parse maupun memang dari awal array)
+                                if (Array.isArray(blocks)) {
+                                    return blocks.map((block, idx) => {
+                                        if (block.type === 'text') {
+                                            return <p key={idx} className="whitespace-pre-line">{block.value}</p>;
+                                        }
+                                        if (block.type === 'image') {
+                                            return (
+                                                <div key={idx} className="my-12 relative rounded-[2rem] overflow-hidden shadow-xl border border-stone-200/50">
+                                                    <img src={block.value} alt="Content" className="w-full h-auto object-cover max-h-[600px]" />
+                                                </div>
+                                            );
+                                        }
+                                        return null;
+                                    });
+                                }
+
+                                // Fallback terakhir jika content bukan array (misal string biasa)
+                                return <div className="whitespace-pre-line">{typeof content === 'string' ? content : ''}</div>;
                             })()}
                         </div>
                     </motion.div>

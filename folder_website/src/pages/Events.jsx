@@ -91,59 +91,62 @@ const Events = () => {
                     {featuredContent && (
                         <motion.div
                             {...fadeIn}
-                            className="relative mb-20 md:mb-32 overflow-hidden rounded-[3rem] bg-stone-dark group"
+                            className="relative mb-20 md:mb-32 overflow-hidden rounded-2xl md:rounded-[3rem] bg-stone-dark group shadow-2xl"
                         >
-                            <div className="grid md:grid-cols-2">
-                                {/* Visual: Gambar Featured */}
-                                <div className="aspect-[16/9] md:aspect-auto h-full overflow-hidden">
-                                    <img
-                                        src={featuredContent.image}
-                                        alt={featuredContent.title}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 opacity-80"
-                                    />
-                                </div>
-                                {/* Konten: Info Acara Utama */}
-                                <div className="p-6 md:p-16 flex flex-col justify-center text-white">
-                                    {/* Label kategori banner: Selalu 'Agenda Mendatang' karena featured hanya untuk event */}
-                                    <span className="text-brand-gold font-bold tracking-[0.3em] uppercase text-[9px] md:text-[10px] mb-4 md:mb-6 block">
-                                        {t('events.hero_label')}
-                                    </span>
-                                    {/* Judul acara */}
-                                    <h2 className="text-2xl md:text-5xl font-medium tracking-tight mb-4 md:mb-8 leading-tight">
-                                        {(isEn && featuredContent.title_en) ? featuredContent.title_en : featuredContent.title}
-                                    </h2>
-                                    {/* Deskripsi singkat acara */}
-                                    <p className="text-stone-300 text-xs md:text-base font-light leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 md:mb-10">
-                                        {(isEn && featuredContent.description_en) ? featuredContent.description_en : featuredContent.description}
-                                    </p>
-
-                                    {/* Metadata: Tanggal dan Lokasi acara */}
-                                    <div className="flex flex-wrap items-center gap-4 md:gap-6 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.15em] md:tracking-[0.2em] mb-8 md:mb-12 text-stone-400">
-                                        <div className="flex items-center gap-2">
-                                            {/* Icon Kalender */}
-                                            <Calendar className="w-3 h-3 md:w-4 md:h-4 text-brand-gold" />
-                                            {featuredContent.date}
-                                        </div>
-                                        {featuredContent.location && (
-                                            <div className="flex items-center gap-2">
-                                                {/* Icon Pin Lokasi */}
-                                                <MapPin className="w-3 h-3 md:w-4 md:h-4 text-brand-gold" />
-                                                <span className="line-clamp-1">{featuredContent.location}</span>
-                                            </div>
-                                        )}
+                            <Link to={`/events/${featuredContent.type === 'event' ? 'event' : 'article'}/${featuredContent.id}`} className="block">
+                                <div className="grid grid-cols-[1fr_1.2fr] md:grid-cols-2 items-stretch">
+                                    {/* Visual: Gambar Featured */}
+                                    <div className="aspect-[4/5] md:aspect-auto h-full overflow-hidden">
+                                        <img
+                                            src={featuredContent.image}
+                                            alt={featuredContent.title}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 opacity-80"
+                                        />
                                     </div>
+                                    {/* Konten: Info Acara Utama */}
+                                    <div className="p-6 md:p-16 flex flex-col justify-center text-white bg-stone-900/40 backdrop-blur-sm">
+                                        {/* Label kategori banner */}
+                                        <span className="text-brand-gold font-bold tracking-[0.3em] uppercase text-[8px] md:text-[10px] mb-3 md:mb-6 block opacity-60">
+                                            {t('events.hero_label')}
+                                        </span>
+                                        {/* Judul acara */}
+                                        <h2 className="text-sm md:text-5xl font-medium tracking-tight mb-4 md:mb-8 leading-snug md:leading-tight line-clamp-3 md:line-clamp-none">
+                                            {(isEn && featuredContent.title_en) ? featuredContent.title_en : featuredContent.title}
+                                        </h2>
+                                        {/* Deskripsi singkat acara - Hidden on mobile */}
+                                        <p className="hidden md:block text-stone-300 text-xs md:text-base font-light leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 md:mb-10">
+                                            {(isEn && featuredContent.description_en) ? featuredContent.description_en : featuredContent.description}
+                                        </p>
 
-                                    {/* Tombol ajakan bertindak (CTA) */}
-                                    <Link
-                                        to={`/events/event/${featuredContent.id}`}
-                                        className="inline-flex items-center gap-4 text-brand-gold hover:text-white transition-all uppercase text-xs font-bold tracking-widest group/btn"
-                                    >
-                                        {t('events.hero_more')}
-                                        {/* Icon Panah dengan animasi hover */}
-                                        <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-2 transition-transform" />
-                                    </Link>
+                                        {/* Metadata: Tanggal dan Lokasi acara - Hidden on mobile */}
+                                        <div className="hidden md:flex flex-wrap items-center gap-4 md:gap-6 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.15em] md:tracking-[0.2em] mb-8 md:mb-12 text-stone-400">
+                                            <div className="flex items-center gap-2">
+                                                {/* Icon Kalender */}
+                                                <Calendar className="w-3 h-3 md:w-4 md:h-4 text-brand-gold" />
+                                                {featuredContent.date}
+                                            </div>
+                                            {featuredContent.location && (
+                                                <div className="flex items-center gap-2">
+                                                    {/* Icon Pin Lokasi */}
+                                                    <MapPin className="w-3.5 h-3.5 md:w-4 md:h-4 text-brand-gold" />
+                                                    <span className="line-clamp-1">{featuredContent.location}</span>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Tombol CTA */}
+                                        <div
+                                            className="inline-flex items-center gap-2 md:gap-3 text-white text-[9px] md:text-xs font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] group/btn mt-2 md:mt-0"
+                                        >
+                                            <span className="relative">
+                                                {t('events.view_details')}
+                                                <span className="absolute -bottom-0.5 md:-bottom-1 left-0 w-full h-[1px] bg-brand-gold transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-500 origin-left"></span>
+                                            </span>
+                                            <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4 text-brand-gold group-hover/btn:translate-x-2 transition-transform duration-500" />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            </Link>
                         </motion.div>
                     )}
 

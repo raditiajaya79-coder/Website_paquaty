@@ -56,7 +56,15 @@ const ManageCertificates = () => {
             const data = await response.json();
 
             // Sanitasi data: Pastikan data adalah array untuk mencegah crash pada .filter() atau .map()
-            setCerts(Array.isArray(data) ? data : []);
+            const sanitizedData = Array.isArray(data) ? data : [];
+            setCerts(sanitizedData);
+            
+            // Derive Global Status: Jika ada minimal 1 sertifikat yang aktif, maka status global Aktif
+            if (sanitizedData.length > 0) {
+                const someActive = sanitizedData.some(c => c.is_active);
+                setIsGlobalActive(someActive);
+            }
+            
             setLoading(false);
         } catch (err) {
             console.error('Error:', err);
@@ -240,15 +248,20 @@ const ManageCertificates = () => {
                         key={cert.id}
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className={`bg-white border border-slate-200 rounded-[2rem] p-5 sm:p-6 flex gap-4 sm:gap-6 shadow-sm hover:shadow-xl hover:shadow-blue-900/5 hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden ${!cert.is_active && 'opacity-60 grayscale-[0.3]'}`}
+                        className={`bg-white border border-slate-200 rounded-[2rem] p-5 sm:p-6 flex gap-4 sm:gap-6 shadow-sm hover:shadow-xl hover:shadow-blue-900/5 hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden ${!cert.is_active ? 'opacity-60 grayscale-[0.3]' : ''}`}
                     >
                         {/* Image Preview */}
                         <div className="w-24 sm:w-28 h-32 sm:h-36 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center p-3 relative group/thumb cursor-zoom-in shrink-0 shadow-inner overflow-hidden">
                             <img
-                                src={cert.image}
+                                src={cert.image || '/images/pure logo pakuaty.png'}
                                 alt={cert.title}
-                                className="w-full h-full object-contain group-hover/thumb:scale-110 transition-transform duration-500"
-                                onError={(e) => e.target.src = '/images/placeholder.png'}
+                                className={`w-full h-full object-contain group-hover/thumb:scale-110 transition-transform duration-500 ${(!cert.image || cert.image.includes('pure logo pakuaty.png')) ? 'opacity-20 grayscale' : ''}`}
+                                onError={(e) => {
+                                    if (!e.target.src.includes('pure%20logo%20pakuaty.png') && !e.target.src.includes('pure logo pakuaty.png')) {
+                                        e.target.src = '/images/pure logo pakuaty.png';
+                                        e.target.className += ' opacity-20 grayscale';
+                                    }
+                                }}
                             />
                         </div>
 

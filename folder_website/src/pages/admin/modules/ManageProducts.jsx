@@ -180,12 +180,17 @@ const ManageProducts = () => {
                                     <td className="px-6 py-5">
                                         <div className="flex items-center gap-4">
                                             <div className="w-14 h-14 rounded-2xl bg-white border border-slate-100 overflow-hidden p-2.5 shadow-sm group-hover:scale-110 transition-transform duration-500">
-                                                <img
-                                                    src={product.image}
-                                                    alt={product.name}
-                                                    className="w-full h-full object-contain"
-                                                    onError={(e) => e.target.src = '/images/placeholder.png'}
-                                                />
+                                                 <img
+                                                     src={product.image || '/images/pure logo pakuaty.png'}
+                                                     alt={product.name}
+                                                     className={`w-full h-full object-contain ${(!product.image || product.image.includes('pure logo pakuaty.png')) ? 'opacity-20 grayscale' : ''}`}
+                                                     onError={(e) => {
+                                                         if (!e.target.src.includes('pure%20logo%20pakuaty.png') && !e.target.src.includes('pure logo pakuaty.png')) {
+                                                             e.target.src = '/images/pure logo pakuaty.png';
+                                                             e.target.className += ' opacity-20 grayscale';
+                                                         }
+                                                     }}
+                                                 />
                                             </div>
                                             <div className="flex flex-col gap-0.5">
                                                 <span className="font-black text-[#1E293B] text-sm tracking-tight leading-tight group-hover:text-[#2563EB] transition-colors">{product.name}</span>
