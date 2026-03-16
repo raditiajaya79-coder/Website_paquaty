@@ -10,7 +10,9 @@ import {
     AlertTriangle,
     Loader2,
     CheckCircle2,
-    XCircle
+    XCircle,
+    Eye,
+    EyeOff
 } from 'lucide-react'; // Ikon
 import Toast from '../../../components/admin/Toast'; // Notifikasi feedback
 
@@ -29,6 +31,11 @@ const AdminProfile = () => {
     const [newPassword, setNewPassword] = useState(''); // Input password baru
     const [confirmPassword, setConfirmPassword] = useState(''); // Input konfirmasi password
     const [savingPassword, setSavingPassword] = useState(false); // Loading state simpan password
+    
+    // Visibility toggles
+    const [showCurrent, setShowCurrent] = useState(false);
+    const [showNew, setShowNew] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     // Toast feedback
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
@@ -203,43 +210,64 @@ const AdminProfile = () => {
                         {/* Input password lama */}
                         <div className="space-y-2">
                             <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Password Lama</label>
-                            <div className="relative">
-                                <Key className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
+                            <div className="relative group">
+                                <Key className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-blue-500 transition-colors" />
                                 <input
-                                    type="password"
+                                    type={showCurrent ? "text" : "password"}
                                     value={currentPassword}
                                     onChange={(e) => setCurrentPassword(e.target.value)}
-                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-12 pr-4 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all text-sm"
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-12 pr-12 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all text-sm"
                                     placeholder="Ketik password saat ini"
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowCurrent(!showCurrent)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-blue-600 transition-colors"
+                                >
+                                    {showCurrent ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                </button>
                             </div>
                         </div>
                         {/* Input password baru dan konfirmasi — grid 2 kolom di desktop */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-[#2563EB] uppercase tracking-widest ml-1">Password Baru</label>
-                                <div className="relative">
-                                    <Key className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
+                                <div className="relative group">
+                                    <Key className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-blue-500 transition-colors" />
                                     <input
-                                        type="password"
+                                        type={showNew ? "text" : "password"}
                                         value={newPassword}
                                         onChange={(e) => setNewPassword(e.target.value)}
-                                        className="w-full bg-white border border-slate-200 rounded-xl py-3 pl-12 pr-4 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all text-sm"
+                                        className="w-full bg-white border border-slate-200 rounded-xl py-3 pl-12 pr-12 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all text-sm"
                                         placeholder="Min 6 karakter"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowNew(!showNew)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-blue-600 transition-colors"
+                                    >
+                                        {showNew ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                    </button>
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-[#2563EB] uppercase tracking-widest ml-1">Konfirmasi</label>
-                                <div className="relative">
-                                    <Key className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
+                                <div className="relative group">
+                                    <Key className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-blue-500 transition-colors" />
                                     <input
-                                        type="password"
+                                        type={showConfirm ? "text" : "password"}
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className="w-full bg-white border border-slate-200 rounded-xl py-3 pl-12 pr-4 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all text-sm"
+                                        className="w-full bg-white border border-slate-200 rounded-xl py-3 pl-12 pr-12 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all text-sm"
                                         placeholder="Ulangi password baru"
                                     />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirm(!showConfirm)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-blue-600 transition-colors"
+                                    >
+                                        {showConfirm ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                    </button>
                                 </div>
                             </div>
                         </div>

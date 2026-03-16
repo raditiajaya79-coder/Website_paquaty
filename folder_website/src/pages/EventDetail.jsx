@@ -78,7 +78,7 @@ const EventDetail = () => {
             </Helmet>
 
             <div className="bg-neutral-bone min-h-screen pt-24 pb-16 md:pb-20">
-                <div className="max-w-4xl mx-auto px-6">
+                <div className="max-w-7xl mx-auto px-6">
                     {/* Tombol kembali */}
                     <motion.div {...fadeIn} className="mb-12">
                         <Link to="/events" className="inline-flex items-center gap-2 text-stone-dark/60 hover:text-brand-blue transition-all text-xs font-bold tracking-widest uppercase">
@@ -132,7 +132,7 @@ const EventDetail = () => {
                         <motion.div
                             {...fadeIn}
                             transition={{ delay: 0.2 }}
-                            className="relative aspect-[21/10] rounded-[3rem] overflow-hidden mb-16 shadow-2xl"
+                            className="relative aspect-[21/9] rounded-[2.5rem] md:rounded-[3rem] overflow-hidden mb-16 shadow-2xl"
                         >
                             <img src={data.image} alt={data.title} className="w-full h-full object-cover" />
                         </motion.div>
@@ -150,8 +150,42 @@ const EventDetail = () => {
                             </p>
                         )}
 
-                        <div className="text-lg text-[#57534E] leading-[2] whitespace-pre-line space-y-6 font-light">
-                            {isArticle ? data.content : data.description}
+                        <div className="text-lg text-[#57534E] leading-[2] space-y-10 font-light">
+                            {(() => {
+                                const content = isArticle ? data.content : data.description;
+                                if (!content) return null;
+
+                                try {
+                                    // Coba parse sebagai JSON (Modul Dinamis Antigravity)
+                                    const blocks = JSON.parse(content);
+                                    if (Array.isArray(blocks)) {
+                                        return blocks.map((block, idx) => {
+                                            if (block.type === 'text') {
+                                                return (
+                                                    <p key={idx} className="whitespace-pre-line">
+                                                        {block.value}
+                                                    </p>
+                                                );
+                                            }
+                                            if (block.type === 'image') {
+                                                return (
+                                                    <div key={idx} className="my-12 relative rounded-[2rem] overflow-hidden shadow-xl border border-stone-200/50">
+                                                        <img 
+                                                            src={block.value} 
+                                                            alt="Content" 
+                                                            className="w-full h-auto object-cover max-h-[600px]"
+                                                        />
+                                                    </div>
+                                                );
+                                            }
+                                            return null;
+                                        });
+                                    }
+                                } catch (e) {
+                                    // Fallback ke rendering teks biasa jika bukan JSON
+                                    return <div className="whitespace-pre-line">{content}</div>;
+                                }
+                            })()}
                         </div>
                     </motion.div>
 
