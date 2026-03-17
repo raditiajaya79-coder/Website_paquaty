@@ -31,6 +31,7 @@ import ManageCertificates from './pages/admin/modules/ManageCertificates.jsx';
 import ManageEvents from './pages/admin/modules/ManageEvents.jsx';
 import ManageContact from './pages/admin/modules/ManageContact.jsx';
 import ManageAnnouncements from './pages/admin/modules/ManageAnnouncements.jsx';
+import ManageSettings from './pages/admin/modules/ManageSettings.jsx';
 import AdminProfile from './pages/admin/modules/AdminProfile.jsx';
 
 // Form Pages [NEW]
@@ -124,6 +125,7 @@ function App() {
                         <Route path="certificates/edit/:id" element={<CertificateForm />} />
 
                         <Route path="contact" element={<ManageContact />} />
+                        <Route path="settings" element={<ManageSettings />} />
                         <Route path="profile" element={<AdminProfile />} />
                     </Route>
                 </Route>

@@ -41,7 +41,7 @@ const EventForm = () => {
         category: 'Wawasan',
         content: [{ type: 'text', value: '' }],
         content_en: [{ type: 'text', value: '' }],
-        is_pinned: false,
+        is_pinned: 0,
         author: 'Admin Pakuaty', // Untuk Artikel
         location: '', // Untuk Event
         status: 'Upcoming', // Untuk Event
@@ -104,7 +104,7 @@ const EventForm = () => {
                 author: data.author || 'Admin Pakuaty',
                 location: data.location || '',
                 status: data.status || 'Upcoming',
-                is_pinned: data.is_pinned || false,
+                is_pinned: (data.is_pinned === 1 || data.is_pinned === true) ? 1 : 0,
                 image: data.image || ''
             });
             setLoading(false);
@@ -160,8 +160,29 @@ const EventForm = () => {
         });
     };
 
-    // Handle Auto Translation for Events/Articles
-    const handleTranslate = async () => {
+    // Function to translate a single block
+    const handleTranslateBlock = async (index) => {
+        const block = formData.content[index];
+        if (!block || block.type !== 'text' || !block.value.trim()) {
+            setToast({ show: true, message: 'Harap isi teks Indonesia terlebih dahulu.', type: 'error' });
+            return;
+        }
+
+        setIsTranslating(true);
+        try {
+            const translatedValue = await translateText(block.value);
+            updateBlock(index, translatedValue, true);
+            setToast({ show: true, message: 'Blok berhasil diterjemahkan!', type: 'success' });
+        } catch (error) {
+            console.error('Block translation failed:', error);
+            setToast({ show: true, message: 'Gagal menerjemahkan blok.', type: 'error' });
+        } finally {
+            setIsTranslating(false);
+        }
+    };
+
+    // Handle Auto Translation for everything (Bulk)
+    const handleTranslateAll = async () => {
         if (!formData.title && formData.content.every(b => !b.value)) {
             setToast({ show: true, message: 'Harap isi judul atau konten terlebih dahulu.', type: 'error' });
             return;
@@ -212,7 +233,10 @@ const EventForm = () => {
             const method = isEditMode ? 'PUT' : 'POST';
 
             // Siapkan payload sesuai schema backend (Konversi content ke field yang sesuai)
-            const payload = { ...formData };
+            const payload = {
+                ...formData,
+                is_pinned: formData.is_pinned ? 1 : 0
+            };
 
             // Serialize content blocks to JSON string
             const serializedContent = JSON.stringify(formData.content);
@@ -317,7 +341,7 @@ const EventForm = () => {
 
                         <div className="lg:w-72">
                             <div
-                                onClick={() => setFormData({ ...formData, is_pinned: !formData.is_pinned })}
+                                onClick={() => setFormData({ ...formData, is_pinned: formData.is_pinned ? 0 : 1 })}
                                 className={`flex items-center justify-between p-4.5 rounded-2xl border-2 cursor-pointer transition-all ${formData.is_pinned ? 'bg-blue-50 border-blue-200 shadow-sm' : 'bg-white border-slate-100 opacity-60'}`}
                             >
                                 <div className="flex items-center gap-3">
@@ -405,7 +429,7 @@ const EventForm = () => {
                     <div className="flex flex-col md:flex-row gap-6 mt-8 pt-8 border-t border-slate-100">
                         <div className="w-full md:w-1/2 lg:w-1/3 shrink-0">
                             <ImageUploader
-                                label="Gambar Cover / Banner Utama"
+                                label="Gambar Cover / Banner (Semua Format)"
                                 currentImage={formData.image}
                                 onUploadSuccess={(url) => setFormData({ ...formData, image: url })}
                             />
@@ -430,7 +454,7 @@ const EventForm = () => {
                         </div>
                         <button
                             type="button"
-                            onClick={handleTranslate}
+                            onClick={handleTranslateAll}
                             disabled={isTranslating}
                             className="flex items-center gap-1.5 text-[10px] font-black text-brand-gold hover:text-brand-gold/80 transition-colors disabled:opacity-50 uppercase tracking-widest"
                         >
@@ -439,7 +463,7 @@ const EventForm = () => {
                             ) : (
                                 <Wand2 className="w-3 h-3" />
                             )}
-                            Magic Auto-Translate
+                            Magic Auto-Translate (Semua)
                         </button>
                     </div>
 
@@ -475,22 +499,39 @@ const EventForm = () => {
 
                                 {/* Block Content */}
                                 {block.type === 'text' ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <textarea
-                                            rows="4"
-                                            required
-                                            value={block.value}
-                                            onChange={(e) => updateBlock(index, e.target.value, false)}
-                                            className="w-full bg-slate-50/50 border border-slate-100 rounded-xl py-4 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all resize-y text-sm leading-relaxed"
-                                            placeholder="Tulis narasi di sini (ID)..."
-                                        ></textarea>
-                                        <textarea
-                                            rows="4"
-                                            value={formData.content_en[index]?.value || ''}
-                                            onChange={(e) => updateBlock(index, e.target.value, true)}
-                                            className="w-full bg-blue-50/10 border border-blue-100/50 rounded-xl py-4 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-blue-50 transition-all resize-y text-sm leading-relaxed"
-                                            placeholder="Translate narrative here (EN)..."
-                                        ></textarea>
+                                    <div className="space-y-4">
+                                        <div className="flex justify-end">
+                                            <button
+                                                type="button"
+                                                onClick={() => handleTranslateBlock(index)}
+                                                disabled={isTranslating}
+                                                className="flex items-center gap-1.5 text-[9px] font-black text-blue-500 hover:text-blue-600 transition-colors disabled:opacity-50 uppercase tracking-widest"
+                                            >
+                                                {isTranslating ? (
+                                                    <Loader2 className="w-3 h-3 animate-spin" />
+                                                ) : (
+                                                    <Wand2 className="w-3 h-3" />
+                                                )}
+                                                Translate Block ini
+                                            </button>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <textarea
+                                                rows="4"
+                                                required
+                                                value={block.value}
+                                                onChange={(e) => updateBlock(index, e.target.value, false)}
+                                                className="w-full bg-slate-50/50 border border-slate-100 rounded-xl py-4 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all resize-y text-sm leading-relaxed"
+                                                placeholder="Tulis narasi di sini (ID)..."
+                                            ></textarea>
+                                            <textarea
+                                                rows="4"
+                                                value={formData.content_en[index]?.value || ''}
+                                                onChange={(e) => updateBlock(index, e.target.value, true)}
+                                                className="w-full bg-blue-50/10 border border-blue-100/50 rounded-xl py-4 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-2 focus:ring-blue-50 transition-all resize-y text-sm leading-relaxed"
+                                                placeholder="Translate narrative here (EN)..."
+                                            ></textarea>
+                                        </div>
                                     </div>
                                 ) : (
                                     <div className="pt-2">

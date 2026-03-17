@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
-import { UploadCloud, Loader2, Image as ImageIcon, CheckCircle2, AlertCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { API_BASE_URL } from '../../utils/api';
+import React, { useState, useRef } from 'react'; // React hooks untuk state dan referensi DOM
+import { UploadCloud, Loader2, Image as ImageIcon, AlertCircle } from 'lucide-react'; // Ikon UI
+import { motion } from 'framer-motion'; // Animasi
+import { api, UPLOAD_BASE_URL } from '../../utils/api'; // API utility + base URL untuk file statis
 
 /**
  * ImageUploader Component
@@ -31,23 +31,9 @@ const ImageUploader = ({ currentImage, onUploadSuccess, label = "Upload Gambar" 
         formData.append('image', file);
 
         try {
-            const token = localStorage.getItem('admin_token');
-            const response = await fetch(`${API_BASE_URL}/upload`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: formData
-            });
-
-            if (!response.ok) {
-                const errData = await response.json();
-                throw new Error(errData.error || 'Gagal mengunggah gambar');
-            }
-
-            const data = await response.json();
-            // data.url biasanya berisi "/uploads/filename.ext"
-            const fullUrl = `${API_BASE_URL}${data.url}`;
+            const data = await api.upload(file);
+            // data.url berisi "/uploads/filename.ext" — gabungkan dengan UPLOAD_BASE_URL (tanpa /api)
+            const fullUrl = `${UPLOAD_BASE_URL}${data.url}`;
             onUploadSuccess(fullUrl); // Teruskan URL ke parent form
         } catch (err) {
             setError(err.message);
@@ -61,7 +47,8 @@ const ImageUploader = ({ currentImage, onUploadSuccess, label = "Upload Gambar" 
             {label && <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">{label}</label>}
 
             <div
-                className={`relative group bg-slate-50 border-2 border-dashed rounded-2xl overflow-hidden flex flex-col items-center justify-center transition-all min-h-[200px] max-h-[320px] aspect-video w-full ${error ? 'border-red-200 bg-red-50/10' : 'border-slate-200 hover:border-blue-300'}`}
+                onClick={() => !uploading && fileInputRef.current?.click()}
+                className={`relative group bg-slate-50 border-2 border-dashed rounded-2xl overflow-hidden flex flex-col items-center justify-center transition-all min-h-[200px] max-h-[320px] aspect-video w-full cursor-pointer pointer-events-auto ${error ? 'border-red-200 bg-red-50/10' : 'border-slate-200 hover:border-blue-300'}`}
             >
                 {/* Preview Image */}
                 {currentImage && !uploading ? (
@@ -92,8 +79,7 @@ const ImageUploader = ({ currentImage, onUploadSuccess, label = "Upload Gambar" 
                 {/* Overlay Hover */}
                 {!uploading && (
                     <div
-                        onClick={() => fileInputRef.current?.click()}
-                        className="absolute inset-0 bg-blue-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer pointer-events-auto"
+                        className="absolute inset-0 bg-blue-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none"
                     >
                         <div className="bg-white p-3 rounded-full shadow-lg transform scale-90 group-hover:scale-100 transition-transform">
                             <UploadCloud className="w-6 h-6 text-[#2563EB]" />

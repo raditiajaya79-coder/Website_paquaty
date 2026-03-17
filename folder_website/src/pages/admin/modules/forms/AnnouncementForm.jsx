@@ -14,8 +14,10 @@ import {
     AlignLeft,
     Image as ImageIcon,
     Sparkles,
-    Check
+    Check,
+    UploadCloud
 } from 'lucide-react'; // Ikon
+import ImageUploader from '../../../../components/admin/ImageUploader';
 import { API_BASE_URL } from '../../../../utils/api';
 
 const Toast = ({ message, type, onClose }) => (
@@ -311,15 +313,12 @@ const AnnouncementForm = () => {
                                         />
                                     </div>
                                     <div className="space-y-2.5">
-                                        <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Gambar Banner (Path)</label>
-                                        <input
-                                            type="text"
-                                            value={formData.image}
-                                            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                                            className="w-full bg-slate-50/50 border border-slate-200 rounded-xl py-4 px-6 font-bold text-[#1E293B] focus:ring-4 focus:ring-blue-100 transition-all text-sm"
-                                            placeholder="/images/promo.webp"
+                                        <ImageUploader
+                                            label="Gambar Banner (Upload)"
+                                            currentImage={formData.image}
+                                            onUploadSuccess={(url) => setFormData({ ...formData, image: url })}
                                         />
-                                        <p className="text-[10px] font-bold text-slate-400 italic ml-1 leading-relaxed">Input path file relatif untuk menampilkan gambar.</p>
+                                        <p className="text-[10px] font-bold text-slate-400 italic ml-1 leading-relaxed">Pilih file gambar untuk ditampilkan sebagai banner pop-up.</p>
                                     </div>
                                 </div>
 

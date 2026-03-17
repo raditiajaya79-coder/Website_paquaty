@@ -35,6 +35,7 @@ async function initializeDatabase() {
         grade VARCHAR(255),                 -- Grade/subtitle (misal: "Classic Tempe Chip")
         grade_en VARCHAR(255),              -- Grade/subtitle EN
         origin VARCHAR(255),                -- Asal produk (misal: "Kediri, East Java")
+        origin_en VARCHAR(255),             -- Asal produk EN
         moq VARCHAR(100),                   -- Minimum Order Quantity
         image TEXT,                         -- URL gambar utama (logo produk)
         category VARCHAR(100) DEFAULT 'Tempe Chips', -- Kategori produk
@@ -174,6 +175,7 @@ async function initializeDatabase() {
       ADD COLUMN IF NOT EXISTS name_en VARCHAR(255),
       ADD COLUMN IF NOT EXISTS grade_en VARCHAR(255),
       ADD COLUMN IF NOT EXISTS category_en VARCHAR(100),
+      ADD COLUMN IF NOT EXISTS origin_en VARCHAR(255),
       ADD COLUMN IF NOT EXISTS description_en TEXT;
 
       ALTER TABLE articles 
@@ -187,7 +189,13 @@ async function initializeDatabase() {
       ADD COLUMN IF NOT EXISTS description_en TEXT,
       ADD COLUMN IF NOT EXISTS is_pinned BOOLEAN DEFAULT false;
 
+      ALTER TABLE galleries 
+      ADD COLUMN IF NOT EXISTS title_en VARCHAR(255);
+
       ALTER TABLE certificates 
+      ADD COLUMN IF NOT EXISTS title_en VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS sub_en VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS description_en TEXT,
       ADD COLUMN IF NOT EXISTS is_pinned BOOLEAN DEFAULT false;
 
       ALTER TABLE announcements
@@ -196,6 +204,24 @@ async function initializeDatabase() {
       ADD COLUMN IF NOT EXISTS button_text_en VARCHAR(100);
     `);
     
+    // === Tabel Site Settings — Konfigurasi global website ===
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS site_settings (
+        key VARCHAR(100) PRIMARY KEY,
+        value TEXT NOT NULL,
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+    // Inisialisasi pengaturan default jika belum ada
+    await client.query(`
+      INSERT INTO site_settings (key, value)
+      VALUES 
+        ('show_certificates', 'true'),
+        ('hours_mon_fri', '09:00 - 18:00'),
+        ('hours_sat', '09:00 - 13:00')
+      ON CONFLICT (key) DO NOTHING
+    `);
+
     // === Tabel Activity Logs — Rekam jejak aktivitas admin ===
     await client.query(`
       CREATE TABLE IF NOT EXISTS activity_logs (

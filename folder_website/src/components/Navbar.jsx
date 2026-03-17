@@ -70,12 +70,29 @@ const Navbar = () => {
     useEffect(() => {
         const fetchInitialData = async () => {
             try {
-                // 1. Fetch Sertifikat
+                // 1. Fetch Global Settings (Master Switch)
+                const settingsResponse = await fetch(`${API_BASE_URL}/settings`);
+                let isMasterEnabled = true;
+
+                if (settingsResponse.ok) {
+                    const settings = await settingsResponse.json();
+                    if (settings && typeof settings.show_certificates !== 'undefined') {
+                        isMasterEnabled = settings.show_certificates;
+                    }
+                }
+
+                // 2. Fetch Sertifikat (Hanya untuk pengecekan data aktif jika master switch ON)
                 const certResponse = await fetch(`${API_BASE_URL}/certificates`);
                 if (certResponse.ok) {
                     const certData = await certResponse.json();
-                    const isActiveExists = Array.isArray(certData) && certData.some(cert => cert.is_active === 1 || cert.is_active === true);
-                    setHasCertificates(isActiveExists);
+
+                    // Logika: 
+                    // - Master Switch (Admin) harus ON
+                    // - DAN (Data Kosong/Placeholder ATAU Ada minimal 1 yang aktif)
+                    const hasActiveCert = Array.isArray(certData) && certData.length > 0 && certData.some(cert => !!cert.is_active);
+                    const isEmpty = Array.isArray(certData) && certData.length === 0;
+
+                    setHasCertificates(isMasterEnabled && (isEmpty || hasActiveCert));
                 }
 
                 // 2. Fetch Contacts untuk Navigasi (Header)
@@ -128,12 +145,12 @@ const Navbar = () => {
         return `${base} ${isActive ? 'text-brand-blue' : 'text-stone-dark/60 hover:text-brand-cyan hover:scale-105'}`;
     };
 
-    // Daftar link navbar — filter "Sertifikasi" jika tidak ada sertifikat aktif
+    // Link Navbar — Tampilkan Sertifikasi jika tabel kosong (placeholder) ATAU ada sertifikat aktif.
+    // Hanya disembunyikan jika ada data tapi semuanya non-aktif (dimatikan manual oleh admin).
     const navLinks = [
         { name: t('nav.products'), path: "/products" },
         { name: t('nav.about'), path: "/about" },
         { name: t('nav.gallery'), path: "/gallery" },
-        // Hanya tampilkan "Sertifikasi" jika ada sertifikat aktif
         ...(hasCertificates ? [{ name: t('nav.certificates'), path: "/certificates" }] : []),
         { name: t('nav.events'), path: "/events" },
         { name: t('nav.contact'), path: "/contact" }

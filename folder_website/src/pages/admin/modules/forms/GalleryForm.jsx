@@ -11,8 +11,11 @@ import {
     Type,
     UploadCloud
 } from 'lucide-react'; // Ikon
-import ImageUploader from '../../../../components/admin/ImageUploader'; // Import uploader baru
+import Toast from '../../../../components/admin/Toast'; // Komponen Toast
+import ImageUploader from '../../../../components/admin/ImageUploader';
 import { API_BASE_URL } from '../../../../utils/api';
+import { translateText } from '../../../../utils/translate';
+import { Wand2, Loader2 } from 'lucide-react';
 
 /**
  * GalleryForm Component — Halaman khusus untuk upload/edit foto Galeri.
@@ -25,10 +28,16 @@ const GalleryForm = () => {
 
     const [formData, setFormData] = useState({
         title: '',
+        title_en: '',
         category: 'Produksi',
-        image: ''
+        image: '',
+        span: 'md:col-span-4',
+        aspect: 'aspect-square',
+        is_pinned: false
     });
-    const [loading, setLoading] = useState(false);
+    const [isTranslating, setIsTranslating] = useState(false);
+    const [loading, setLoading] = useState(false); // State untuk loading indicator
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' }); // State untuk notifikasi feedback
 
     // Fungsi untuk mengambil data galeri (dokumentasi) dari API
     const fetchGalleryData = async () => {
@@ -44,13 +53,17 @@ const GalleryForm = () => {
 
             setFormData({
                 title: data.title || '',
-                category: data.category || 'Event Utama', // Perbaikan default category
-                image: data.image || ''
+                title_en: data.title_en || '',
+                category: data.category || 'Produksi',
+                image: data.image || '',
+                span: data.span || 'md:col-span-4',
+                aspect: data.aspect || 'aspect-square',
+                is_pinned: data.is_pinned || false
             });
             setLoading(false);
         } catch (err) {
-            alert('Error: ' + err.message);
-            navigate('/admin/gallery');
+            setToast({ show: true, message: 'Terjadi kesalahan: ' + err.message, type: 'error' }); // Tampilkan error via toast
+            setTimeout(() => navigate('/admin/gallery'), 2000); // Redirect setelah jeda
         }
     };
 
@@ -60,6 +73,23 @@ const GalleryForm = () => {
             fetchGalleryData();
         }
     }, [isEditMode, id]);
+
+    const handleTranslate = async () => {
+        if (!formData.title) {
+            setToast({ show: true, message: 'Harap isi judul dalam Bahasa Indonesia.', type: 'error' });
+            return;
+        }
+        setIsTranslating(true);
+        try {
+            const translatedTitle = await translateText(formData.title);
+            setFormData(prev => ({ ...prev, title_en: translatedTitle }));
+            setToast({ show: true, message: 'Berhasil diterjemahkan!', type: 'success' });
+        } catch (err) {
+            setToast({ show: true, message: 'Gagal menerjemahkan.', type: 'error' });
+        } finally {
+            setIsTranslating(false);
+        }
+    };
 
     // simplified to text input
     const handleImageChange = (e) => { };
@@ -85,14 +115,18 @@ const GalleryForm = () => {
             });
 
             if (response.ok) {
-                alert(isEditMode ? 'Dokumentasi berhasil diperbarui' : 'Dokumentasi berhasil ditambahkan');
-                navigate('/admin/gallery');
+                setToast({
+                    show: true,
+                    message: isEditMode ? 'Dokumentasi berhasil diperbarui!' : 'Dokumentasi berhasil ditambahkan!',
+                    type: 'success'
+                }); // Notifikasi sukses yang cantik
+                setTimeout(() => navigate('/admin/gallery'), 1500); // Kembali ke list setelah jeda
             } else {
                 const errorData = await response.json();
-                alert('Gagal menyimpan: ' + (errorData.error || 'Terjadi kesalahan'));
+                setToast({ show: true, message: 'Gagal menyimpan: ' + (errorData.error || 'Terjadi kesalahan sistem'), type: 'error' });
             }
         } catch (err) {
-            alert('Error: ' + err.message);
+            setToast({ show: true, message: 'Kesalahan jaringan: ' + err.message, type: 'error' });
         } finally {
             setLoading(false);
         }
@@ -130,8 +164,19 @@ const GalleryForm = () => {
                     <div className="space-y-6">
 
                         <div className="space-y-6">
-                            <div className="space-y-2.5">
-                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Judul Dokumentasi</label>
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center">
+                                    <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Judul Dokumentasi (ID)</label>
+                                    <button
+                                        type="button"
+                                        onClick={handleTranslate}
+                                        disabled={isTranslating}
+                                        className="flex items-center gap-1.5 text-[10px] font-black text-brand-gold hover:text-brand-gold/80 transition-colors disabled:opacity-50 uppercase tracking-widest"
+                                    >
+                                        {isTranslating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
+                                        Magic Translate
+                                    </button>
+                                </div>
                                 <div className="relative">
                                     <Type className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#94A3B8]" />
                                     <input
@@ -142,6 +187,22 @@ const GalleryForm = () => {
                                         onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                         className="w-full bg-white border border-slate-200 rounded-xl py-3 pl-12 pr-6 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
                                         placeholder="Misal: Kunjungan UMKM Daerah..."
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2.5">
+                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Documentation Title (EN)</label>
+                                <div className="relative">
+                                    <Type className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#94A3B8]" />
+                                    <input
+                                        type="text"
+                                        required
+                                        name="title_en"
+                                        value={formData.title_en}
+                                        onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
+                                        className="w-full bg-blue-50/20 border border-blue-100 rounded-xl py-3 pl-12 pr-6 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
+                                        placeholder="Example: Local SME Visit..."
                                     />
                                 </div>
                             </div>
@@ -165,10 +226,57 @@ const GalleryForm = () => {
                                 </div>
                                 <div className="space-y-2.5">
                                     <ImageUploader
-                                        label="Foto Dokumentasi (Upload)"
+                                        label="Foto Dokumentasi"
                                         currentImage={formData.image}
                                         onUploadSuccess={(url) => setFormData({ ...formData, image: url })}
                                     />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2.5">
+                                    <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Grid Span (Layout)</label>
+                                    <select
+                                        name="span"
+                                        value={formData.span}
+                                        onChange={(e) => setFormData({ ...formData, span: e.target.value })}
+                                        className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
+                                    >
+                                        <option value="md:col-span-4">Kecil (1/3)</option>
+                                        <option value="md:col-span-6">Sedang (1/2)</option>
+                                        <option value="md:col-span-8">Lebar (2/3)</option>
+                                        <option value="md:col-span-12">Penuh (1/1)</option>
+                                    </select>
+                                </div>
+                                <div className="space-y-2.5">
+                                    <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Aspect Ratio</label>
+                                    <select
+                                        name="aspect"
+                                        value={formData.aspect}
+                                        onChange={(e) => setFormData({ ...formData, aspect: e.target.value })}
+                                        className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
+                                    >
+                                        <option value="aspect-square">Square (1:1)</option>
+                                        <option value="aspect-video">Landscape (16:9)</option>
+                                        <option value="aspect-[4/5]">Portrait (4:5)</option>
+                                        <option value="aspect-[2/1]">Wide (2:1)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-2xl">
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={formData.is_pinned}
+                                        onChange={(e) => setFormData({ ...formData, is_pinned: e.target.checked })}
+                                        className="sr-only peer"
+                                    />
+                                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </label>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-black text-[#1E293B] uppercase tracking-widest">Pin ke Atas</span>
+                                    <span className="text-[10px] font-bold text-[#64748B]">Tampilkan foto ini di baris pertama galeri.</span>
                                 </div>
                             </div>
                         </div>
@@ -203,6 +311,14 @@ const GalleryForm = () => {
                     </button>
                 </div>
             </form >
+
+            {/* Toast Feedback — Menggantikan sistem alert browser yang kaku */}
+            <Toast
+                show={toast.show}
+                message={toast.message}
+                type={toast.type}
+                onClose={() => setToast({ ...toast, show: false })}
+            />
         </div >
     );
 };

@@ -17,6 +17,7 @@ const certificateController = require('../controllers/certificateController');
 const announcementController = require('../controllers/announcementController');
 const contactController = require('../controllers/contactController');
 const dashboardController = require('../controllers/dashboardController'); // Import controller statistik
+const settingsController = require('../controllers/settingsController'); // Import controller settings
 const upload = require('../middleware/upload'); // Import middleware upload
 
 // --- DASHBOARD ROUTES ---
@@ -98,5 +99,9 @@ router.get('/announcements/:id', announcementController.getAnnouncementById); //
 router.put('/announcements/:id', auth, announcementController.updateAnnouncement); // Admin Only
 router.post('/announcements', auth, announcementController.createAnnouncement); // Admin Only
 router.delete('/announcements/:id', auth, announcementController.deleteAnnouncement); // Admin Only
+
+// --- SITE SETTINGS ROUTES ---
+router.get('/settings', settingsController.getSettings); // Publik
+router.put('/settings', auth, settingsController.updateSetting); // Admin Only
 
 module.exports = router;

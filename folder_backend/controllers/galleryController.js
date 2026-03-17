@@ -45,12 +45,12 @@ exports.getGalleryById = async (req, res) => {
 
 // @desc    Tambah foto galeri baru
 exports.createGallery = async (req, res) => {
-  const { title, category, image, span, aspect, is_pinned } = req.body;
+  const { title, title_en, category, image, span, aspect, is_pinned } = req.body;
   try {
     const result = await pool.query(
-      `INSERT INTO galleries (title, category, image, span, aspect, is_pinned)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [title, category, image, span, aspect, is_pinned || false]
+      `INSERT INTO galleries (title, title_en, category, image, span, aspect, is_pinned)
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+      [title, title_en, category, image, span, aspect, is_pinned || false]
     );
     // Catat aktivitas: Menambah Galeri
     await logActivity(req.admin.id, 'Menambahkan Foto Galeri', title);
@@ -65,12 +65,12 @@ exports.createGallery = async (req, res) => {
 // @desc    Update foto galeri
 exports.updateGallery = async (req, res) => {
   const { id } = req.params;
-  const { title, category, image, span, aspect, is_pinned } = req.body;
+  const { title, title_en, category, image, span, aspect, is_pinned } = req.body;
   try {
     const result = await pool.query(
-      `UPDATE galleries SET title = $1, category = $2, image = $3, span = $4, aspect = $5, is_pinned = $6
-       WHERE id = $7 RETURNING *`,
-      [title, category, image, span, aspect, is_pinned, id]
+      `UPDATE galleries SET title = $1, title_en = $2, category = $3, image = $4, span = $5, aspect = $6, is_pinned = $7
+       WHERE id = $8 RETURNING *`,
+      [title, title_en, category, image, span, aspect, is_pinned || false, id]
     );
 
     if (result.rows.length === 0) {

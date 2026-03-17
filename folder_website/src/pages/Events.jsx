@@ -36,28 +36,23 @@ const Events = () => {
     const loading = eventsLoading || articlesLoading;
 
     // Logic penentuan Featured (Acara Utama) berdasarkan status 'Sematkan' (is_pinned)
-    // 1. Gabungkan semua data (events & articles)
     const allContent = [
         ...events.map(e => ({ ...e, type: 'event' })),
         ...articles.map(a => ({ ...a, type: 'article' }))
     ];
 
-    // 2. Cari konten yang statusnya disematkan (is_pinned: true)
-    // Ambil yang paling baru (sort by date descending)
+    // 1. Ambil konten yang disematkan (is_pinned: true/1)
     const pinnedContent = allContent
         .filter(item => item.is_pinned === true || item.is_pinned === 1)
         .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // 3. Set Featured Content: Prioritaskan yang disematkan, 
-    // jika tidak ada yang disematkan, gunakan Event terbaru (events[0]). 
-    // Jika event juga tidak ada, gunakan Article terbaru (articles[0]), jika kosong, maka null.
-    const featuredContent = pinnedContent.length > 0
-        ? pinnedContent[0]
-        : (events.length > 0 ? { ...events[0], type: 'event' } : (articles.length > 0 ? { ...articles[0], type: 'article' } : null));
+    // 2. Featured Content: HANYA jika ada yang disematkan.
+    const featuredContent = pinnedContent.length > 0 ? pinnedContent[0] : null;
 
-    // Daftar Berita/Artikel yang akan ditampilkan di grid
-    // Filter agar konten yang sudah tampil di Banner Utama (featuredContent) TIDAK muncul lagi di daftar bawah (mencegah ganda)
-    const displayArticles = articles.filter(article => featuredContent ? article.id !== featuredContent.id || featuredContent.type !== 'article' : true);
+    // 3. Daftar konten yang akan ditampilkan di grid (semua yang TIDAK tampil di Hero)
+    const displayContent = allContent
+        .filter(item => !featuredContent || (item.id !== featuredContent.id || item.type !== featuredContent.type))
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
 
     // Konfigurasi animasi
     const fadeIn = {
@@ -160,26 +155,26 @@ const Events = () => {
                         </h2>
                     </motion.div>
 
-                    {/* 2. Article Grid — Daftar Berita di bawahnya */}
+                    {/* 2. Content Grid — Daftar Berita & Event di bawahnya */}
                     <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
-                        {displayArticles.map((article, idx) => (
-                            <Link to={`/events/article/${article.id}`} key={article.id} className="block group">
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 30 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true }}
-                                        transition={{ duration: 0.6, delay: idx * 0.1 }}
-                                        className="bg-white rounded-2xl md:rounded-[2rem] border border-stone-border overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-700 h-full flex flex-col"
-                                    >
-                                    {/* Gambar artikel */}
+                        {displayContent.map((item, idx) => (
+                            <Link to={`/events/${item.type}/${item.id}`} key={`${item.type}-${item.id}`} className="block group">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.6, delay: idx * 0.1 }}
+                                    className="bg-white rounded-2xl md:rounded-[2rem] border border-stone-border overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-700 h-full flex flex-col"
+                                >
+                                    {/* Gambar item */}
                                     <div className="aspect-[3/2] overflow-hidden relative shrink-0">
                                         <img
-                                            src={article.image}
-                                            alt={article.title}
+                                            src={item.image}
+                                            alt={item.title}
                                             className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                                         />
                                         <span className="absolute top-4 left-4 px-3 py-1 rounded-full text-[10px] font-bold bg-white/90 backdrop-blur-md text-brand-blue shadow-md uppercase tracking-wider">
-                                            {article.category || t('events.article_category_default')}
+                                            {item.category || (item.type === 'event' ? t('events.event_category_default') : t('events.article_category_default'))}
                                         </span>
                                     </div>
 
@@ -188,22 +183,28 @@ const Events = () => {
                                         <div className="flex flex-wrap items-center gap-3 md:gap-6 text-[8px] md:text-[10px] font-bold uppercase tracking-widest text-[#78716C] mb-3 md:mb-4 opacity-60">
                                             <div className="flex items-center gap-1.5 md:gap-2">
                                                 <Calendar className="w-3 h-3 text-brand-gold-dark" />
-                                                {article.date}
+                                                {item.date}
                                             </div>
-                                            {!isEn && article.author && (
+                                            {item.type === 'article' && item.author && (
                                                 <div className="flex items-center gap-1.5 md:gap-2">
                                                     <User className="w-3 h-3 text-brand-gold-dark" />
-                                                    {article.author}
+                                                    {item.author}
+                                                </div>
+                                            )}
+                                            {item.type === 'event' && item.location && (
+                                                <div className="flex items-center gap-1.5 md:gap-2">
+                                                    <MapPin className="w-3 h-3 text-brand-gold-dark" />
+                                                    {item.location}
                                                 </div>
                                             )}
                                         </div>
 
                                         <h3 className="text-base md:text-xl font-bold text-stone-dark mb-2 md:mb-3 line-clamp-2 group-hover:text-brand-blue transition-colors duration-300 leading-tight">
-                                            {(isEn && article.title_en) ? article.title_en : article.title}
+                                            {(isEn && item.title_en) ? item.title_en : item.title}
                                         </h3>
 
                                         <p className="hidden md:block text-sm text-[#57534E] line-clamp-3 mb-6 leading-relaxed font-light">
-                                            {(isEn && article.excerpt_en) ? article.excerpt_en : (article.excerpt || article.content)}
+                                            {(isEn && (item.excerpt_en || item.description_en)) ? (item.excerpt_en || item.description_en) : (item.excerpt || item.content || item.description)}
                                         </p>
 
                                         <div className="mt-auto">

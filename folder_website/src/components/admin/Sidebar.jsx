@@ -48,6 +48,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         { label: 'Event', icon: Calendar, path: '/admin/events' },
         { label: 'Kontak', icon: Contact, path: '/admin/contact' },
         { label: 'Pengumuman', icon: Megaphone, path: '/admin/announcements' },
+        { label: 'Pengaturan', icon: LayoutDashboard, path: '/admin/settings' },
         { label: 'Profil', icon: UserCircle, path: '/admin/profile' },
     ];
 

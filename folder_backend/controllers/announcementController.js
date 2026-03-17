@@ -27,12 +27,12 @@ exports.getAnnouncementById = async (req, res) => {
 
 // @desc    Tambah pengumuman baru
 exports.createAnnouncement = async (req, res) => {
-  const { title, message, image, button_text, link, is_active } = req.body;
+  const { title, title_en, message, message_en, image, button_text, button_text_en, link, is_active } = req.body;
   try {
     const result = await pool.query(
-      `INSERT INTO announcements (title, message, image, button_text, link, is_active, created_at)
-       VALUES ($1, $2, $3, $4, $5, $6, NOW()) RETURNING *`,
-      [title, message, image, button_text, link, is_active || false]
+      `INSERT INTO announcements (title, title_en, message, message_en, image, button_text, button_text_en, link, is_active, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW()) RETURNING *`,
+      [title, title_en, message, message_en, image, button_text, button_text_en, link, is_active || false]
     );
     // Catat aktivitas: Menambah Pengumuman
     await logActivity(req.admin.id, 'Menambahkan Pengumuman', title);
@@ -45,12 +45,12 @@ exports.createAnnouncement = async (req, res) => {
 
 // @desc    Update pengumuman
 exports.updateAnnouncement = async (req, res) => {
-  const { title, message, image, button_text, link, is_active } = req.body;
+  const { title, title_en, message, message_en, image, button_text, button_text_en, link, is_active } = req.body;
   try {
     const result = await pool.query(
-      `UPDATE announcements SET title=$1, message=$2, image=$3, button_text=$4, link=$5, is_active=$6, updated_at=NOW()
-       WHERE id = $7 RETURNING *`,
-      [title, message, image, button_text, link, is_active, req.params.id]
+      `UPDATE announcements SET title=$1, title_en=$2, message=$3, message_en=$4, image=$5, button_text=$6, button_text_en=$7, link=$8, is_active=$9, updated_at=NOW()
+       WHERE id = $10 RETURNING *`,
+      [title, title_en, message, message_en, image, button_text, button_text_en, link, is_active, req.params.id]
     );
     // Catat aktivitas: Mengubah Pengumuman
     await logActivity(req.admin.id, 'Mengubah Pengumuman', title);

@@ -162,6 +162,10 @@ const generateContactHref = (contact) => {
 const Contact = () => {
     const { t } = useLanguage(); // Hook multi-bahasa
     const [contacts, setContacts] = useState([]); // State data kontak dari API
+    const [settings, setSettings] = useState({
+        hours_mon_fri: '09:00 - 18:00',
+        hours_sat: '09:00 - 13:00'
+    });
 
     // Animasi scroll-reveal untuk elemen-elemen halaman
     const fadeIn = {
@@ -172,27 +176,34 @@ const Contact = () => {
     };
 
     /**
-     * useEffect — Fetch data kontak dari API saat komponen pertama kali dimuat.
-     * Filter: hanya tampilkan kontak yang toggle-nya aktif (show_in_header ATAU show_in_footer).
+     * useEffect — Fetch data kontak dan pengaturan dari API saat komponen pertama kali dimuat.
      */
     useEffect(() => {
-        const fetchContacts = async () => {
+        const fetchData = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/contact`); // Request ke backend
-                if (!response.ok) throw new Error('Gagal memuat kontak');
-                const data = await response.json(); // Parse JSON response
-                if (Array.isArray(data)) {
-                    // Filter: hanya kontak yang toggle header-nya aktif
-                    const activeContacts = data.filter(item =>
-                        item.show_in_header === 1 || item.show_in_header === true
-                    );
-                    setContacts(activeContacts); // Simpan ke state
+                // Fetch Kontak
+                const contactRes = await fetch(`${API_BASE_URL}/contact`);
+                if (contactRes.ok) {
+                    const contactData = await contactRes.json();
+                    if (Array.isArray(contactData)) {
+                        setContacts(contactData.filter(item => item.show_in_header === 1 || item.show_in_header === true));
+                    }
+                }
+
+                // Fetch Pengaturan (Jam Operasional)
+                const settingsRes = await fetch(`${API_BASE_URL}/settings`);
+                if (settingsRes.ok) {
+                    const settingsData = await settingsRes.json();
+                    setSettings(prev => ({
+                        ...prev,
+                        ...settingsData
+                    }));
                 }
             } catch (err) {
-                console.error('[Contact] Gagal fetch kontak:', err); // Log error tanpa crash UI
+                console.error('[Contact] Gagal fetch data:', err);
             }
         };
-        fetchContacts(); // Jalankan fetch
+        fetchData();
     }, []);
 
     return (
@@ -294,11 +305,11 @@ const Contact = () => {
                                 <div className="space-y-3 text-sm relative z-10">
                                     <div className="flex justify-between items-center pb-3 border-b border-stone-200/50">
                                         <span className="text-stone-dark/60 font-medium">{t('contact.monday_friday')}</span>
-                                        <span className="text-brand-blue font-bold tracking-widest">09:00 - 18:00</span>
+                                        <span className="text-brand-blue font-bold tracking-widest">{settings.hours_mon_fri}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="text-stone-dark/60 font-medium">{t('contact.saturday')}</span>
-                                        <span className="text-brand-blue font-bold tracking-widest">09:00 - 13:00</span>
+                                        <span className="text-brand-blue font-bold tracking-widest">{settings.hours_sat}</span>
                                     </div>
                                     <p className="text-[9px] text-stone-dark/40 font-bold uppercase tracking-widest pt-3 text-right">{t('contact.time_zone')}</p>
                                 </div>

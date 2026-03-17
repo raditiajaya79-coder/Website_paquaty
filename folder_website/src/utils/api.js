@@ -4,17 +4,21 @@
  * Menyimpan dan mengirim JWT token secara otomatis di setiap request.
  */
 
-export const API_BASE_URL = "https://api-pakuaty.kediritechnopark.com/api"; // URL dasar backend Express
+// Tentukan base URL secara dinamis berdasarkan lokasi (localhost vs production)
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+export const API_BASE_URL = isLocal 
+  ? "http://localhost:5000/api"  // URL lokal untuk development
+  : "https://api-pakuaty.kediritechnopark.com/api"; // URL produksi otomatis
+
+
+// URL dasar untuk file upload — tanpa suffix /api
+// Backend menyajikan file statis di root: /uploads/filename.ext (bukan /api/uploads/)
+export const UPLOAD_BASE_URL = API_BASE_URL.replace(/\/api$/, ''); // → https://api-pakuaty.kediritechnopark.com
 
 // === Manajemen Token JWT ===
 
-/**
- * setToken — Simpan JWT token ke localStorage
- * Dipanggil setelah login berhasil.
- * @param {string} token - JWT token dari backend
- */
 export function setToken(token) {
-  localStorage.setItem('pakuaty_token', token); // Simpan di key khusus
+  localStorage.setItem('admin_token', token); // Ambil token dari key yang konsisten dengan Login.jsx
 }
 
 /**
@@ -22,14 +26,14 @@ export function setToken(token) {
  * @returns {string|null} Token atau null jika belum login
  */
 export function getToken() {
-  return localStorage.getItem('pakuaty_token'); // Baca dari localStorage
+  return localStorage.getItem('admin_token'); // Baca dari localStorage
 }
 
 /**
  * removeToken — Hapus JWT token (logout)
  */
 export function removeToken() {
-  localStorage.removeItem('pakuaty_token'); // Hapus token
+  localStorage.removeItem('admin_token'); // Hapus token
   localStorage.removeItem('isLoggedIn'); // Hapus flag login juga
 }
 

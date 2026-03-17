@@ -34,6 +34,7 @@ const ProductForm = () => {
         grade: '',
         grade_en: '',
         origin: 'Kediri, East Java',
+        origin_en: 'Kediri, East Java',
         moq: '100 pcs',
         category: 'Tempe Chips',
         category_en: '',
@@ -42,8 +43,8 @@ const ProductForm = () => {
         description: '',
         description_en: '',
         tag: '',
-        is_bestseller: false,
-        is_hero: false,
+        is_bestseller: 0,
+        is_hero: 0,
         image: '',
         detail_image: '',
         packaging_options: []
@@ -101,10 +102,11 @@ const ProductForm = () => {
 
         setIsTranslating(true);
         try {
-            const [name_en, grade_en, category_en, description_en] = await Promise.all([
+            const [name_en, grade_en, category_en, origin_en, description_en] = await Promise.all([
                 translateText(formData.name),
                 translateText(formData.grade),
                 translateText(formData.category),
+                translateText(formData.origin),
                 translateText(formData.description)
             ]);
 
@@ -113,6 +115,7 @@ const ProductForm = () => {
                 name_en,
                 grade_en,
                 category_en,
+                origin_en,
                 description_en
             }));
             setToast({ show: true, message: 'Penerjemahan otomatis berhasil!', type: 'success' });
@@ -140,6 +143,8 @@ const ProductForm = () => {
                 ...formData,
                 price: parseInt(formData.price.replace(/[^0-9]/g, '')),
                 original_price: parseInt(formData.original_price.replace(/[^0-9]/g, '')),
+                is_bestseller: formData.is_bestseller ? 1 : 0,
+                is_hero: formData.is_hero ? 1 : 0,
                 packaging_options: formData.packaging_options
             };
 
@@ -293,6 +298,35 @@ const ProductForm = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-4">
+                            <div className="space-y-2.5">
+                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Asal / Origin (ID)</label>
+                                <input
+                                    type="text"
+                                    name="origin"
+                                    value={formData.origin}
+                                    onChange={handleChange}
+                                    className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
+                                    placeholder="Kediri, Jawa Timur"
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="space-y-2.5">
+                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Asal / Origin (EN)</label>
+                                <input
+                                    type="text"
+                                    name="origin_en"
+                                    value={formData.origin_en}
+                                    onChange={handleChange}
+                                    className="w-full bg-white border border-slate-200 rounded-xl py-3 px-5 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 transition-all shadow-sm text-sm"
+                                    placeholder="Kediri, East Java"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Harga Jual */}
                         <div className="space-y-2.5">
                             <label className="text-[10px] font-black text-emerald-600 uppercase tracking-widest ml-1">Harga Jual (RP)</label>
@@ -368,7 +402,7 @@ const ProductForm = () => {
                             </button>
                         </div>
                     </div>
-                </div>
+                </div >
 
                 {/* Section 3: Deskripsi & Media (Flat) */}
                 <div className="space-y-6">
@@ -423,17 +457,17 @@ const ProductForm = () => {
                                 {/* Slot 1: Foto Utama */}
                                 <div className="space-y-3">
                                     <ImageUploader
-                                        label="Foto Utama (PNG/WebP)"
+                                        label="Foto Utama (Semua Format)"
                                         currentImage={formData.image}
                                         onUploadSuccess={(url) => setFormData({ ...formData, image: url })}
                                     />
-                                    <p className="text-[9px] font-bold text-slate-400 italic ml-1">Unggah foto produk terbaik dengan latar belakang transparan/bersih.</p>
+                                    <p className="text-[9px] font-bold text-slate-400 italic ml-1">Unggah foto produk terbaik. Semua format (JPG, PNG, WebP) didukung.</p>
                                 </div>
 
                                 {/* Slot 2: Foto Detail */}
                                 <div className="space-y-3">
                                     <ImageUploader
-                                        label="Foto Detail (JPG/Landscape)"
+                                        label="Foto Detail (Semua Format)"
                                         currentImage={formData.detail_image}
                                         onUploadSuccess={(url) => setFormData({ ...formData, detail_image: url })}
                                     />
@@ -450,7 +484,7 @@ const ProductForm = () => {
                                         <span className="text-[10px] font-black text-[#1E293B] uppercase tracking-widest">Best Seller</span>
                                     </div>
                                     <div
-                                        onClick={() => setFormData({ ...formData, is_bestseller: !formData.is_bestseller })}
+                                        onClick={() => setFormData({ ...formData, is_bestseller: formData.is_bestseller ? 0 : 1 })}
                                         className={`w-12 h-6 rounded-full relative transition-colors cursor-pointer ${formData.is_bestseller ? 'bg-emerald-500' : 'bg-slate-300'}`}
                                     >
                                         <motion.div
@@ -462,10 +496,10 @@ const ProductForm = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div >
 
                 {/* Footer Buttons */}
-                <div className="flex flex-col md:flex-row gap-5 pt-6">
+                < div className="flex flex-col md:flex-row gap-5 pt-6" >
                     <button
                         type="button"
                         onClick={() => navigate('/admin/products')}

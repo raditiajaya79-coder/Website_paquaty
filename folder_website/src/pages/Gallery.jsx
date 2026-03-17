@@ -9,9 +9,9 @@ import { API_BASE_URL } from '../utils/api';
 // Custom funnel icon — 3 horizontal lines of decreasing width
 const FunnelIcon = () => (
     <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <line x1="0" y1="1" x2="18" y2="1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-        <line x1="3" y1="7" x2="15" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-        <line x1="6" y1="13" x2="12" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        <line x1="0" y1="1" x2="18" y2="1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <line x1="3" y1="7" x2="15" y2="7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        <line x1="6" y1="13" x2="12" y2="13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
 );
 
@@ -28,6 +28,7 @@ const Gallery = () => {
     const [activeCategory, setActiveCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
     const [filterOpen, setFilterOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null); // State untuk lightbox
     const filterRef = useRef(null);
 
     useEffect(() => {
@@ -156,11 +157,10 @@ const Gallery = () => {
                                                             setActiveCategory(cat);
                                                             setFilterOpen(false);
                                                         }}
-                                                        className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest border transition-all duration-300 ${
-                                                            activeCategory === cat
+                                                        className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest border transition-all duration-300 ${activeCategory === cat
                                                             ? 'bg-brand-blue text-white border-brand-blue'
                                                             : 'bg-stone-50 text-stone-dark/60 border-transparent hover:border-brand-blue/30'
-                                                        }`}
+                                                            }`}
                                                     >
                                                         {cat === 'All' ? t('gallery.all_categories') : cat}
                                                     </button>
@@ -205,7 +205,7 @@ const Gallery = () => {
                             <p className="text-stone-dark/50 font-light">{t('gallery.no_images_desc')}</p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+                        <div className="columns-2 lg:columns-3 gap-4 md:gap-8 space-y-4 md:space-y-8">
                             <AnimatePresence mode="popLayout">
                                 {filteredImages.map((img, idx) => (
                                     <motion.div
@@ -215,33 +215,32 @@ const Gallery = () => {
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0, scale: 0.95 }}
                                         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: idx * 0.05 }}
-                                        className={`relative group overflow-hidden rounded-2xl md:rounded-[2rem] shadow-lg bg-neutral-100 transform-gpu ${
-                                            idx === 0 ? 'col-span-2 lg:col-span-2 aspect-[2/1]' 
-                                            : idx === 1 ? 'aspect-square' 
-                                            : 'aspect-[4/3]'
-                                        }`}
+                                        onClick={() => setSelectedImage(img)} // Buka lightbox saat diklik
+                                        className="relative group overflow-hidden rounded-2xl md:rounded-[2.5rem] shadow-lg bg-neutral-100 transform-gpu break-inside-avoid-column cursor-pointer"
                                     >
-                                        <div className="absolute inset-0 overflow-hidden">
+                                        <div className="relative overflow-hidden">
                                             <img
                                                 src={img.image}
                                                 alt={img.title}
-                                                className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
+                                                className="w-full h-auto object-cover transition-all duration-1000 group-hover:scale-105"
                                             />
+                                            {/* Gradient Overlay (Sesuai gambar yang diinginkan user) */}
+                                            <div className="absolute inset-0 bg-gradient-to-t from-stone-dark/80 via-transparent to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-700" />
                                         </div>
 
                                         {/* Category Badge */}
-                                        <div className="absolute top-2 left-2 md:top-4 md:left-4 z-20">
-                                            <span className="px-2 py-1 md:px-3 md:py-1.5 bg-white/90 backdrop-blur-xl rounded-full text-[7px] md:text-[9px] font-bold uppercase tracking-[0.2em] text-brand-blue shadow-lg border border-white/20">
+                                        <div className="absolute top-3 left-3 md:top-6 md:left-6 z-20">
+                                            <span className="px-3 py-1.5 md:px-5 md:py-2 bg-white/90 backdrop-blur-2xl rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] text-brand-blue shadow-xl border border-white/20">
                                                 {img.category}
                                             </span>
                                         </div>
 
-                                        {/* Overlay on Hover */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-stone-dark/80 via-stone-dark/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col justify-end p-4 md:p-6 pointer-events-none">
-                                            <h3 className="text-white text-sm md:text-xl font-semibold tracking-tight translate-y-3 group-hover:translate-y-0 transition-transform duration-500">
+                                        {/* Content Overlay */}
+                                        <div className="absolute inset-x-0 bottom-0 p-5 md:p-8 flex flex-col justify-end pointer-events-none">
+                                            <h3 className="text-white text-base md:text-2xl font-black tracking-tight translate-y-2 group-hover:translate-y-0 transition-transform duration-500 line-clamp-2">
                                                 {(isEn && img.title_en) ? img.title_en : img.title}
                                             </h3>
-                                            <div className="w-8 md:w-10 h-0.5 bg-brand-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 delay-100 origin-left mt-1 md:mt-2"></div>
+                                            <div className="w-10 md:w-16 h-1 bg-brand-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-500 delay-100 origin-left mt-3"></div>
                                         </div>
                                     </motion.div>
                                 ))}
@@ -272,6 +271,57 @@ const Gallery = () => {
                     </motion.div>
                 </div>
             </div>
+
+            {/* Lightbox Modal — Menampilkan gambar dalam ukuran besar saat diklik */}
+            <AnimatePresence>
+                {selectedImage && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setSelectedImage(null)} // Tutup saat backdrop diklik
+                        className="fixed inset-0 z-[100] flex items-center justify-center bg-stone-dark/95 backdrop-blur-xl p-4 md:p-10 cursor-zoom-out"
+                    >
+                        <motion.button
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="absolute top-6 right-6 md:top-10 md:right-10 z-[110] w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-all border border-white/10"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedImage(null);
+                            }}
+                        >
+                            <X className="w-6 h-6" />
+                        </motion.button>
+
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                            onClick={(e) => e.stopPropagation()} // Cegah penutupan saat gambar diklik
+                            className="relative max-w-6xl w-full max-h-[90vh] flex flex-col items-center cursor-default"
+                        >
+                            <div className="relative w-full overflow-hidden rounded-3xl md:rounded-[3rem] bg-stone-900 shadow-2xl border border-white/5">
+                                <img
+                                    src={selectedImage.image}
+                                    alt={selectedImage.title}
+                                    className="w-full h-auto max-h-[80vh] object-contain mx-auto"
+                                />
+                                {/* Caption Overlay */}
+                                <div className="absolute inset-x-0 bottom-0 p-6 md:p-10 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+                                    <span className="px-4 py-1.5 bg-brand-blue/90 text-white text-[10px] font-black uppercase tracking-widest rounded-full mb-4 inline-block">
+                                        {selectedImage.category}
+                                    </span>
+                                    <h3 className="text-white text-xl md:text-3xl font-black tracking-tight leading-tight">
+                                        {(isEn && selectedImage.title_en) ? selectedImage.title_en : selectedImage.title}
+                                    </h3>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </>
     );
 };

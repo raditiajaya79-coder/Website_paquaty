@@ -120,20 +120,52 @@ const ManageEvents = () => {
 
     // Fungsi Toggle Pin Langsung dari List
     const handleTogglePin = async (item) => {
-        // Optimistic UI Update: Langsung rubah di UI agar terasa instan
+        // Optimistic UI Update
         const previousContents = [...contents];
-        const newPinnedStatus = item.is_pinned ? 0 : 1;
+        const newPinnedStatus = !item.is_pinned;
 
         setContents(contents.map(c =>
             c.id === item.id && c.type === item.type
-                ? { ...c, is_pinned: newPinnedStatus === 1 }
+                ? { ...c, is_pinned: newPinnedStatus }
                 : c
         ));
 
         try {
             const endpoint = item.type === 'Article' ? 'articles' : 'events';
             const token = localStorage.getItem('admin_token');
-            const payload = { ...item, is_pinned: newPinnedStatus === 1 };
+
+            // Konstruksi payload secara eksplisit berdasarkan tipe konten
+            // Mengikuti skema yang diharapkan oleh Controller di backend
+            let payload = {};
+
+            if (item.type === 'Article') {
+                payload = {
+                    title: item.title || '',
+                    title_en: item.title_en || '',
+                    excerpt: item.excerpt || '',
+                    excerpt_en: item.excerpt_en || '',
+                    content: typeof item.content === 'object' ? JSON.stringify(item.content) : (item.content || ''),
+                    content_en: typeof item.content_en === 'object' ? JSON.stringify(item.content_en) : (item.content_en || ''),
+                    date: item.date || '',
+                    author: item.author || 'Admin',
+                    category: item.category || 'General',
+                    image: item.image || '',
+                    is_pinned: newPinnedStatus ? 1 : 0 // Konsisten dengan EventForm.jsx
+                };
+            } else {
+                // Untuk Event
+                payload = {
+                    title: item.title || '',
+                    title_en: item.title_en || '',
+                    description: typeof item.description === 'object' ? JSON.stringify(item.description) : (item.description || ''),
+                    description_en: typeof item.description_en === 'object' ? JSON.stringify(item.description_en) : (item.description_en || ''),
+                    date: item.date || '',
+                    location: item.location || '',
+                    image: item.image || '',
+                    status: item.status || 'Upcoming',
+                    is_pinned: newPinnedStatus ? 1 : 0
+                };
+            }
 
             const response = await fetch(`${API_BASE_URL}/${endpoint}/${item.id}`, {
                 method: 'PUT',
@@ -144,19 +176,22 @@ const ManageEvents = () => {
                 body: JSON.stringify(payload)
             });
 
-            if (!response.ok) throw new Error('Gagal menyimpan status pin ke server');
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || 'Server menjawab dengan kesalahan saat memperbarui status');
+            }
 
             setToast({
                 show: true,
-                message: `Status Sematan "${item.title}" diperbarui`,
+                message: `Berhasil: "${item.title}" ${newPinnedStatus ? 'disematkan' : 'dilepas'} dari banner.`,
                 type: 'success'
             });
         } catch (err) {
-            // Revert state jika server gagal atau error jaringan
+            console.error('Toggle Pin Detail Error:', err);
             setContents(previousContents);
             setToast({
                 show: true,
-                message: 'Gagal mengubah status sematan (Koneksi bermasalah)',
+                message: `Gagal: ${err.message}`,
                 type: 'error'
             });
         }

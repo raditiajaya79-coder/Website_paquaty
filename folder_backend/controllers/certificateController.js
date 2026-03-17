@@ -42,12 +42,12 @@ exports.getCertificateById = async (req, res) => {
 };
 
 exports.createCertificate = async (req, res) => {
-  const { title, sub, description, image, issued_by, year, is_pinned, is_active } = req.body;
+  const { title, title_en, sub, sub_en, description, description_en, image, issued_by, year, is_pinned, is_active } = req.body;
   try {
     const result = await pool.query(
-      `INSERT INTO certificates (title, sub, description, image, issued_by, year, is_pinned, is_active)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-      [title, sub, description, image, issued_by, year, is_pinned || false, is_active !== undefined ? is_active : true]
+      `INSERT INTO certificates (title, title_en, sub, sub_en, description, description_en, image, issued_by, year, is_pinned, is_active)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
+      [title, title_en, sub, sub_en, description, description_en, image, issued_by, year, is_pinned || false, is_active !== undefined ? is_active : true]
     );
     // Catat aktivitas: Menambah Sertifikat
     await logActivity(req.admin.id, 'Menambahkan Sertifikat', title);
@@ -61,12 +61,12 @@ exports.createCertificate = async (req, res) => {
 
 exports.updateCertificate = async (req, res) => {
   const { id } = req.params;
-  const { title, sub, description, image, issued_by, year, is_pinned, is_active } = req.body;
+  const { title, title_en, sub, sub_en, description, description_en, image, issued_by, year, is_pinned, is_active } = req.body;
   try {
     const result = await pool.query(
-      `UPDATE certificates SET title=$1, sub=$2, description=$3, image=$4, issued_by=$5, year=$6, is_pinned=$7, is_active=$8
-       WHERE id=$9 RETURNING *`,
-      [title, sub, description, image, issued_by, year, is_pinned, is_active, id]
+      `UPDATE certificates SET title = $1, title_en = $2, sub = $3, sub_en = $4, description = $5, description_en = $6, image = $7, issued_by = $8, year = $9, is_pinned = $10, is_active = $11
+       WHERE id = $12 RETURNING *`,
+      [title, title_en, sub, sub_en, description, description_en, image, issued_by, year, is_pinned, is_active, id]
     );
     // Catat aktivitas: Mengubah Sertifikat
     await logActivity(req.admin.id, 'Mengubah Data Sertifikat', title);

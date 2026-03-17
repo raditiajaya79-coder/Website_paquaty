@@ -74,7 +74,7 @@ const EventDetail = () => {
         <>
             <Helmet>
                 <title>{generatePageTitle((lang === 'en' && data.title_en) ? data.title_en : data.title)}</title>
-                <meta name="description" content={((lang === 'en' && data.excerpt_en) ? data.excerpt_en : data.excerpt) || ((lang === 'en' && data.description_en) ? data.description_en : data.description)?.substring(0, 160)} />
+                <meta name="description" content={((lang === 'en' && data.excerpt_en) ? data.excerpt_en : data.excerpt) || (typeof ((lang === 'en' && data.description_en) ? data.description_en : data.description) === 'string' ? ((lang === 'en' && data.description_en) ? data.description_en : data.description)?.substring(0, 160) : '')} />
             </Helmet>
 
             <div className="bg-neutral-bone min-h-screen pt-24 pb-16 md:pb-20">
@@ -144,9 +144,9 @@ const EventDetail = () => {
                         transition={{ delay: 0.3 }}
                         className="prose prose-stone max-w-none"
                     >
-                        {( (lang === 'en' ? (data.excerpt_en || data.excerpt) : data.excerpt) || (isArticle && (lang === 'en' ? (data.content_en || data.content) : data.content))) && (
+                        {((lang === 'en' ? (data.excerpt_en || data.excerpt) : data.excerpt) || (isArticle && (lang === 'en' ? (data.content_en || data.content) : data.content))) && (
                             <p className="text-xl md:text-2xl text-stone-dark/80 leading-relaxed mb-12 font-light italic border-l-4 border-brand-gold/30 pl-8">
-                                {(lang === 'en' ? (data.excerpt_en || data.excerpt) : data.excerpt) || (lang === 'en' ? (data.description_en || data.description) : data.description)?.substring(0, 200)}
+                                {(lang === 'en' ? (data.excerpt_en || data.excerpt) : data.excerpt) || (typeof ((lang === 'en' && data.description_en) ? data.description_en : data.description) === 'string' ? ((lang === 'en' && data.description_en) ? data.description_en : data.description)?.substring(0, 200) : '')}
                             </p>
                         )}
 
@@ -163,14 +163,23 @@ const EventDetail = () => {
 
                                 // Modul Dinamis Antigravity: Handle baik string JSON maupun Array langsung
                                 let blocks = content;
-                                if (typeof content === 'string') {
+                                if (typeof content === 'string' && content.trim() !== '') {
                                     try {
-                                        blocks = JSON.parse(content);
+                                        // Cek apakah string tampak seperti JSON array
+                                        if (content.trim().startsWith('[') && content.trim().endsWith(']')) {
+                                            blocks = JSON.parse(content);
+                                        } else {
+                                            // Jika bukan JSON array, perlakukan sebagai teks biasa
+                                            return <div className="whitespace-pre-line">{content}</div>;
+                                        }
                                     } catch (e) {
-                                        // Fallback ke rendering teks biasa jika bukan JSON string yang valid
+                                        console.warn("Gagal parsing JSON konten, rendering as raw text.");
                                         return <div className="whitespace-pre-line">{content}</div>;
                                     }
                                 }
+
+                                // Jika content kosong atau null
+                                if (!content || content === '""' || content === "null") return null;
 
                                 // Jika sudah berupa array (baik hasil parse maupun memang dari awal array)
                                 if (Array.isArray(blocks)) {

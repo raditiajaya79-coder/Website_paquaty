@@ -188,7 +188,7 @@ const ProductDetail = () => {
                             <div className="flex flex-wrap items-center gap-4 mb-6 text-sm text-[#57534E]">
                                 <span className="flex items-center gap-1.5">
                                     <MapPin className="w-3.5 h-3.5 text-brand-blue" />
-                                    {product.origin}
+                                    {(lang === 'en' && product.origin_en) ? product.origin_en : product.origin}
                                 </span>
                                 <span className="w-1 h-1 bg-[#D6D3D1] rounded-full"></span>
                                 <span className="flex items-center gap-1.5">

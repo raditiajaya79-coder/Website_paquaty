@@ -52,7 +52,7 @@ exports.getProductById = async (req, res) => {
 // @access  Private (Admin)
 exports.createProduct = async (req, res) => {
   const { 
-    name, name_en, grade, grade_en, origin, moq, image, category, category_en,
+    name, name_en, grade, grade_en, origin, origin_en, moq, image, category, category_en,
     detail_image, tag, price, original_price, 
     description, description_en, is_bestseller, is_hero, packaging_options 
   } = req.body;
@@ -60,13 +60,13 @@ exports.createProduct = async (req, res) => {
   try {
     const result = await pool.query(
       `INSERT INTO products (
-        name, name_en, grade, grade_en, origin, moq, image, category, category_en,
+        name, name_en, grade, grade_en, origin, origin_en, moq, image, category, category_en,
         detail_image, tag, price, original_price, 
         description, description_en, is_bestseller, is_hero, packaging_options
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) 
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) 
       RETURNING *`,
       [
-        name, name_en, grade, grade_en, origin, moq, image, category, category_en,
+        name, name_en, grade, grade_en, origin, origin_en, moq, image, category, category_en,
         detail_image, tag, price, original_price, 
         description, description_en, is_bestseller, is_hero, 
         typeof packaging_options === 'string' ? packaging_options : JSON.stringify(packaging_options)
@@ -89,7 +89,7 @@ exports.createProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
   const { id } = req.params;
   const { 
-    name, name_en, grade, grade_en, origin, moq, image, category, category_en,
+    name, name_en, grade, grade_en, origin, origin_en, moq, image, category, category_en,
     detail_image, tag, price, original_price, 
     description, description_en, is_bestseller, is_hero, packaging_options 
   } = req.body;
@@ -97,13 +97,13 @@ exports.updateProduct = async (req, res) => {
   try {
     const result = await pool.query(
       `UPDATE products SET 
-        name = $1, name_en = $2, grade = $3, grade_en = $4, origin = $5, moq = $6, image = $7, 
-        category = $8, category_en = $9, detail_image = $10, tag = $11, price = $12, 
-        original_price = $13, description = $14, description_en = $15, 
-        is_bestseller = $16, is_hero = $17, packaging_options = $18
-       WHERE id = $19 RETURNING *`,
+        name = $1, name_en = $2, grade = $3, grade_en = $4, origin = $5, origin_en = $6, moq = $7, image = $8, 
+        category = $9, category_en = $10, detail_image = $11, tag = $12, price = $13, 
+        original_price = $14, description = $15, description_en = $16, 
+        is_bestseller = $17, is_hero = $18, packaging_options = $19
+       WHERE id = $20 RETURNING *`,
       [
-        name, name_en, grade, grade_en, origin, moq, image, category, category_en,
+        name, name_en, grade, grade_en, origin, origin_en, moq, image, category, category_en,
         detail_image, tag, price, original_price, 
         description, description_en, is_bestseller, is_hero, 
         typeof packaging_options === 'string' ? packaging_options : JSON.stringify(packaging_options),

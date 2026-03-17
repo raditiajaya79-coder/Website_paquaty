@@ -30,6 +30,7 @@ const ManageCertificates = () => {
     const [certs, setCerts] = useState([]); // State data sertifikat
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    // Baca status global dari API instead of just localStorage
     const [isGlobalActive, setIsGlobalActive] = useState(true);
     const [togglingId, setTogglingId] = useState(null); // Menyimpan ID sertifikat yang sedang di-toggle visibilitasnya
 
@@ -46,7 +47,22 @@ const ManageCertificates = () => {
 
     useEffect(() => {
         fetchCertificates();
+        fetchGlobalSettings();
     }, []);
+
+    const fetchGlobalSettings = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/settings`);
+            if (response.ok) {
+                const settings = await response.json();
+                if (settings && typeof settings.show_certificates !== 'undefined') {
+                    setIsGlobalActive(settings.show_certificates);
+                }
+            }
+        } catch (err) {
+            console.error('Gagal mengambil settings global', err);
+        }
+    };
 
     const fetchCertificates = async () => {
         try {
@@ -55,16 +71,13 @@ const ManageCertificates = () => {
             if (!response.ok) throw new Error('Gagal mengambil data sertifikat');
             const data = await response.json();
 
-            // Sanitasi data: Pastikan data adalah array untuk mencegah crash pada .filter() atau .map()
+            // Sanitasi data: Pastikan data adalah array
             const sanitizedData = Array.isArray(data) ? data : [];
             setCerts(sanitizedData);
-            
-            // Derive Global Status: Jika ada minimal 1 sertifikat yang aktif, maka status global Aktif
-            if (sanitizedData.length > 0) {
-                const someActive = sanitizedData.some(c => c.is_active);
-                setIsGlobalActive(someActive);
-            }
-            
+
+            // Logika Derive Status dihapus karena me-reset pilihan master switch admin.
+            // Status global sekarang hanya dikontrol oleh fetchGlobalSettings().
+
             setLoading(false);
         } catch (err) {
             console.error('Error:', err);
@@ -157,17 +170,30 @@ const ManageCertificates = () => {
 
                             try {
                                 const token = localStorage.getItem('admin_token');
-                                // Menyimpan status keseluruhan dengan cara memperbarui massal semua id
-                                await Promise.all(certs.map(cert =>
-                                    fetch(`${API_BASE_URL}/certificates/${cert.id}`, {
-                                        method: 'PUT',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'Authorization': `Bearer ${token}`
-                                        },
-                                        body: JSON.stringify({ ...cert, is_active: newStatus ? 1 : 0 })
-                                    })
-                                ));
+
+                                // 1. Simpan ke Site Settings (Master Switch) - Ini yang utama
+                                await fetch(`${API_BASE_URL}/settings`, {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${token}`
+                                    },
+                                    body: JSON.stringify({ key: 'show_certificates', value: newStatus })
+                                });
+
+                                // 2. Sinkronkan semua sertifikat yang ada (jika ada)
+                                if (certs.length > 0) {
+                                    await Promise.all(certs.map(cert =>
+                                        fetch(`${API_BASE_URL}/certificates/${cert.id}`, {
+                                            method: 'PUT',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'Authorization': `Bearer ${token}`
+                                            },
+                                            body: JSON.stringify({ ...cert, is_active: newStatus ? 1 : 0 })
+                                        })
+                                    ));
+                                }
 
                                 setToast({
                                     show: true,

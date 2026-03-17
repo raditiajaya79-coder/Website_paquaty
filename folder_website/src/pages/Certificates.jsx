@@ -10,7 +10,8 @@ import { API_BASE_URL } from '../utils/api';
  * Data saat ini dikosongkan karena beralih ke mode statis tanpa dashboard admin.
  */
 const Certificates = () => {
-    const { t } = useLanguage();
+    const { t, lang } = useLanguage();
+    const isEn = lang === 'en';
     const [selectedCert, setSelectedCert] = useState(null);
     const [certificates, setCertificates] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -144,16 +145,16 @@ const Certificates = () => {
 
                                             {/* Judul sertifikat */}
                                             <h3 className="text-sm md:text-2xl font-bold text-stone-dark mb-1 md:mb-2 group-hover:text-brand-blue transition-colors line-clamp-1 md:line-clamp-none">
-                                                {cert.title}
+                                                {(isEn && cert.title_en) ? cert.title_en : cert.title}
                                             </h3>
                                             {/* Sub-judul */}
                                             <p className="text-[7px] md:text-[10px] font-bold text-brand-gold-dark uppercase tracking-[0.2em] mb-4">
-                                                {cert.sub || cert.issued_by}
+                                                {(isEn && cert.sub_en) ? cert.sub_en : (cert.sub || cert.issued_by)}
                                             </p>
 
                                             {/* Deskripsi — hanya desktop */}
                                             <p className="hidden md:block text-sm text-[#78716C] font-light leading-relaxed mb-8">
-                                                {cert.description}
+                                                {(isEn && cert.description_en) ? cert.description_en : cert.description}
                                             </p>
 
                                             {/* Tombol verifikasi — hanya desktop */}
@@ -244,15 +245,15 @@ const Certificates = () => {
                                 </div>
                                 <div>
                                     <h3 className="text-2xl font-bold text-stone-dark leading-tight">
-                                        {selectedCert.title}
+                                        {(isEn && selectedCert.title_en) ? selectedCert.title_en : selectedCert.title}
                                     </h3>
                                     <p className="text-[10px] font-bold text-brand-gold-dark uppercase tracking-[0.2em] mt-1">
-                                        {selectedCert.sub || selectedCert.issuedBy}
+                                        {(isEn && selectedCert.sub_en) ? selectedCert.sub_en : (selectedCert.sub || selectedCert.issuedBy)}
                                     </p>
                                 </div>
                             </div>
                             <p className="text-base text-[#78716C] font-light leading-relaxed mb-8">
-                                {selectedCert.description}
+                                {(isEn && selectedCert.description_en) ? selectedCert.description_en : selectedCert.description}
                             </p>
 
                             <button className="w-full py-4 bg-brand-blue text-white rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-lg hover:bg-stone-dark transition-all active:scale-95">
