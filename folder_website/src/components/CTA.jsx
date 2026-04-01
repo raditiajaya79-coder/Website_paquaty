@@ -10,9 +10,9 @@ const CTA = () => {
     return (
         <section className="py-12 md:py-16 relative overflow-hidden bg-brand-cream">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="bg-brand-blue rounded-[2.25rem] p-6 md:p-[clamp(2.5rem,6vw,4.5rem)] text-center relative shadow-2xl overflow-hidden md:overflow-visible">
+                <div className="bg-brand-blue rounded-[2.25rem] p-6 md:p-[clamp(2.5rem,6vw,4.5rem)] text-center relative shadow-2xl relative">
                     {/* Decorative Gold Glow - Clipped internally */}
-                    <div className="absolute inset-0 overflow-hidden rounded-[2.5rem] pointer-events-none">
+                    <div className="absolute inset-0 overflow-hidden rounded-[2.25rem] pointer-events-none">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-brand-gold rounded-full blur-[80px] opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
                     </div>
 
@@ -22,15 +22,15 @@ const CTA = () => {
                         whileInView={{ opacity: [0, 1, 1], scale: [5, 0.85, 1], rotate: [-45, 12, 15] }}
                         viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.6, ease: "easeOut", times: [0, 0.7, 1] }}
-                        className="absolute bottom-[-10px] -right-4 md:bottom-auto md:top-4 md:-right-6 lg:-right-10 xl:-right-14 z-20 pointer-events-none transform origin-center"
+                        className="absolute top-8 -right-3 sm:top-4 sm:-right-4 md:top-4 md:-right-6 lg:-right-10 xl:-right-14 z-20 pointer-events-none transform origin-center"
                     >
-                        <div className="w-28 h-28 md:w-[clamp(150px,15vw,200px)] md:h-[clamp(150px,15vw,200px)] rounded-full border-[4px] md:border-[6px] border-red-600/95 flex items-center justify-center p-1 md:p-1.5 shadow-2xl bg-[#FFFDF8]">
-                            <div className="w-full h-full rounded-full border-[1.5px] md:border-[2.5px] border-red-600/90 flex flex-col items-center justify-center text-center p-1.5 md:p-2 bg-transparent">
-                                <span className="text-red-500 font-black text-[8px] md:text-[clamp(10px,1vw,14px)] tracking-[0.15em] uppercase leading-tight px-1 w-full">
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-[clamp(150px,15vw,200px)] md:h-[clamp(150px,15vw,200px)] rounded-full border-[3px] sm:border-[4px] md:border-[6px] border-red-600/95 flex items-center justify-center p-1 shadow-2xl bg-[#FFFDF8]">
+                            <div className="w-full h-full rounded-full border-[1px] md:border-[2.5px] border-red-600/90 flex flex-col items-center justify-center text-center p-1 bg-transparent">
+                                <span className="text-red-500 font-black text-[5.5px] sm:text-[7px] md:text-[clamp(10px,1vw,14px)] tracking-[0.15em] uppercase leading-tight px-1 w-full">
                                     Sustainability
                                 </span>
-                                <div className="w-[80%] h-px bg-red-500/60 my-0.5 md:my-1.5"></div>
-                                <span className="text-red-500 font-black text-[12px] md:text-[clamp(16px,2vw,22px)] tracking-[0.2em] font-serif uppercase leading-none opacity-95">
+                                <div className="w-[80%] h-px bg-red-500/60 my-[1px] sm:my-0.5 md:my-1.5"></div>
+                                <span className="text-red-500 font-black text-[9px] sm:text-[11px] md:text-[clamp(16px,2vw,22px)] tracking-[0.2em] font-serif uppercase leading-none opacity-95">
                                     Report
                                 </span>
                             </div>

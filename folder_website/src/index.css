@@ -1,6 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 @import "tailwindcss";
 
+/* 
+ * UNIVERSAL VIEWPORT FIX
+ * Memaksa utilities h-screen dan min-h-screen milik Tailwind 
+ * agar secara cerdas mengikuti nilai --desktop-zoom.
+ * Trik ini mencegah elemen Full-Screen menjadi terpotong & "ngatung"
+ * saat Windows OS mengaplikasikan zoom (125%, 150%, dst).
+ */
+.min-h-screen {
+  min-height: calc(100vh / var(--desktop-zoom, 1)) !important;
+}
+.h-screen {
+  height: calc(100vh / var(--desktop-zoom, 1)) !important;
+}
+
 @theme {
   /* === BRAND COLORS — Structured 60-25-10-5 System === */
   --color-brand-cream: #FFF6D9;
@@ -63,6 +77,47 @@
   .font-serif {
     letter-spacing: -0.025em;
     /* tracking-tight equivalent */
+  }
+
+  /* 
+   * SYSTEM SCALING CORRECTION FOR DESKTOP WINDOWS 
+   * Menggunakan CSS variables agar elemen dengan 'vh' (viewport height) bisa mengimbangi penyusutan zoom.
+   */
+  :root {
+    --desktop-zoom: 1;
+  }
+  
+  @media screen and (min-width: 1024px) and (resolution: 1.25dppx), screen and (min-width: 1024px) and (-webkit-device-pixel-ratio: 1.25) {
+    :root { --desktop-zoom: 0.85; } /* Dikurangi sedikit agar elemen tidak terlalu memakan tempat */
+    html {
+      zoom: 0.85 !important;
+    }
+    .hero-product-img {
+      width: 55vw !important;
+      height: 55vw !important;
+      max-width: 620px !important;
+      max-height: 85vh !important;
+    }
+  }
+
+  @media screen and (min-width: 1024px) and (resolution: 1.5dppx), screen and (min-width: 1024px) and (-webkit-device-pixel-ratio: 1.5) {
+    :root { --desktop-zoom: 0.75; } /* Titik tengah baru antara 0.66 (terlalu kecil) dan 0.82 (terlalu besar) */
+    html {
+      zoom: 0.75 !important; 
+    }
+    .hero-product-img {
+      width: 65vw !important;
+      height: 65vw !important;
+      max-width: 800px !important;
+      max-height: 90vh !important;
+    }
+  }
+  
+  @media screen and (min-width: 1024px) and (resolution: 1.75dppx), screen and (min-width: 1024px) and (-webkit-device-pixel-ratio: 1.75) {
+    :root { --desktop-zoom: 0.65; } /* Proporsional untuk 175% */
+    html {
+      zoom: 0.65 !important;
+    }
   }
 }
 

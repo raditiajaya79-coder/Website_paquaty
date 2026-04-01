@@ -134,7 +134,10 @@ const Home = () => {
             {/* ══════════════════════════════════════
                 HERO — Idle Auto-Cycle Stage
             ════════════════════════════════════════ */}
-            <section className="relative h-[95vh] md:h-screen w-full flex items-center justify-center overflow-hidden">
+            <section 
+                className="relative w-full flex items-center justify-center overflow-hidden"
+                style={{ height: 'calc(100vh / var(--desktop-zoom, 1))', minHeight: '95vh' }}
+            >
                 {/* Dynamic Background Color Layer */}
                 <motion.div
                     className="absolute inset-0 z-0"
@@ -226,7 +229,7 @@ const Home = () => {
                                 duration: 1.1,
                                 ease: [0.16, 1, 0.3, 1],
                             }}
-                            className="relative w-56 h-56 sm:w-72 sm:h-72 md:w-[32vw] md:h-[32vw] lg:w-[28vw] lg:max-w-[320px] xl:max-w-[450px] max-w-[65vh] max-h-[65vh] flex items-center justify-center lg:translate-y-5 z-10"
+                            className="hero-product-img relative w-[75vw] h-[75vw] max-w-[320px] max-h-[320px] -translate-y-[8vh] sm:translate-y-0 sm:w-[22rem] sm:h-[22rem] md:w-[35vw] md:h-[35vw] lg:w-[30vw] lg:max-w-[400px] xl:max-w-[460px] md:max-w-[70vh] md:max-h-[70vh] flex items-center justify-center lg:translate-y-5 z-10"
                         >
                             <motion.img
                                 src={activeProduct?.image}

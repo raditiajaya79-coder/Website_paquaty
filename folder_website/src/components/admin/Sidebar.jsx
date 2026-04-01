@@ -59,10 +59,13 @@ const Sidebar = ({ isOpen, onClose }) => {
     ];
 
     return (
-        <aside className={`
-            fixed top-0 h-screen w-64 bg-white border-r border-slate-100 flex flex-col z-50 shadow-xl shadow-slate-900/5 transition-all duration-300 ease-in-out
-            ${isOpen ? 'left-0' : '-left-64 lg:left-0'}
-        `}>
+        <aside 
+            className={`
+                fixed top-0 w-64 bg-white border-r border-slate-100 flex flex-col z-50 shadow-xl shadow-slate-900/5 transition-all duration-300 ease-in-out
+                ${isOpen ? 'left-0' : '-left-64 lg:left-0'}
+            `}
+            style={{ height: 'calc(100vh / var(--desktop-zoom, 1))' }}
+        >
             {/* Branding Area — Logo dan nama perusahaan */}
             <div className="py-4 px-6 border-b border-slate-100 flex flex-col items-center justify-center text-center relative">
                 {/* Close Button — Mobile Only */}

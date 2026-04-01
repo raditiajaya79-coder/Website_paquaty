@@ -19,7 +19,7 @@ const AdminLayout = () => {
     };
 
     return (
-        <div className="flex h-screen bg-slate-100 font-['Inter',sans-serif] text-[#1E293B] overflow-hidden relative">
+        <div className="flex bg-slate-100 font-['Inter',sans-serif] text-[#1E293B] overflow-hidden relative" style={{ height: 'calc(100vh / var(--desktop-zoom, 1))' }}>
             {/* Fixed Sidebar — Desktop: Fixed, Mobile: Drawer */}
             <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 

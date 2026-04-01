@@ -90,8 +90,8 @@ const JourneySection = () => {
                 {/* ── Steps Grid ── */}
                 <div className="relative">
                     <div className="overflow-x-auto no-scrollbar snap-x snap-mandatory relative pt-6 pb-8 md:pb-0">
-                        {/* min-width mobile agar scroll horizontal smooth */}
-                        <div className={`relative min-w-[${colCount * 260}px] md:min-w-0 md:grid ${gridColsClass} md:gap-4 lg:gap-2`}>
+                        {/* Wrapper Utama: Lebar mobile flex menyesuaikan konten (w-max), grid menyesuaikan layar (w-full) */}
+                        <div className={`relative w-max md:w-full md:grid ${gridColsClass} md:gap-4 lg:gap-2`}>
 
                             {/* ── Garis Penghubung Animasi ── */}
                             <div className="absolute top-[48px] left-[12.5%] right-[12.5%] h-px z-0 pointer-events-none">
@@ -109,7 +109,8 @@ const JourneySection = () => {
                             </div>
 
                             {/* ── Render Setiap Step ── */}
-                            <div className="flex md:contents">
+                            {/* Inner Wrapper: Flex Horizontal di mobile, Menghilang di Desktop (md:contents) sehingga ikut grid parent */}
+                            <div className="flex md:contents gap-6 md:gap-0 px-6 md:px-0">
                                 {JOURNEY_STEPS.map((step, idx) => {
                                     // Resolve ikon dari string ke komponen React
                                     const IconComponent = ICON_MAP[step.icon] || Sprout;
@@ -124,7 +125,7 @@ const JourneySection = () => {
                                             key={step.id}
                                             {...fadeIn}
                                             transition={{ ...fadeIn.transition, delay: 0.2 + (idx * 0.1) }}
-                                            className="flex flex-col items-center text-center group cursor-default w-[260px] md:w-auto snap-center"
+                                            className="flex flex-col items-center text-center group w-[240px] md:w-auto shrink-0 snap-center relative z-10"
                                         >
                                             {/* Icon Card */}
                                             <div className="relative mb-5 px-4">
