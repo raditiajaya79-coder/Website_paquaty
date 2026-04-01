@@ -86,12 +86,12 @@ const Events = () => {
                     {featuredContent && (
                         <motion.div
                             {...fadeIn}
-                            className="relative mb-20 md:mb-32 overflow-hidden rounded-2xl md:rounded-[3rem] bg-stone-dark group shadow-2xl"
+                            className="relative mb-20 md:mb-32 overflow-hidden rounded-2xl md:rounded-[3rem] bg-stone-dark group shadow-2xl aspect-[1.3/1] sm:aspect-[2/1] lg:aspect-[2.8/1]"
                         >
-                            <Link to={`/events/${featuredContent.type === 'event' ? 'event' : 'article'}/${featuredContent.id}`} className="block">
-                                <div className="grid grid-cols-[1fr_1.2fr] md:grid-cols-2 items-stretch">
+                            <Link to={`/events/${featuredContent.type === 'event' ? 'event' : 'article'}/${featuredContent.id}`} className="block w-full h-full">
+                                <div className="grid grid-cols-[1fr_1.2fr] md:grid-cols-2 items-stretch h-full w-full">
                                     {/* Visual: Gambar Featured */}
-                                    <div className="aspect-[4/5] md:aspect-auto h-full overflow-hidden">
+                                    <div className="w-full h-full overflow-hidden">
                                         <img
                                             src={featuredContent.image}
                                             alt={featuredContent.title}
@@ -99,22 +99,22 @@ const Events = () => {
                                         />
                                     </div>
                                     {/* Konten: Info Acara Utama */}
-                                    <div className="p-6 md:p-16 flex flex-col justify-center text-white bg-stone-900/40 backdrop-blur-sm">
+                                    <div className="p-6 md:p-8 lg:p-10 flex flex-col justify-center text-white bg-stone-900/40 backdrop-blur-sm h-full">
                                         {/* Label kategori banner */}
-                                        <span className="text-brand-gold font-bold tracking-[0.3em] uppercase text-[8px] md:text-[10px] mb-3 md:mb-6 block opacity-60">
+                                        <span className="text-brand-gold font-bold tracking-[0.3em] uppercase text-[8px] md:text-[10px] mb-2 md:mb-4 block opacity-60">
                                             {t('events.hero_label')}
                                         </span>
                                         {/* Judul acara */}
-                                        <h2 className="text-sm md:text-5xl font-medium tracking-tight mb-4 md:mb-8 leading-snug md:leading-tight line-clamp-3 md:line-clamp-none">
+                                        <h2 className="text-sm md:text-3xl lg:text-4xl font-medium tracking-tight mb-3 md:mb-4 leading-snug md:leading-tight line-clamp-2">
                                             {(isEn && featuredContent.title_en) ? featuredContent.title_en : featuredContent.title}
                                         </h2>
                                         {/* Deskripsi singkat acara - Hidden on mobile */}
-                                        <p className="hidden md:block text-stone-300 text-xs md:text-base font-light leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 md:mb-10">
+                                        <p className="hidden md:block text-stone-300 text-xs md:text-sm font-light leading-relaxed line-clamp-2 mb-4 md:mb-6">
                                             {(isEn && featuredContent.description_en) ? featuredContent.description_en : featuredContent.description}
                                         </p>
 
                                         {/* Metadata: Tanggal dan Lokasi acara - Hidden on mobile */}
-                                        <div className="hidden md:flex flex-wrap items-center gap-4 md:gap-6 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.15em] md:tracking-[0.2em] mb-8 md:mb-12 text-stone-400">
+                                        <div className="hidden md:flex flex-wrap items-center gap-4 md:gap-6 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.15em] md:tracking-[0.2em] mb-6 md:mb-8 text-stone-400">
                                             <div className="flex items-center gap-2">
                                                 {/* Icon Kalender */}
                                                 <Calendar className="w-3 h-3 md:w-4 md:h-4 text-brand-gold" />

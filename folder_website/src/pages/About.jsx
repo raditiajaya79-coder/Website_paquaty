@@ -11,6 +11,8 @@ import { COMPANY_INFO, FOUNDER } from '../data/products';
  * Berisi: header, filosofi nama perusahaan, pesan dari founder, core values, closing
  */
 import { useLanguage } from '../context/LanguageContext';
+import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../utils/api';
 
 /**
  * About — Halaman "Tentang Kami"
@@ -18,6 +20,23 @@ import { useLanguage } from '../context/LanguageContext';
  */
 const About = () => {
     const { t } = useLanguage();
+    const [settings, setSettings] = useState({});
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await fetch(`${API_BASE_URL}/settings`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setSettings(data);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchSettings();
+    }, []);
+
     // Konfigurasi animasi fade-in
     const fadeIn = {
         initial: { opacity: 0, y: 30 },
@@ -135,8 +154,8 @@ const About = () => {
                                 className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl bg-white p-2 group"
                             >
                                 <div className="relative w-full h-full rounded-[2.1rem] overflow-hidden bg-stone-100">
-                                    {/* Gambar founder dari data FOUNDER */}
-                                    <img src={FOUNDER.image} alt={FOUNDER.name} className="w-full h-full object-cover grayscale-[0.2] group-hover:scale-105 transition-transform duration-1000 ease-[0.22,1,0.36,1]" />
+                                    {/* Gambar founder dari pengaturan atau data FOUNDER */}
+                                    <img src={settings.founder_image || FOUNDER.image} alt={FOUNDER.name} className="w-full h-full object-cover grayscale-[0.2] group-hover:scale-105 transition-transform duration-1000 ease-[0.22,1,0.36,1]" />
                                     {/* Overlay gradient + nama founder di bawah gambar */}
                                     <div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-stone-dark to-transparent">
                                         <h3 className="text-2xl font-semibold text-white">{FOUNDER.name}</h3>

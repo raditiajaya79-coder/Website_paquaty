@@ -32,6 +32,9 @@ import ManageEvents from './pages/admin/modules/ManageEvents.jsx';
 import ManageContact from './pages/admin/modules/ManageContact.jsx';
 import ManageAnnouncements from './pages/admin/modules/ManageAnnouncements.jsx';
 import ManageSettings from './pages/admin/modules/ManageSettings.jsx';
+import ManageFounder from './pages/admin/modules/ManageFounder.jsx';
+import ManageHeroVideo from './pages/admin/modules/ManageHeroVideo.jsx';
+
 import AdminProfile from './pages/admin/modules/AdminProfile.jsx';
 
 // Form Pages [NEW]
@@ -126,6 +129,9 @@ function App() {
 
                         <Route path="contact" element={<ManageContact />} />
                         <Route path="settings" element={<ManageSettings />} />
+                        <Route path="founder" element={<ManageFounder />} />
+                        <Route path="hero-video" element={<ManageHeroVideo />} />
+
                         <Route path="profile" element={<AdminProfile />} />
                     </Route>
                 </Route>

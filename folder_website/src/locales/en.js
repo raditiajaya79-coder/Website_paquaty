@@ -316,6 +316,7 @@ export const en = {
     "events.article_category_default": "News",
     "events.empty": "No events or stories published yet.",
     "events.read_more": "Read More",
+    "events.view_details": "View Details",
 
     "products.loading": "Loading Products...",
     "products.search_placeholder": "Search products...",

@@ -186,7 +186,7 @@ const Contact = () => {
                 if (contactRes.ok) {
                     const contactData = await contactRes.json();
                     if (Array.isArray(contactData)) {
-                        setContacts(contactData.filter(item => item.show_in_header === 1 || item.show_in_header === true));
+                        setContacts(contactData);
                     }
                 }
 
@@ -228,14 +228,12 @@ const Contact = () => {
                                 {t('contact.header_label')}
                             </span>
                             {/* Heading utama */}
-                            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-light text-stone-dark tracking-tighter mb-8 leading-[1.1]">
-                                {t('contact.header_title').split(' ').slice(0, -1).join(' ')}{' '}
-                                <span className="font-semibold text-brand-blue">{t('contact.header_title').split(' ').slice(-1)}</span>
-                                <br />
-                                <span className="italic font-serif text-brand-gold text-5xl sm:text-6xl lg:text-7xl">{t('contact.header_title_accent')}</span>
+                            <h1 className="text-[clamp(1.5rem,6vw,3.75rem)] font-light text-stone-dark tracking-tighter mb-8 leading-[1.1]">
+                                {t('contact.header_title')}{' '}
+                                <span className="italic font-serif text-brand-gold text-4xl sm:text-5xl lg:text-6xl xl:text-7xl">{t('contact.header_title_accent')}</span>
                             </h1>
                             {/* Sub-heading deskripsi */}
-                            <p className="text-lg text-stone-dark/60 font-light leading-relaxed max-w-lg mb-16">
+                            <p className="text-base sm:text-lg text-stone-dark/60 font-light leading-relaxed max-w-lg mb-12 sm:mb-16">
                                 {t('contact.header_desc')}
                             </p>
 
@@ -267,7 +265,7 @@ const Contact = () => {
                                             href={href}
                                             target={contact.icon === 'Mail' || contact.icon === 'Phone' ? '_self' : '_blank'}
                                             rel="noopener noreferrer"
-                                            className="flex gap-6 group cursor-pointer block"
+                                            className="flex gap-4 sm:gap-6 group cursor-pointer block"
                                         >
                                             {/* Ikon dalam lingkaran — hover effect gold */}
                                             <div className="w-12 h-12 rounded-full bg-white shadow-soft flex items-center justify-center text-brand-gold group-hover:scale-110 group-hover:bg-brand-gold group-hover:text-white transition-all duration-500 shrink-0">
@@ -277,7 +275,7 @@ const Contact = () => {
                                                 {/* Nama platform dari database */}
                                                 <h4 className="text-sm font-bold tracking-widest uppercase text-stone-dark mb-2">{contact.platform}</h4>
                                                 {/* Nilai kontak (URL/nomor/email) */}
-                                                <p className="text-stone-dark/60 font-medium leading-relaxed group-hover:text-brand-blue transition-colors">
+                                                <p className="text-sm sm:text-base text-stone-dark/60 font-medium leading-relaxed group-hover:text-brand-blue transition-colors break-all sm:break-normal">
                                                     {contact.value}
                                                 </p>
                                             </div>

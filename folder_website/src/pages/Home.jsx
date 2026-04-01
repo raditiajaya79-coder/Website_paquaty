@@ -6,6 +6,15 @@ import { PRODUCTS } from '../data/products';
 import CTA from '../components/CTA';
 import JourneySection from '../components/JourneySection';
 import { useLanguage } from '../context/LanguageContext';
+import { API_BASE_URL } from '../utils/api';
+
+// ─── UTILS ──────────
+const getYouTubeID = (url) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+};
 
 // ─── FLAVOR CONFIGURATION (Vibrant palette from previous versions) ──────────
 const HERO_FLAVORS = [
@@ -14,8 +23,8 @@ const HERO_FLAVORS = [
         name: "Original",
         tagline: "PURE TRADITION",
         watermark: "ORIGINAL",
-        bgColor: "#0147AD",
-        textColor: "#FFFFFF",
+        bgColor: "#041e44ff",
+        textColor: "#ffffffff",
         tilt: -8,
         ornaments: ["/images/ornaments/tempe.png", "/images/ornaments/tempe.png", "/images/ornaments/tempe.png"]
     },
@@ -24,7 +33,7 @@ const HERO_FLAVORS = [
         name: "Balado",
         tagline: "SPICY KICK",
         watermark: "BALADO",
-        bgColor: "#C0392B",
+        bgColor: "#570e06ff",
         textColor: "#FFFFFF",
         tilt: 6,
         ornaments: ["/images/ornaments/chili.png", "/images/ornaments/onion.png", "/images/ornaments/chili.png"]
@@ -34,7 +43,7 @@ const HERO_FLAVORS = [
         name: "BBQ",
         tagline: "SMOKY BOLD",
         watermark: "BARBEQUE",
-        bgColor: "#E86A33",
+        bgColor: "#501c06ff",
         textColor: "#FFFFFF",
         tilt: -10,
         ornamentScale: 1.3,
@@ -45,8 +54,8 @@ const HERO_FLAVORS = [
         name: "Keju",
         tagline: "CHEESY DELIGHT",
         watermark: "CHEESE",
-        bgColor: "#E5B326",
-        textColor: "#1A1206",
+        bgColor: "#6d5207ff",
+        textColor: "#ffffffff",
         tilt: 7,
         ornaments: ["/images/ornaments/cheese.png", "/images/ornaments/cheese.png", "/images/ornaments/cheese.png"]
     },
@@ -55,7 +64,7 @@ const HERO_FLAVORS = [
         name: "Sapi Panggang",
         tagline: "SAVORY ROAST",
         watermark: "GRILLED",
-        bgColor: "#1A1206",
+        bgColor: "#4d3006ff",
         textColor: "#FFFFFF",
         tilt: -6,
         ornaments: ["/images/ornaments/meat.png", "/images/ornaments/meat.png", "/images/ornaments/meat.png"]
@@ -63,9 +72,9 @@ const HERO_FLAVORS = [
 ];
 
 const ORNAMENT_POSITIONS = [
-    { top: "5%", left: "15%", delay: 0 },
-    { top: "12%", right: "12%", delay: 0.2 },
-    { bottom: "10%", right: "20%", delay: 0.4 }
+    { top: "5%", left: "4%", delay: 0 },       // Lebih ke pinggir kiri
+    { top: "8%", right: "4%", delay: 0.2 },     // Lebih ke pinggir kanan
+    { bottom: "8%", right: "6%", delay: 0.4 }   // Lebih ke pinggir kanan bawah
 ];
 
 const Home = () => {
@@ -73,6 +82,23 @@ const Home = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const hasPlayedIntro = sessionStorage.getItem('pakuaty_intro_played');
     const [isRevealed, setIsRevealed] = useState(hasPlayedIntro === 'true');
+    const [settings, setSettings] = useState({});
+
+    // Fetch Settings untuk mengambil URL video dsb
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await fetch(`${API_BASE_URL}/settings`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setSettings(data);
+                }
+            } catch (err) {
+                console.error("Gagal memuat pengaturan:", err);
+            }
+        };
+        fetchSettings();
+    }, []);
 
     // Auto-cycle hero items
     useEffect(() => {
@@ -113,7 +139,7 @@ const Home = () => {
                 <motion.div
                     className="absolute inset-0 z-0"
                     animate={{ backgroundColor: activeFlavor.bgColor }}
-                    transition={{ duration: 1.5, ease: "easeInOut" }}
+                    transition={{ duration: 0 }}
                 />
 
                 {/* Vignette overlay */}
@@ -122,19 +148,19 @@ const Home = () => {
 
                 {/* ── Background Massive Text (Watermark) ── */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-[2]">
-                    <AnimatePresence mode="popLayout">
+                    <AnimatePresence mode="wait">
                         <motion.div
                             key={`watermark-${activeIndex}`}
-                            initial={{ opacity: 0, y: -150 }}
+                            initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: activeFlavor.name === "Sapi Panggang" ? 0.25 : 0.12, y: 0 }}
-                            exit={{ opacity: 0, y: 150 }}
-                            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                            className="flex flex-col items-center"
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.5, ease: "easeInOut" }}
+                            className="absolute flex flex-col items-center justify-center"
                         >
-                            <span className="text-[12vw] font-black opacity-30 -mb-12" style={{ color: activeFlavor.textColor }}>{activeIndex < 9 ? `0${activeIndex + 1}` : activeIndex + 1}</span>
+
                             <h1
-                                style={{ color: activeFlavor.textColor }}
-                                className="text-[25vw] font-black tracking-tighter uppercase leading-none select-none whitespace-nowrap opacity-25"
+                                style={{ color: activeFlavor.textColor, fontSize: 'clamp(100px, 16vw, 280px)' }}
+                                className="font-black tracking-tighter uppercase leading-none select-none whitespace-nowrap opacity-75"
                             >
                                 {activeFlavor.watermark}
                             </h1>
@@ -159,7 +185,7 @@ const Home = () => {
                                     y: { duration: 1, delay: idx * 0.1, ease: [0.175, 0.885, 0.32, 1.15] },
                                     opacity: { duration: 0.5, delay: idx * 0.1 },
                                 }}
-                                className="absolute w-32 h-32 md:w-60 md:h-60 select-none"
+                                className="absolute w-24 h-24 md:w-36 md:h-36 lg:w-44 lg:h-44 xl:w-52 xl:h-52 select-none"
                                 style={{
                                     ...ORNAMENT_POSITIONS[idx],
                                     scale: activeFlavor.ornamentScale || 1
@@ -169,7 +195,7 @@ const Home = () => {
                                     src={imgPath}
                                     alt="ornament"
                                     animate={{ y: [0, -15, 0], scale: [1, 1.05, 1], rotate: [0, 5, 0] }}
-                                    transition={{ duration: 3 + idx, repeat: Infinity, ease: "easeInOut" }}
+                                    transition={{ duration: 8 + idx, repeat: Infinity, ease: "easeIn" }}
                                     className="w-full h-full object-contain drop-shadow-2xl"
                                     onError={(e) => {
                                         if (e.target.src !== '/images/pure logo pakuaty.png') {
@@ -200,7 +226,7 @@ const Home = () => {
                                 duration: 1.1,
                                 ease: [0.16, 1, 0.3, 1],
                             }}
-                            className="relative w-80 h-80 md:w-[820px] md:h-[820px] flex items-center justify-center"
+                            className="relative w-56 h-56 sm:w-72 sm:h-72 md:w-[32vw] md:h-[32vw] lg:w-[28vw] lg:max-w-[320px] xl:max-w-[450px] max-w-[65vh] max-h-[65vh] flex items-center justify-center lg:translate-y-5 z-10"
                         >
                             <motion.img
                                 src={activeProduct?.image}
@@ -221,8 +247,8 @@ const Home = () => {
                         </motion.div>
                     </AnimatePresence>
 
-                    {/* ── Product Info Panel (Left Aligned) ── */}
-                    <div className="absolute bottom-12 md:bottom-24 left-6 md:left-24 max-w-lg pointer-events-none">
+                    {/* ── Product Info Panel (Left Aligned, Shifted Left) ── */}
+                    <div className="absolute bottom-12 md:bottom-24 left-4 sm:left-6 md:left-6 lg:left-8 xl:left-10 max-w-xs sm:max-w-sm md:max-w-md pointer-events-none z-30">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={`info-${activeIndex}`}
@@ -233,25 +259,25 @@ const Home = () => {
                                 style={{ color: activeFlavor.textColor }}
                                 className="flex flex-col gap-4 pointer-events-auto"
                             >
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-[10px] md:text-sm font-black tracking-[0.5em] uppercase opacity-70">{t('hero.global_artisan')}</span>
-                                    <h1 className="text-5xl md:text-8xl font-black leading-[0.9] tracking-tighter uppercase italic">
+                                <div className="flex flex-col gap-1 md:gap-2">
+                                    <span className="text-[9px] md:text-xs font-black tracking-[0.5em] uppercase opacity-70 drop-shadow-sm">{t('hero.global_artisan')}</span>
+                                    <h1 className="text-[clamp(1.5rem,3.5vw,2rem)] md:text-[clamp(1.75rem,4vw,2.75rem)] lg:text-[clamp(2.25rem,4.5vw,3.25rem)] font-black leading-[0.95] tracking-tighter uppercase italic drop-shadow-md">
                                         {(t(`flavor.${activeFlavor.id}.tagline`)).split(' ').map((word, i) => (
                                             <span key={i} className="block">{word}</span>
                                         ))}
                                     </h1>
                                 </div>
 
-                                <p className="text-sm md:text-base font-medium opacity-90 max-w-xs leading-relaxed">
+                                <p className="text-xs md:text-sm font-medium opacity-90 max-w-[260px] md:max-w-xs leading-relaxed">
                                     {t('hero.desc_text')}
                                 </p>
 
-                                <div className="flex items-center gap-4 mt-4">
+                                <div className="flex items-center gap-4 mt-2 md:mt-4">
                                     <Link
                                         to={`/products/${activeFlavor.id}`}
-                                        className="group inline-flex items-center gap-4 bg-white text-stone-dark px-10 py-5 rounded-full shadow-2xl hover:bg-brand-cyan hover:text-white transition-all duration-300 active:scale-95"
+                                        className="group inline-flex items-center gap-3 bg-white text-stone-dark px-6 py-3 md:px-7 md:py-3.5 rounded-full shadow-2xl hover:bg-brand-cyan hover:text-white transition-all duration-300 active:scale-95"
                                     >
-                                        <span className="text-xs font-black uppercase tracking-widest">{t('hero.order_now')}</span>
+                                        <span className="text-[10px] md:text-xs font-black uppercase tracking-widest">{t('hero.order_now')}</span>
                                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                     </Link>
                                 </div>
@@ -260,7 +286,7 @@ const Home = () => {
                     </div>
 
                     {/* ── Desktop Index Sidebar ── */}
-                    <div className="absolute top-1/2 -translate-y-1/2 right-12 hidden lg:flex flex-col gap-10 z-20">
+                    <div className="absolute top-1/2 -translate-y-1/2 right-6 xl:right-12 hidden lg:flex flex-col gap-6 xl:gap-8 z-20">
                         {HERO_FLAVORS.map((flavor, idx) => (
                             <button
                                 key={flavor.id}
@@ -312,7 +338,7 @@ const Home = () => {
                                         initial={{ y: 200, opacity: 0, rotate: 10 }}
                                         animate={{ y: 0, opacity: 1, rotate: 0 }}
                                         transition={{ duration: 1, delay: 0.2 + (i * 0.1), ease: [0.34, 1.56, 0.64, 1] }}
-                                        className="text-stone-dark text-7xl md:text-[12rem] font-black tracking-tighter italic leading-none"
+                                        className="text-stone-dark text-5xl sm:text-7xl md:text-[clamp(4rem,12vw,12rem)] font-black tracking-tighter italic leading-none"
                                     >
                                         {char}
                                     </motion.span>
@@ -332,7 +358,7 @@ const Home = () => {
             {/* ══════════════════════════════════════
                 BRAND MARQUEE 
             ════════════════════════════════════════ */}
-            <div className="relative z-10 bg-white py-6 md:py-8 border-y border-stone-border/10">
+            <div className="relative z-10 bg-white py-3 md:py-4 border-y border-stone-border/10">
                 <div className="max-w-[100vw] overflow-hidden flex">
                     <motion.div
                         animate={{ x: [0, -1000] }}
@@ -340,7 +366,7 @@ const Home = () => {
                         className="flex whitespace-nowrap gap-16 items-center px-6"
                     >
                         {[...Array(8)].map((_, i) => (
-                            <span key={i} className="text-lg md:text-2xl font-black tracking-[0.25em] text-stone-dark/10 uppercase italic">
+                            <span key={i} className="text-[clamp(0.75rem,1.5vw,1rem)] font-black tracking-[0.2em] text-stone-dark/40 uppercase italic">
                                 {t('home.marquee')}
                             </span>
                         ))}
@@ -351,15 +377,15 @@ const Home = () => {
             {/* ══════════════════════════════════════
                 ARTISAN HERITAGE SECTION (DIRTY SODA STYLE - REFINED)
             ════════════════════════════════════════ */}
-            <section id="products" className="py-20 bg-white relative overflow-hidden border-y border-stone-100">
+            <section id="products" className="py-10 md:py-16 bg-brand-cream relative overflow-hidden border-y border-stone-border/20">
                 <div className="max-w-7xl mx-auto px-6 relative">
                     {/* Background Text Overlay - More subtle and proportional */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
                         <motion.h2
                             initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 0.2, scale: 1 }}
+                            whileInView={{ opacity: 0.15, scale: 1 }}
                             transition={{ duration: 1.5 }}
-                            className="text-[18vw] font-black text-brand-gold leading-none select-none tracking-tighter uppercase italic"
+                            className="text-[clamp(80px,12vw,220px)] font-black text-stone-dark/60 leading-none select-none tracking-tighter uppercase italic drop-shadow-sm"
                         >
                             PAKUATY
                         </motion.h2>
@@ -372,29 +398,43 @@ const Home = () => {
                                 initial={{ x: -60, opacity: 0 }}
                                 whileInView={{ x: 0, opacity: 1 }}
                                 transition={{ duration: 0.8 }}
-                                className="hidden sm:block w-full max-w-[340px] aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-xl relative group"
+                                className="hidden sm:block w-full max-w-[240px] lg:max-w-[280px] aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-xl relative group bg-stone-100"
                             >
-                                <img
-                                    src="/images/artisan_inset.png"
-                                    alt="Artisan Process"
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                                    onError={(e) => {
-                                        if (e.target.src !== '/images/pure logo pakuaty.png') {
-                                            e.target.src = '/images/pure logo pakuaty.png';
-                                            e.target.className += ' opacity-20 grayscale';
-                                        }
-                                    }}
-                                />
+                                {settings.hero_video_url && getYouTubeID(settings.hero_video_url) ? (
+                                    <div className="w-full h-full relative pointer-events-none">
+                                        {/* CSS Trick untuk Cover full Iframe tanpa blackbars di container 4:3 */}
+                                        <iframe
+                                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%]"
+                                            src={`https://www.youtube.com/embed/${getYouTubeID(settings.hero_video_url)}?autoplay=1&mute=1&loop=1&playlist=${getYouTubeID(settings.hero_video_url)}&controls=0&showinfo=0&rel=0`}
+                                            title="YouTube Profil Video"
+                                            frameBorder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                        ></iframe>
+                                    </div>
+                                ) : (
+                                    <img
+                                        src="/images/artisan_inset.png"
+                                        alt="Artisan Process"
+                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                        onError={(e) => {
+                                            if (e.target.src !== '/images/pure logo pakuaty.png') {
+                                                e.target.src = '/images/pure logo pakuaty.png';
+                                                e.target.className += ' opacity-20 grayscale';
+                                            }
+                                        }}
+                                    />
+                                )}
                             </motion.div>
                         </div>
 
                         {/* Center: Product - Large & Balanced */}
-                        <div className="lg:col-span-4 flex justify-center">
+                        <div className="lg:col-span-4 flex justify-center lg:translate-x-8">
                             <motion.div
                                 initial={{ y: 50, opacity: 0, scale: 0.9 }}
                                 whileInView={{ y: 0, opacity: 1, scale: 1 }}
                                 transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
-                                className="relative w-full max-w-[280px] lg:max-w-[340px]"
+                                className="relative w-full max-w-[240px] lg:max-w-[300px]"
                             >
                                 <img
                                     src={PRODUCTS[0].image}

@@ -47,8 +47,6 @@ const Certificates = () => {
         { color: "text-brand-blue", bg: "bg-brand-blue/5" },
         { color: "text-brand-gold-dark", bg: "bg-brand-gold/5" }
     ];
-    // Span grid default berdasarkan index
-    const spanMap = ["md:col-span-6", "md:col-span-6", "md:col-span-4", "md:col-span-4", "md:col-span-4"];
 
     // Animasi komponen
     const fadeIn = {
@@ -115,59 +113,81 @@ const Certificates = () => {
                         </p>
                     </motion.div>
 
-                    {/* Certifications Grid — hanya sertifikat aktif yang ditampilkan */}
-                    <div className="grid grid-cols-2 md:grid-cols-12 gap-4 md:gap-8">
-                        {certificates.filter(c => c.is_active).map((cert) => {
-                            // Gunakan ID sebagai basis untuk ikon & warna agar stabil (tidak berubah saat filter berubah)
+                    {/* ═══════════════════════════════════════════
+                        CERTIFICATIONS GRID — Premium Card Design
+                    ═══════════════════════════════════════════ */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                        {certificates.filter(c => c.is_active).map((cert, idx) => {
+                            /* Stabil index untuk ikon & warna fallback */
                             const stableIdx = cert.id;
                             const IconComponent = iconMap[stableIdx % iconMap.length];
                             const colors = colorMap[stableIdx % colorMap.length];
-                            const span = spanMap[stableIdx % spanMap.length];
+                            /* Cek apakah gambar valid */
+                            const hasRealImage = cert.image && !cert.image.includes('pure%20logo') && !cert.image.includes('pure logo');
 
                             return (
                                 <motion.div
                                     key={cert.id}
-                                    initial={{ opacity: 0, y: 30 }}
+                                    initial={{ opacity: 0, y: 40 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
-                                    transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                                    onClick={() => {
-                                        if (window.innerWidth < 768) setSelectedCert({ ...cert, icon: IconComponent, ...colors });
-                                    }}
-                                    className={`group bg-white rounded-[1.5rem] md:rounded-[3rem] border border-stone-border/30 overflow-hidden hover:shadow-2xl transition-all duration-700 transform-gpu cursor-pointer md:cursor-default ${span}`}
+                                    transition={{ duration: 0.7, delay: idx * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                                    onClick={() => setSelectedCert({ ...cert, icon: IconComponent, ...colors })}
+                                    className="group cursor-pointer"
                                 >
-                                    <div className="p-3 md:p-6 h-full flex flex-col">
-                                        <div className="bg-white rounded-[1.2rem] md:rounded-[2.2rem] p-5 md:p-10 flex-grow transition-all duration-700 hover:bg-white/50 flex flex-col items-center md:items-start text-center md:text-left">
-                                            {/* Ikon sertifikat */}
-                                            <div className={`w-10 h-10 md:w-14 md:h-16 ${colors.bg} rounded-xl md:rounded-2xl border border-stone-border/30 flex items-center justify-center mb-4 md:mb-8 group-hover:scale-110 transition-transform duration-500`}>
-                                                <IconComponent className={`w-5 h-5 md:w-7 md:h-7 ${colors.color}`} />
+                                    {/* Card utama */}
+                                    <div className="relative bg-stone-dark rounded-[2rem] overflow-hidden hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] transition-all duration-700 hover:-translate-y-2">
+                                        
+                                        {/* Area gambar dengan overlay gradient */}
+                                        <div className="relative aspect-[4/3] overflow-hidden">
+                                            {hasRealImage ? (
+                                                <>
+                                                    {/* Gambar certificate */}
+                                                    <img
+                                                        src={cert.image}
+                                                        alt={cert.title}
+                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-[0.22,1,0.36,1]"
+                                                        onError={(e) => {
+                                                            if (e.target.src !== '/images/pure logo pakuaty.png') {
+                                                                e.target.src = '/images/pure logo pakuaty.png';
+                                                                e.target.className += ' opacity-20 grayscale';
+                                                            }
+                                                        }}
+                                                    />
+                                                    {/* Gradient overlay bawah — teks readable */}
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-stone-dark via-stone-dark/30 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
+                                                </>
+                                            ) : (
+                                                /* Fallback ikon */
+                                                <div className="w-full h-full bg-gradient-to-br from-stone-dark to-stone-dark/80 flex items-center justify-center">
+                                                    <div className={`w-20 h-20 ${colors.bg} rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500 border border-white/10`}>
+                                                        <IconComponent className={`w-10 h-10 ${colors.color}`} />
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Konten teks absolute di bawah gambar */}
+                                            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-7">
+                                                {/* Aksen garis emas di atas judul */}
+                                                <div className="w-10 h-[2px] bg-brand-gold mb-4 group-hover:w-16 transition-all duration-500" />
+                                                
+                                                {/* Judul sertifikat */}
+                                                <h3 className="text-lg md:text-xl font-bold text-white mb-1 leading-snug tracking-tight group-hover:text-brand-gold transition-colors duration-300">
+                                                    {(isEn && cert.title_en) ? cert.title_en : cert.title}
+                                                </h3>
+                                                {/* Sub-judul */}
+                                                <p className="text-[9px] md:text-[10px] font-bold text-white/50 uppercase tracking-[0.2em]">
+                                                    {(isEn && cert.sub_en) ? cert.sub_en : (cert.sub || cert.issued_by)}
+                                                </p>
                                             </div>
 
-                                            {/* Judul sertifikat */}
-                                            <h3 className="text-sm md:text-2xl font-bold text-stone-dark mb-1 md:mb-2 group-hover:text-brand-blue transition-colors line-clamp-1 md:line-clamp-none">
-                                                {(isEn && cert.title_en) ? cert.title_en : cert.title}
-                                            </h3>
-                                            {/* Sub-judul */}
-                                            <p className="text-[7px] md:text-[10px] font-bold text-brand-gold-dark uppercase tracking-[0.2em] mb-4">
-                                                {(isEn && cert.sub_en) ? cert.sub_en : (cert.sub || cert.issued_by)}
-                                            </p>
-
-                                            {/* Deskripsi — hanya desktop */}
-                                            <p className="hidden md:block text-sm text-[#78716C] font-light leading-relaxed mb-8">
-                                                {(isEn && cert.description_en) ? cert.description_en : cert.description}
-                                            </p>
-
-                                            {/* Tombol verifikasi — hanya desktop */}
-                                            <div className="mt-auto w-full hidden md:block">
-                                                <button className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-stone-dark/40 group-hover:text-brand-blue transition-colors">
-                                                    {t('certs.card_verification')}
-                                                    <Download className="w-3 h-3" />
-                                                </button>
-                                            </div>
-
-                                            {/* Mobile Tap Indicator */}
-                                            <div className="md:hidden mt-1">
-                                                <span className="text-[7px] font-bold text-brand-blue/50 uppercase tracking-widest">{t('certs.tap_indicator')}</span>
+                                            {/* Badge "View" di pojok kanan atas */}
+                                            <div className="absolute top-5 right-5 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
+                                                <div className="px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+                                                    <span className="text-[9px] font-black text-white uppercase tracking-widest">
+                                                        {t('certs.tap_indicator') || 'View'}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -208,59 +228,51 @@ const Certificates = () => {
                                     <span className="text-xs md:text-sm font-medium tracking-wide">{t('certs.footer_point3')}</span>
                                 </div>
                             </div>
-                            {/* Accent Background */}
                             <div className="absolute top-0 right-0 w-96 h-96 bg-brand-gold/10 rounded-full -mr-32 -mt-32 blur-[100px]"></div>
                         </div>
                     </motion.div>
                 </div>
             </div>
 
-            {/* Mobile/Detail Modal */}
+            {/* ═══════════════════════════════════════════
+                LIGHTBOX — Hanya gambar sertifikat saja
+                Tanpa card putih, tanpa judul/deskripsi
+            ═══════════════════════════════════════════ */}
             <AnimatePresence>
                 {selectedCert && (
-                    <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 md:hidden">
+                    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8">
+                        {/* Backdrop gelap + blur — klik untuk tutup */}
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setSelectedCert(null)}
-                            className="absolute inset-0 bg-stone-dark/60 backdrop-blur-sm"
+                            className="absolute inset-0 bg-black/80 backdrop-blur-md"
                         />
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="relative w-full max-w-sm bg-white rounded-[2.5rem] p-8 shadow-2xl overflow-hidden"
+
+                        {/* Tombol tutup — mengambang di pojok kanan atas */}
+                        <motion.button
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.5 }}
+                            transition={{ delay: 0.2 }}
+                            onClick={() => setSelectedCert(null)}
+                            className="absolute top-4 right-4 md:top-8 md:right-8 z-20 p-3 rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 active:scale-90 transition-all border border-white/10"
                         >
-                            <button
-                                onClick={() => setSelectedCert(null)}
-                                className="absolute top-6 right-6 p-2 rounded-full bg-stone-100 text-stone-dark active:scale-90 transition-transform"
-                            >
-                                <X className="w-4 h-4" />
-                            </button>
+                            <X className="w-6 h-6" />
+                        </motion.button>
 
-                            <div className="flex items-center gap-5 mb-8">
-                                <div className={`w-14 h-16 ${selectedCert.bg} rounded-2xl border border-stone-border/30 flex items-center justify-center shrink-0`}>
-                                    {selectedCert.icon && <selectedCert.icon className={`w-7 h-7 ${selectedCert.color}`} />}
-                                </div>
-                                <div>
-                                    <h3 className="text-2xl font-bold text-stone-dark leading-tight">
-                                        {(isEn && selectedCert.title_en) ? selectedCert.title_en : selectedCert.title}
-                                    </h3>
-                                    <p className="text-[10px] font-bold text-brand-gold-dark uppercase tracking-[0.2em] mt-1">
-                                        {(isEn && selectedCert.sub_en) ? selectedCert.sub_en : (selectedCert.sub || selectedCert.issuedBy)}
-                                    </p>
-                                </div>
-                            </div>
-                            <p className="text-base text-[#78716C] font-light leading-relaxed mb-8">
-                                {(isEn && selectedCert.description_en) ? selectedCert.description_en : selectedCert.description}
-                            </p>
-
-                            <button className="w-full py-4 bg-brand-blue text-white rounded-full font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-3 shadow-lg hover:bg-stone-dark transition-all active:scale-95">
-                                {t('certs.modal_verify')}
-                                <Download className="w-4 h-4" />
-                            </button>
-                        </motion.div>
+                        {/* Gambar sertifikat — tampil besar tanpa bingkai */}
+                        <motion.img
+                            initial={{ opacity: 0, scale: 0.85 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.85 }}
+                            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                            src={selectedCert.image}
+                            alt={selectedCert.title}
+                            onClick={() => setSelectedCert(null)}
+                            className="relative z-10 max-w-[90vw] max-h-[85vh] object-contain rounded-2xl shadow-2xl cursor-pointer select-none"
+                        />
                     </div>
                 )}
             </AnimatePresence>
@@ -269,3 +281,4 @@ const Certificates = () => {
 };
 
 export default Certificates;
+

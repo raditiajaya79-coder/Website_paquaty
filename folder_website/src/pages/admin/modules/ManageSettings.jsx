@@ -9,8 +9,8 @@ import {
     RefreshCw
 } from 'lucide-react'; // Ikon
 import Toast from '../../../components/admin/Toast';
-import { api } from '../../../utils/api'; // Menggunakan utilitas API tersentralisasi
-
+import ImageUploader from '../../../components/admin/ImageUploader';
+import { api } from '../../../utils/api';
 /**
  * ManageSettings Component — Pengelolaan konfigurasi global website.
  * Digunakan untuk mengatur jam operasional, visibilitas fitur, dll.
@@ -199,6 +199,7 @@ const ManageSettings = () => {
                                 <div className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all ${settings.show_certificates ? 'right-1' : 'left-1'}`} />
                             </button>
                         </div>
+
                     </div>
 
                     <ShieldCheck className="w-40 h-40 absolute -right-10 -bottom-10 text-slate-900 opacity-[0.02] transform -rotate-12 pointer-events-none" />

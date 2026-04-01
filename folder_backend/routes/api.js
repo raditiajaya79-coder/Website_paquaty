@@ -18,6 +18,7 @@ const announcementController = require('../controllers/announcementController');
 const contactController = require('../controllers/contactController');
 const dashboardController = require('../controllers/dashboardController'); // Import controller statistik
 const settingsController = require('../controllers/settingsController'); // Import controller settings
+
 const upload = require('../middleware/upload'); // Import middleware upload
 
 // --- DASHBOARD ROUTES ---
@@ -103,5 +104,7 @@ router.delete('/announcements/:id', auth, announcementController.deleteAnnouncem
 // --- SITE SETTINGS ROUTES ---
 router.get('/settings', settingsController.getSettings); // Publik
 router.put('/settings', auth, settingsController.updateSetting); // Admin Only
+
+
 
 module.exports = router;

@@ -7,9 +7,9 @@ import { api, UPLOAD_BASE_URL } from '../../utils/api'; // API utility + base UR
  * ImageUploader Component
  * @param {string} currentImage - URL gambar saat ini (jika ada)
  * @param {function} onUploadSuccess - Callback saat upload berhasil (mengembalikan URL baru)
- * @param {string} label - Label teks (opsional)
+ * @param {string} previewClassName - Custom Tailwind classes untuk box preview (opsional).
  */
-const ImageUploader = ({ currentImage, onUploadSuccess, label = "Upload Gambar" }) => {
+const ImageUploader = ({ currentImage, onUploadSuccess, label = "Upload Gambar", previewClassName = "min-h-[200px] max-h-[320px] aspect-video w-full" }) => {
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState(null);
     const fileInputRef = useRef(null);
@@ -48,7 +48,7 @@ const ImageUploader = ({ currentImage, onUploadSuccess, label = "Upload Gambar" 
 
             <div
                 onClick={() => !uploading && fileInputRef.current?.click()}
-                className={`relative group bg-slate-50 border-2 border-dashed rounded-2xl overflow-hidden flex flex-col items-center justify-center transition-all min-h-[200px] max-h-[320px] aspect-video w-full cursor-pointer pointer-events-auto ${error ? 'border-red-200 bg-red-50/10' : 'border-slate-200 hover:border-blue-300'}`}
+                className={`relative group bg-slate-50 border-2 border-dashed rounded-2xl overflow-hidden flex flex-col items-center justify-center transition-all cursor-pointer pointer-events-auto ${error ? 'border-red-200 bg-red-50/10' : 'border-slate-200 hover:border-blue-300'} ${previewClassName}`}
             >
                 {/* Preview Image */}
                 {currentImage && !uploading ? (

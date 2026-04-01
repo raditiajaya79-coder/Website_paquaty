@@ -10,6 +10,9 @@ import {
     Contact,
     Megaphone,
     UserCircle,
+    Camera,
+    MonitorPlay,
+
     LogOut,
     ChevronRight,
     X
@@ -48,6 +51,9 @@ const Sidebar = ({ isOpen, onClose }) => {
         { label: 'Event', icon: Calendar, path: '/admin/events' },
         { label: 'Kontak', icon: Contact, path: '/admin/contact' },
         { label: 'Pengumuman', icon: Megaphone, path: '/admin/announcements' },
+        { label: 'Foto Founder', icon: Camera, path: '/admin/founder' },
+        { label: 'Video Beranda', icon: MonitorPlay, path: '/admin/hero-video' },
+
         { label: 'Pengaturan', icon: LayoutDashboard, path: '/admin/settings' },
         { label: 'Profil', icon: UserCircle, path: '/admin/profile' },
     ];

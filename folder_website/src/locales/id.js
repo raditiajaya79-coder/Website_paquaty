@@ -316,6 +316,7 @@ export const id = {
     "events.article_category_default": "Berita",
     "events.empty": "Belum ada acara atau berita yang diterbitkan.",
     "events.read_more": "Baca Selengkapnya",
+    "events.view_details": "Lihat Detail",
 
     "products.loading": "Memuat Produk...",
     "products.search_placeholder": "Cari produk...",
