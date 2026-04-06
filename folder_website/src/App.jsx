@@ -1,5 +1,6 @@
 // App.jsx — Route definitions (mirip pages/ folder di Next.js)
 // Semua halaman didefinisikan di sini sebagai routes
+import React, { lazy } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import ScrollToTop from './components/ScrollToTop.jsx';
@@ -10,39 +11,39 @@ import MainLayout from './layouts/MainLayout.jsx';
 
 // Pages — setiap halaman website publik
 import Home from './pages/Home.jsx';
-import About from './pages/About.jsx';
-import Products from './pages/Products.jsx';
-import ProductDetail from './pages/ProductDetail.jsx';
-import Contact from './pages/Contact.jsx';
-import Events from './pages/Events.jsx';
-import EventDetail from './pages/EventDetail.jsx';
-import Gallery from './pages/Gallery.jsx';
-import Certificates from './pages/Certificates.jsx';
+const About = lazy(() => import('./pages/About.jsx'));
+const Products = lazy(() => import('./pages/Products.jsx'));
+const ProductDetail = lazy(() => import('./pages/ProductDetail.jsx'));
+const Contact = lazy(() => import('./pages/Contact.jsx'));
+const Events = lazy(() => import('./pages/Events.jsx'));
+const EventDetail = lazy(() => import('./pages/EventDetail.jsx'));
+const Gallery = lazy(() => import('./pages/Gallery.jsx'));
+const Certificates = lazy(() => import('./pages/Certificates.jsx'));
 
 // Admin Pages — Area khusus pengelolaan konten
-import Login from './pages/admin/Login.jsx';
+const Login = lazy(() => import('./pages/admin/Login.jsx'));
 import AdminLayout from './layouts/AdminLayout.jsx';
-import Dashboard from './pages/admin/Dashboard.jsx';
+const Dashboard = lazy(() => import('./pages/admin/Dashboard.jsx'));
 
 // Detailed Admin Modules
-import ManageProducts from './pages/admin/modules/ManageProducts.jsx';
-import ManageGallery from './pages/admin/modules/ManageGallery.jsx';
-import ManageCertificates from './pages/admin/modules/ManageCertificates.jsx';
-import ManageEvents from './pages/admin/modules/ManageEvents.jsx';
-import ManageContact from './pages/admin/modules/ManageContact.jsx';
-import ManageAnnouncements from './pages/admin/modules/ManageAnnouncements.jsx';
-import ManageSettings from './pages/admin/modules/ManageSettings.jsx';
-import ManageFounder from './pages/admin/modules/ManageFounder.jsx';
-import ManageHeroVideo from './pages/admin/modules/ManageHeroVideo.jsx';
+const ManageProducts = lazy(() => import('./pages/admin/modules/ManageProducts.jsx'));
+const ManageGallery = lazy(() => import('./pages/admin/modules/ManageGallery.jsx'));
+const ManageCertificates = lazy(() => import('./pages/admin/modules/ManageCertificates.jsx'));
+const ManageEvents = lazy(() => import('./pages/admin/modules/ManageEvents.jsx'));
+const ManageContact = lazy(() => import('./pages/admin/modules/ManageContact.jsx'));
+const ManageAnnouncements = lazy(() => import('./pages/admin/modules/ManageAnnouncements.jsx'));
+const ManageSettings = lazy(() => import('./pages/admin/modules/ManageSettings.jsx'));
+const ManageFounder = lazy(() => import('./pages/admin/modules/ManageFounder.jsx'));
+const ManageHeroVideo = lazy(() => import('./pages/admin/modules/ManageHeroVideo.jsx'));
 
-import AdminProfile from './pages/admin/modules/AdminProfile.jsx';
+const AdminProfile = lazy(() => import('./pages/admin/modules/AdminProfile.jsx'));
 
 // Form Pages [NEW]
-import ProductForm from './pages/admin/modules/forms/ProductForm.jsx';
-import EventForm from './pages/admin/modules/forms/EventForm.jsx';
-import AnnouncementForm from './pages/admin/modules/forms/AnnouncementForm.jsx';
-import GalleryForm from './pages/admin/modules/forms/GalleryForm.jsx';
-import CertificateForm from './pages/admin/modules/forms/CertificateForm.jsx';
+const ProductForm = lazy(() => import('./pages/admin/modules/forms/ProductForm.jsx'));
+const EventForm = lazy(() => import('./pages/admin/modules/forms/EventForm.jsx'));
+const AnnouncementForm = lazy(() => import('./pages/admin/modules/forms/AnnouncementForm.jsx'));
+const GalleryForm = lazy(() => import('./pages/admin/modules/forms/GalleryForm.jsx'));
+const CertificateForm = lazy(() => import('./pages/admin/modules/forms/CertificateForm.jsx'));
 
 /**
  * App — Root component yang mengatur routing

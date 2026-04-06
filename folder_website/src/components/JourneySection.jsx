@@ -94,18 +94,21 @@ const JourneySection = () => {
                         <div className={`relative w-max md:w-full md:grid ${gridColsClass} md:gap-4 lg:gap-2`}>
 
                             {/* ── Garis Penghubung Animasi ── */}
-                            <div className="absolute top-[48px] left-[12.5%] right-[12.5%] h-px z-0 pointer-events-none">
-                                <svg width="100%" height="2" viewBox="0 0 800 2" fill="none" preserveAspectRatio="none" className="w-full">
-                                    {/* Garis putus-putus latar */}
-                                    <line x1="0" y1="1" x2="800" y2="1" stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="8 8" />
-                                    {/* Garis kuning animasi scroll */}
-                                    <motion.line
-                                        x1="0" y1="1" x2="800" y2="1"
-                                        stroke="#E5B326"
-                                        strokeWidth="2"
-                                        style={{ pathLength }}
-                                    />
+                            <div className="absolute top-[48px] left-[8.33%] right-[8.33%] h-[2px] z-0 pointer-events-none">
+                                {/* Garis putus-putus latar (Tetap pakai SVG agar putus-putusnya proporsional) */}
+                                <svg width="100%" height="2" viewBox="0 0 1000 2" fill="none" preserveAspectRatio="none" className="w-full absolute inset-0">
+                                    <line x1="0" y1="1" x2="1000" y2="1" stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="6 6" />
                                 </svg>
+                                
+                                {/* Garis kuning animasi scroll (Pakai DIV scaleX untuk menghindari bug ujung blur karena stretch viewBox SVG) */}
+                                <motion.div
+                                    className="absolute top-0 left-0 h-full bg-[#E5B326]"
+                                    style={{ 
+                                        width: "100%", 
+                                        scaleX: pathLength, 
+                                        transformOrigin: "left" 
+                                    }}
+                                />
                             </div>
 
                             {/* ── Render Setiap Step ── */}

@@ -127,26 +127,58 @@ const ManageContact = () => {
         }
     };
 
-    // Handle Perubahan Input Teks secara reaktif
+    // Fungsi Simpan Individual (Auto-Save)
+    const saveContact = async (contactToSave) => {
+        if (!contactToSave) return;
+        try {
+            setSaving(true);
+            const token = localStorage.getItem('admin_token');
+            const isNew = contactToSave.isNew || (typeof contactToSave.id === 'number' && contactToSave.id > 1000000000000);
+            const url = isNew ? `${API_BASE_URL}/contact` : `${API_BASE_URL}/contact/${contactToSave.id}`;
+            const method = isNew ? 'POST' : 'PUT';
+
+            const response = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(contactToSave)
+            });
+
+            if (!response.ok) throw new Error('Gagal menyimpan otomatis');
+            if (isNew) fetchContacts(); // Refresh untuk dapatkan ID DB
+        } catch (err) {
+            console.error(err);
+            setToast({ show: true, message: err.message, type: 'error' });
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    // Handle Perubahan Input Teks (Hanya update state)
     const handleInputChange = (id, newValue) => {
         setSocials(socials.map(s => s.id == id ? { ...s, value: newValue } : s));
     };
 
-    // Handle Perubahan Dropdown Platform
-    const handlePlatformChange = (id, newPlatformName) => {
-        const preset = PRESET_PLATFORMS.find(p => p.name === newPlatformName);
-        if (preset) {
-            setSocials(socials.map(s => s.id == id ? { ...s, platform: preset.name, icon: preset.icon, color: preset.color } : s));
-        } else {
-            // Jika memilih custom / mengetik manual (opsional fitur depan)
-            setSocials(socials.map(s => s.id == id ? { ...s, platform: newPlatformName } : s));
-        }
+    // Auto-save: dipicu saat input teks kehilangan fokus (onBlur)
+    const handleInputBlur = (id) => {
+        const item = socials.find(s => s.id == id);
+        if (item) saveContact(item);
     };
 
-    // Handle Toggle Visibilitas (Header/Footer) secara reaktif
+    // Handle Perubahan Dropdown Platform (Auto-Save)
+    const handlePlatformChange = (id, newPlatformName) => {
+        const preset = PRESET_PLATFORMS.find(p => p.name === newPlatformName);
+        const updatedItem = preset ? { platform: preset.name, icon: preset.icon, color: preset.color } : { platform: newPlatformName };
+        
+        const newSocials = socials.map(s => s.id == id ? { ...s, ...updatedItem } : s);
+        setSocials(newSocials);
+        saveContact(newSocials.find(s => s.id == id));
+    };
+
+    // Handle Toggle Visibilitas (Header/Footer) (Auto-Save)
     const toggleDisplay = (id, field) => {
-        // Menggunakan loose equality (==) untuk fleksibilitas tipe data ID
-        setSocials(socials.map(s => s.id == id ? { ...s, [field]: !s[field] } : s));
+        const newSocials = socials.map(s => s.id == id ? { ...s, [field]: !s[field] } : s);
+        setSocials(newSocials);
+        saveContact(newSocials.find(s => s.id == id));
     };
 
     // Fungsi memicu tambah platform baru
@@ -160,51 +192,7 @@ const ManageContact = () => {
             show_in_header: false,
             show_in_footer: false,
         };
-        setSocials([...socials, newItem]); // Masukkan ke list state
-    };
-
-    // Fungsi Simpan Masal ke Database (Cerdas: POST untuk baru, PUT untuk lama)
-    const handleSave = async () => {
-        try {
-            setSaving(true);
-            const token = localStorage.getItem('admin_token'); // Auth token admin
-
-            // Loop semua kontak dan tentukan metode (POST/PUT) berdasarkan asal ID-nya
-            const promises = socials.map(contact => {
-                const isNew = contact.isNew || typeof contact.id === 'number' && contact.id > 1000000000000; // Deteksi ID sementara Date.now()
-                const url = isNew
-                    ? `${API_BASE_URL}/contact`
-                    : `${API_BASE_URL}/contact/${contact.id}`;
-                const method = isNew ? 'POST' : 'PUT';
-
-                return fetch(url, {
-                    method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(contact)
-                });
-            });
-
-            const results = await Promise.all(promises);
-
-            // Cek jika ada request yang gagal
-            const failedRequests = results.filter(res => !res.ok);
-            if (failedRequests.length > 0) {
-                // Ambil pesan error dari salah satu request yang gagal jika ada
-                const errData = await failedRequests[0].json();
-                throw new Error(errData.error || 'Gagal menyimpan beberapa item');
-            }
-
-            setToast({ show: true, message: 'Semua perubahan berhasil disinkronisasi!', type: 'success' });
-            fetchContacts(); // Refresh data untuk mendapatkan ID asli dari database
-        } catch (err) {
-            console.error('[CONTACT] ❌ Sync Error:', err.message);
-            setToast({ show: true, message: 'Gagal sinkronisasi: ' + err.message, type: 'error' });
-        } finally {
-            setSaving(false);
-        }
+        setSocials([...socials, newItem]); 
     };
 
     // Fungsi Pemicu Modal Hapus
@@ -263,14 +251,9 @@ const ManageContact = () => {
                     <h1 className="text-xl font-black text-[#1E293B] tracking-tight">Manajemen Kontak</h1>
                     <p className="text-[#64748B] mt-0.5 font-bold text-[11px]">Atur link sosial media dan lokasi penampilannya di website.</p>
                 </div>
-                <button
-                    onClick={handleSave}
-                    disabled={saving}
-                    className={`flex items-center justify-center gap-2 px-6 py-2.5 bg-[#1e40af] text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-blue-900/10 hover:bg-[#1d4ed8] transition-all ${saving ? 'opacity-50' : ''}`}
-                >
-                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                    {saving ? 'Menyimpan...' : 'Simpan Perubahan'}
-                </button>
+                <div className="flex items-center gap-3">
+                    {saving && <span className="text-xs font-bold text-slate-400 animate-pulse">Menyimpan...</span>}
+                </div>
             </div>
 
             {/* Grid Daftar Kontak */}
@@ -324,6 +307,7 @@ const ManageContact = () => {
                                             type="text"
                                             value={item.value}
                                             onChange={(e) => handleInputChange(item.id, e.target.value)}
+                                            onBlur={() => handleInputBlur(item.id)}
                                             className="w-full bg-slate-50 border border-slate-100 rounded-xl py-2.5 pl-11 pr-4 font-bold text-[#1E293B] focus:outline-none focus:ring-4 focus:ring-blue-100 focus:bg-white transition-all text-xs"
                                         />
                                     </div>
@@ -338,7 +322,7 @@ const ManageContact = () => {
                                 >
                                     <div className="flex items-center gap-2.5">
                                         <Navigation className={`w-3.5 h-3.5 ${item.show_in_header ? 'text-[#2563EB]' : 'text-slate-400'}`} />
-                                        <span className="text-[9px] font-black text-[#64748B] uppercase tracking-widest">Tampil Header</span>
+                                        <span className="text-[9px] font-black text-[#64748B] uppercase tracking-widest">Tampil Di Page Contact</span>
                                     </div>
                                     <div className={`w-9 h-5 rounded-full relative transition-colors ${item.show_in_header ? 'bg-[#2563EB]' : 'bg-slate-300'}`}>
                                         <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${item.show_in_header ? 'right-1' : 'left-1'}`}></div>

@@ -11,6 +11,8 @@ import App from './App.jsx';
 import './index.css';
 
 import { LanguageProvider } from './context/LanguageContext.jsx';
+// GlobalDataProvider — Menyediakan data API yang sudah di-preload ke seluruh app
+import { GlobalDataProvider } from './context/GlobalDataContext.jsx';
 
 // Mount React app ke DOM element #root di index.html
 createRoot(document.getElementById('root')).render(
@@ -19,7 +21,10 @@ createRoot(document.getElementById('root')).render(
         <HelmetProvider>
             <LanguageProvider>
                 <BrowserRouter>
-                    <App />
+                    {/* GlobalDataProvider — Fetch semua data di awal, simpan di context */}
+                    <GlobalDataProvider>
+                        <App />
+                    </GlobalDataProvider>
                 </BrowserRouter>
             </LanguageProvider>
         </HelmetProvider>

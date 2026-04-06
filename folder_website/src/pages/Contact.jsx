@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'; // React hooks untuk state dan side-effect
 import { Helmet } from 'react-helmet-async'; // SEO meta tags
 import { motion } from 'framer-motion'; // Animasi scroll reveal
-import { MapPin, Mail, Phone, Send, Clock, Globe } from 'lucide-react'; // Ikon Lucide
+import { Mail, Phone, Send, Clock, Globe, MapPin } from 'lucide-react'; // Ikon Lucide
 import { generatePageTitle } from '../utils/seo'; // Utilitas SEO
 import { useLanguage } from '../context/LanguageContext'; // Multi-bahasa
-import { API_BASE_URL } from '../utils/api';
+import { generateContactHref, generateContactLabel } from '../utils/contact'; // Utilitas standarisasi kontak
+// Mengambil data dari GlobalDataContext (sudah di-preload saat awal)
+import { useGlobalData } from '../context/GlobalDataContext';
 
 /**
  * ContactBrandIcons — Mapping nama ikon dari database ke komponen SVG brand asli.
@@ -83,89 +85,21 @@ const ContactBrandIcons = {
     )
 };
 
-/**
- * generateContactHref — Smart URL generator.
- * Admin cukup masukkan data mentah (nomor, username, email),
- * fungsi ini otomatis generate link lengkap berdasarkan platform.
- *
- * Contoh:
- *  - WhatsApp + "081287990370"  → "https://wa.me/6281287990370"
- *  - Instagram + "@pakuaty"     → "https://instagram.com/pakuaty"
- *  - Mail + "info@example.com"  → "mailto:info@example.com"
- *  - Facebook + "PakuatyID"    → "https://facebook.com/PakuatyID"
- *
- * @param {Object} contact - Object kontak dari API ({ icon, value })
- * @returns {string} URL siap pakai
- */
-const generateContactHref = (contact) => {
-    const val = (contact.value || '').trim(); // Bersihkan spasi di awal/akhir
-
-    // Jika admin sudah memasukkan URL lengkap (http/https), langsung pakai apa adanya
-    if (val.startsWith('http://') || val.startsWith('https://')) return val;
-
-    switch (contact.icon) {
-        // Email: tambahkan protokol mailto:
-        case 'Mail':
-            return `mailto:${val}`;
-
-        // WhatsApp/MessageCircle: bersihkan nomor → buat link wa.me
-        case 'WhatsApp':
-        case 'MessageCircle': {
-            let num = val.replace(/\D/g, ''); // Hapus semua karakter non-angka
-            // Konversi awalan 0 lokal ke kode negara Indonesia +62
-            if (num.startsWith('0')) num = '62' + num.slice(1);
-            return `https://wa.me/${num}`;
-        }
-
-        // Phone: bersihkan nomor → buat link tel:
-        case 'Phone': {
-            let num = val.replace(/\D/g, ''); // Hapus semua non-angka
-            if (num.startsWith('0')) num = '62' + num.slice(1); // Konversi 0xxx ke 62xxx
-            return `tel:+${num}`;
-        }
-
-        // Instagram: hapus @ jika ada → buat link profil
-        case 'Instagram': {
-            const username = val.replace(/^@/, ''); // Hapus @ di awal jika ada
-            return `https://instagram.com/${username}`;
-        }
-
-        // Facebook: buat link profil/halaman
-        case 'Facebook': {
-            const page = val.replace(/^@/, ''); // Hapus @ jika ada
-            return `https://facebook.com/${page}`;
-        }
-
-        // TikTok: tambahkan @ jika belum ada → buat link profil
-        case 'Tiktok': {
-            const user = val.startsWith('@') ? val : `@${val}`; // Pastikan ada @
-            return `https://tiktok.com/${user}`;
-        }
-
-        // Twitter/X: hapus @ jika ada → buat link profil X
-        case 'Twitter': {
-            const handle = val.replace(/^@/, ''); // Hapus @ di awal
-            return `https://x.com/${handle}`;
-        }
-
-        // Shopee: buat link toko
-        case 'Shopee':
-        case 'ShoppingBag':
-            return `https://shopee.co.id/${val}`;
-
-        // Globe / default: fallback tambahkan https://
-        default:
-            return `https://${val}`;
-    }
-};
 
 const Contact = () => {
     const { t } = useLanguage(); // Hook multi-bahasa
-    const [contacts, setContacts] = useState([]); // State data kontak dari API
-    const [settings, setSettings] = useState({
+    // Ambil contacts dan settings dari data yang sudah di-preload
+    const { contacts: allContacts, settings: globalSettings } = useGlobalData();
+
+    // Filter kontak yang show_in_header (sama seperti logic sebelumnya)
+    const contacts = (allContacts || []).filter(item => item.show_in_header === 1 || item.show_in_header === true);
+
+    // Merge settings dengan default values untuk jam operasional
+    const settings = {
         hours_mon_fri: '09:00 - 18:00',
-        hours_sat: '09:00 - 13:00'
-    });
+        hours_sat: '09:00 - 13:00',
+        ...globalSettings
+    };
 
     // Animasi scroll-reveal untuk elemen-elemen halaman
     const fadeIn = {
@@ -174,37 +108,6 @@ const Contact = () => {
         viewport: { once: true },
         transition: { duration: 0.6 }
     };
-
-    /**
-     * useEffect — Fetch data kontak dan pengaturan dari API saat komponen pertama kali dimuat.
-     */
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Fetch Kontak
-                const contactRes = await fetch(`${API_BASE_URL}/contact`);
-                if (contactRes.ok) {
-                    const contactData = await contactRes.json();
-                    if (Array.isArray(contactData)) {
-                        setContacts(contactData);
-                    }
-                }
-
-                // Fetch Pengaturan (Jam Operasional)
-                const settingsRes = await fetch(`${API_BASE_URL}/settings`);
-                if (settingsRes.ok) {
-                    const settingsData = await settingsRes.json();
-                    setSettings(prev => ({
-                        ...prev,
-                        ...settingsData
-                    }));
-                }
-            } catch (err) {
-                console.error('[Contact] Gagal fetch data:', err);
-            }
-        };
-        fetchData();
-    }, []);
 
     return (
         <>
@@ -228,9 +131,9 @@ const Contact = () => {
                                 {t('contact.header_label')}
                             </span>
                             {/* Heading utama */}
-                            <h1 className="text-[clamp(1.5rem,6vw,3.75rem)] font-light text-stone-dark tracking-tighter mb-8 leading-[1.1]">
-                                {t('contact.header_title')}{' '}
-                                <span className="italic font-serif text-brand-gold text-4xl sm:text-5xl lg:text-6xl xl:text-7xl">{t('contact.header_title_accent')}</span>
+                            <h1 className="text-[clamp(1.5rem,6vw,3.75rem)] font-light text-stone-dark tracking-tighter mb-8 leading-[1.1] flex items-baseline gap-2 whitespace-nowrap">
+                                {t('contact.header_title')}
+                                <span className="italic font-serif text-brand-gold text-[clamp(2rem,6vw,4.5rem)]">{t('contact.header_title_accent')}</span>
                             </h1>
                             {/* Sub-heading deskripsi */}
                             <p className="text-base sm:text-lg text-stone-dark/60 font-light leading-relaxed max-w-lg mb-12 sm:mb-16">
@@ -274,9 +177,9 @@ const Contact = () => {
                                             <div>
                                                 {/* Nama platform dari database */}
                                                 <h4 className="text-sm font-bold tracking-widest uppercase text-stone-dark mb-2">{contact.platform}</h4>
-                                                {/* Nilai kontak (URL/nomor/email) */}
+                                                {/* Nilai kontak (URL/nomor/email) yang sudah distandarisasi */}
                                                 <p className="text-sm sm:text-base text-stone-dark/60 font-medium leading-relaxed group-hover:text-brand-blue transition-colors break-all sm:break-normal">
-                                                    {contact.value}
+                                                    {generateContactLabel(contact)}
                                                 </p>
                                             </div>
                                         </a>

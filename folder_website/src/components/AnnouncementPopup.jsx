@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, ArrowRight, Bell } from 'lucide-react';
-import useSWR from 'swr';
-import { API_BASE_URL } from '../utils/api';
-const fetcher = (url) => fetch(url).then(res => res.json());
+// Mengambil data dari GlobalDataContext (sudah di-preload saat awal)
+import { useGlobalData } from '../context/GlobalDataContext';
 
 /**
  * AnnouncementPopup — Pop-up Informasi Dinamis (Artisan Style)
@@ -15,15 +14,9 @@ const AnnouncementPopup = () => {
     const { lang, t } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
 
-    // SWR fetching untuk pengumuman
-    const { data: announcements, isLoading } = useSWR(
-        `${API_BASE_URL}/announcements`,
-        fetcher,
-        {
-            revalidateOnFocus: false, // Jangan re-fetch terus menerus untuk popup
-            dedupingInterval: 3600000 // Cache selama 1 jam
-        }
-    );
+    // Ambil announcements dari data yang sudah di-preload (tidak perlu fetch lagi)
+    const { announcements, isLoaded } = useGlobalData();
+    const isLoading = !isLoaded; // Loading state berdasarkan preloader global
 
     useEffect(() => {
         const hasSeenPopup = sessionStorage.getItem('pakuaty_announcement_seen');
@@ -70,66 +63,49 @@ const AnnouncementPopup = () => {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 30 }}
                     transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                    className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-[0_30px_80px_rgba(0,0,0,0.15)] overflow-hidden border border-brand-gold/20"
+                    className="relative w-full max-w-4xl bg-white rounded-[2rem] shadow-[0_30px_80px_rgba(0,0,0,0.15)] overflow-hidden border border-brand-gold/20"
                 >
-                    {/* Close Button */}
-                    <button
-                        onClick={handleClose}
-                        className="absolute top-6 right-8 z-30 text-[9px] font-black uppercase tracking-[0.3em] text-stone-dark/40 hover:text-brand-gold transition-colors"
-                    >
-                        [ {t('announcement.close')} ]
-                    </button>
-
-                    <div className="flex flex-col">
-                        {/* Image Header */}
+                    <div className="flex flex-col md:flex-row min-h-[400px]">
+                        {/* Image Layer (Left Side on Desktop) */}
                         {data.image && (
-                            <div className="w-full h-56 overflow-hidden">
+                            <div className="w-full md:w-[45%] h-64 md:h-auto overflow-hidden relative">
                                 <img
                                     src={data.image}
                                     alt={lang === 'en' ? (data.title_en || data.title) : data.title}
                                     className="w-full h-full object-cover"
                                 />
+                                <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-stone-dark/10 to-transparent mix-blend-multiply" />
                             </div>
                         )}
 
-                        <div className="p-10 md:p-14 text-center">
+                        {/* Content Layer (Right Side on Desktop) */}
+                        <div className={`w-full ${data.image ? 'md:w-[55%]' : ''} p-8 md:p-14 flex flex-col justify-center text-center md:text-left`}>
                             <span className="text-brand-gold font-bold tracking-[0.5em] uppercase text-[9px] mb-4 block">
                                 {t('announcement.info')}
                             </span>
 
-                            <h2 className="text-3xl font-serif font-medium text-stone-dark mb-6 leading-tight italic">
+                            <h2 className="text-3xl md:text-4xl font-serif font-medium text-stone-dark mb-4 leading-tight italic">
                                 {lang === 'en' ? (data.title_en || data.title) : data.title}
                             </h2>
 
-                            <p className="text-[#87817D] text-sm leading-relaxed mb-10 font-medium">
+                            <p className="text-[#87817D] text-sm md:text-base leading-relaxed mb-10 font-medium">
                                 {lang === 'en' ? (data.message_en || data.message) : data.message}
                             </p>
 
-                            <div className="flex justify-center">
-                                {data.link ? (
-                                    <a
-                                        href={data.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="px-10 py-4 border border-stone-dark/10 hover:border-brand-gold hover:bg-brand-gold hover:text-stone-dark transition-all duration-500 rounded-full font-black text-[9px] uppercase tracking-[0.4em] text-stone-dark flex items-center gap-3 group"
-                                    >
-                                        {(lang === 'en' ? (data.button_text_en || data.button_text) : data.button_text) || t('announcement.view_detail')}
-                                        <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
-                                    </a>
-                                ) : (
-                                    <button
-                                        onClick={handleClose}
-                                        className="px-10 py-4 bg-stone-dark text-white rounded-full font-black text-[9px] uppercase tracking-[0.4em] hover:bg-brand-blue transition-all"
-                                    >
-                                        {(lang === 'en' ? (data.button_text_en || data.button_text) : data.button_text) || t('announcement.close')}
-                                    </button>
-                                )}
-                            </div>
-                        </div>
+                            <div className="flex flex-col sm:flex-row items-center justify-between mt-auto pt-8 border-t border-stone-100 gap-6">
+                                {/* Aesthetic Footer (Kiri Bawah) */}
+                                <span className="text-[8px] font-bold text-stone-dark/20 uppercase tracking-widest text-center sm:text-left">
+                                    {t('announcement.official')}
+                                </span>
 
-                        {/* Aesthetic Footer */}
-                        <div className="w-full py-4 bg-stone-50 border-t border-stone-100 flex items-center justify-center gap-4">
-                            <span className="text-[8px] font-bold text-stone-dark/20 uppercase tracking-widest">{t('announcement.official')}</span>
+                                {/* Tombol Tutup (Kanan Bawah) */}
+                                <button
+                                    onClick={handleClose}
+                                    className="w-full sm:w-auto px-10 py-4 bg-stone-dark text-white border border-stone-dark rounded-full font-black text-[9px] uppercase tracking-[0.4em] hover:bg-brand-gold hover:border-brand-gold hover:text-stone-dark transition-all duration-500"
+                                >
+                                    {t('announcement.close')}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </motion.div>

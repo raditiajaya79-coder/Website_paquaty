@@ -185,15 +185,6 @@ const CertificateForm = () => {
                 </div>
                 {/* Header Status Indicator */}
                 <div className="flex items-center gap-3">
-                    <button
-                        type="button"
-                        onClick={handleTranslate}
-                        disabled={isTranslating}
-                        className={`flex items-center gap-3 px-6 py-3 bg-white border border-slate-200 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-sm transition-all active:scale-95 ${isTranslating ? 'opacity-50' : 'hover:border-blue-200 hover:text-blue-600'}`}
-                    >
-                        {isTranslating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
-                        {isTranslating ? 'Translating...' : 'Magic Translate (EN)'}
-                    </button>
                     <div className="hidden md:flex items-center gap-2.5 px-4 py-3 bg-blue-50 border border-blue-100 rounded-xl">
                         <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
                         <span className="text-[10px] font-black text-[#1e40af] uppercase tracking-widest">Arsip Sertifikat Resmi</span>
@@ -208,7 +199,18 @@ const CertificateForm = () => {
                     <div className="space-y-6">
                         <div className="space-y-6">
                             <div className="space-y-2.5">
-                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Nama Sertifikat</label>
+                                <div className="flex items-center justify-between">
+                                    <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Nama Sertifikat</label>
+                                    <button
+                                        type="button"
+                                        onClick={handleTranslate}
+                                        disabled={isTranslating}
+                                        className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-[9px] font-black text-indigo-600 rounded-md shadow-sm hover:bg-indigo-100 hover:text-indigo-700 transition-all disabled:opacity-50 uppercase tracking-widest"
+                                    >
+                                        {isTranslating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Wand2 className="w-3.5 h-3.5" />}
+                                        {isTranslating ? 'Translating...' : 'Magic Auto-Translate (EN)'}
+                                    </button>
+                                </div>
                                 <div className="relative">
                                     <Type className="absolute left-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#94A3B8]" />
                                     <input

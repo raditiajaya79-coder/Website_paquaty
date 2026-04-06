@@ -1,17 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { ArrowRight, Menu, X, Phone, Mail, Globe, ShoppingBag, Video, MessageCircle, Link as LinkIcon } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { API_BASE_URL } from '../utils/api';
+// Mengambil data dari GlobalDataContext (sudah di-preload saat awal)
+import { useGlobalData } from '../context/GlobalDataContext';
 const Navbar = () => {
     const { lang, switchLang, t } = useLanguage();
     const location = useLocation();
     const isHome = location.pathname === '/';
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [hasCertificates, setHasCertificates] = useState(false);
-    const [headerContacts, setHeaderContacts] = useState([]); // Menampung kontak untuk header
 
     // Custom SVG Logo Mapping
     const NavbarBrandIcons = {
@@ -66,50 +65,28 @@ const Navbar = () => {
         Default: () => <Globe className="w-4 h-4 text-stone-dark/40" />
     };
 
-    // Mengecek apakah ada sertifikat aktif dan kontak untuk header/footer
-    useEffect(() => {
-        const fetchInitialData = async () => {
-            try {
-                // 1. Fetch Global Settings (Master Switch)
-                const settingsResponse = await fetch(`${API_BASE_URL}/settings`);
-                let isMasterEnabled = true;
+    // Ambil settings, certificates, dan contacts dari data yang sudah di-preload
+    const { settings, certificates: certData, contacts: contactData } = useGlobalData();
 
-                if (settingsResponse.ok) {
-                    const settings = await settingsResponse.json();
-                    if (settings && typeof settings.show_certificates !== 'undefined') {
-                        isMasterEnabled = settings.show_certificates;
-                    }
-                }
+    // Hitung hasCertificates dari data context
+    const hasCertificates = useMemo(() => {
+        // Cek master switch dari settings
+        const isMasterEnabled = settings && typeof settings.show_certificates !== 'undefined'
+            ? settings.show_certificates
+            : true; // Default: aktif
 
-                // 2. Fetch Sertifikat (Hanya untuk pengecekan data aktif jika master switch ON)
-                const certResponse = await fetch(`${API_BASE_URL}/certificates`);
-                if (certResponse.ok) {
-                    const certData = await certResponse.json();
+        // Cek apakah ada sertifikat aktif
+        const hasActiveCert = Array.isArray(certData) && certData.length > 0 && certData.some(cert => !!cert.is_active);
+        const isEmpty = Array.isArray(certData) && certData.length === 0;
 
-                    // Logika: 
-                    // - Master Switch (Admin) harus ON
-                    // - DAN (Data Kosong/Placeholder ATAU Ada minimal 1 yang aktif)
-                    const hasActiveCert = Array.isArray(certData) && certData.length > 0 && certData.some(cert => !!cert.is_active);
-                    const isEmpty = Array.isArray(certData) && certData.length === 0;
+        return isMasterEnabled && (isEmpty || hasActiveCert);
+    }, [settings, certData]);
 
-                    setHasCertificates(isMasterEnabled && (isEmpty || hasActiveCert));
-                }
-
-                // 2. Fetch Contacts untuk Navigasi (Header)
-                const contactResponse = await fetch(`${API_BASE_URL}/contact`);
-                if (contactResponse.ok) {
-                    const contactData = await contactResponse.json();
-                    if (Array.isArray(contactData)) {
-                        const headerItems = contactData.filter(item => item.show_in_header === 1 || item.show_in_header === true);
-                        setHeaderContacts(headerItems);
-                    }
-                }
-            } catch (err) {
-                console.error("Gagal memuat data awal Navbar", err);
-            }
-        };
-        fetchInitialData();
-    }, []);
+    // Filter kontak untuk header dari data context
+    const headerContacts = useMemo(() => {
+        if (!Array.isArray(contactData)) return [];
+        return contactData.filter(item => item.show_in_header === 1 || item.show_in_header === true);
+    }, [contactData]);
 
     useEffect(() => {
         const handleScroll = () => {

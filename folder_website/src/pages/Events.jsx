@@ -5,10 +5,8 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, User, MapPin } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
 import { useLanguage } from '../context/LanguageContext';
-import useSWR from 'swr';
-import { API_BASE_URL } from '../utils/api';
-
-const fetcher = (url) => fetch(url).then(res => res.json());
+// Mengambil data dari GlobalDataContext (sudah di-preload saat awal)
+import { useGlobalData } from '../context/GlobalDataContext';
 
 /**
  * Events — Halaman unifikasi Acara & Berita
@@ -19,21 +17,11 @@ const Events = () => {
     const { t, lang } = useLanguage();
     const isEn = lang === 'en';
 
-    // SWR fetching untuk events
-    const { data: events = [], isLoading: eventsLoading } = useSWR(
-        `${API_BASE_URL}/events`,
-        fetcher,
-        { refreshInterval: 60000, revalidateOnFocus: true }
-    );
+    // Ambil events dan articles dari data yang sudah di-preload (tidak perlu fetch lagi)
+    const { events, articles } = useGlobalData();
 
-    // SWR fetching untuk articles
-    const { data: articles = [], isLoading: articlesLoading } = useSWR(
-        `${API_BASE_URL}/articles`,
-        fetcher,
-        { refreshInterval: 60000, revalidateOnFocus: true }
-    );
-
-    const loading = eventsLoading || articlesLoading;
+    // Data sudah dimuat di preloader, tidak perlu loading state
+    const loading = false;
 
     // Logic penentuan Featured (Acara Utama) berdasarkan status 'Sematkan' (is_pinned)
     const allContent = [
@@ -62,16 +50,6 @@ const Events = () => {
         transition: { duration: 1, ease: [0.22, 1, 0.36, 1] }
     };
 
-    if (loading) {
-        return (
-            <div className="bg-neutral-bone min-h-screen flex items-center justify-center">
-                <div className="text-stone-dark/40 font-bold animate-pulse tracking-widest uppercase text-xs">
-                    {t('events.loading')}
-                </div>
-            </div>
-        );
-    }
-
     return (
         <>
             <Helmet>
@@ -86,7 +64,7 @@ const Events = () => {
                     {featuredContent && (
                         <motion.div
                             {...fadeIn}
-                            className="relative mb-20 md:mb-32 overflow-hidden rounded-2xl md:rounded-[3rem] bg-stone-dark group shadow-2xl aspect-[1.3/1] sm:aspect-[2/1] lg:aspect-[2.8/1]"
+                            className="relative mb-20 md:mb-32 overflow-hidden rounded-2xl md:rounded-[3rem] bg-stone-dark group shadow-2xl aspect-[1.8/1] sm:aspect-[2.2/1] lg:aspect-[2.8/1]"
                         >
                             <Link to={`/events/${featuredContent.type === 'event' ? 'event' : 'article'}/${featuredContent.id}`} className="block w-full h-full">
                                 <div className="grid grid-cols-[1fr_1.2fr] md:grid-cols-2 items-stretch h-full w-full">
@@ -99,9 +77,9 @@ const Events = () => {
                                         />
                                     </div>
                                     {/* Konten: Info Acara Utama */}
-                                    <div className="p-6 md:p-8 lg:p-10 flex flex-col justify-center text-white bg-stone-900/40 backdrop-blur-sm h-full">
+                                    <div className="p-4 sm:p-6 md:p-8 lg:p-10 flex flex-col justify-center text-white bg-stone-900/40 backdrop-blur-sm h-full">
                                         {/* Label kategori banner */}
-                                        <span className="text-brand-gold font-bold tracking-[0.3em] uppercase text-[8px] md:text-[10px] mb-2 md:mb-4 block opacity-60">
+                                        <span className="text-brand-gold font-bold tracking-[0.3em] uppercase text-[7px] md:text-[10px] mb-1.5 md:mb-4 block opacity-60">
                                             {t('events.hero_label')}
                                         </span>
                                         {/* Judul acara */}

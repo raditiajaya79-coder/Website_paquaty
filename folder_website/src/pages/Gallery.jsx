@@ -4,7 +4,8 @@ import { Helmet } from 'react-helmet-async';
 import { Instagram, Search, X, ChevronDown } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
 import { useLanguage } from '../context/LanguageContext';
-import { API_BASE_URL } from '../utils/api';
+// Mengambil data dari GlobalDataContext (sudah di-preload saat awal)
+import { useGlobalData } from '../context/GlobalDataContext';
 
 // Custom funnel icon — 3 horizontal lines of decreasing width
 const FunnelIcon = () => (
@@ -23,17 +24,14 @@ const FunnelIcon = () => (
 const Gallery = () => {
     const { t, lang } = useLanguage();
     const isEn = lang === 'en';
-    const [images, setImages] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // Ambil gallery dari data yang sudah di-preload (tidak perlu fetch lagi)
+    const { gallery: images } = useGlobalData();
+    const loading = false; // Data sudah dimuat di preloader
     const [activeCategory, setActiveCategory] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
     const [filterOpen, setFilterOpen] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null); // State untuk lightbox
     const filterRef = useRef(null);
-
-    useEffect(() => {
-        fetchGallery();
-    }, []);
 
     // Close filter dropdown when clicking outside
     useEffect(() => {
@@ -45,21 +43,6 @@ const Gallery = () => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
-
-    const fetchGallery = async () => {
-        try {
-            setLoading(true);
-            const response = await fetch(`${API_BASE_URL}/gallery`);
-            if (response.ok) {
-                const data = await response.json();
-                setImages(data);
-            }
-        } catch (error) {
-            console.error('Failed to fetch gallery:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const categories = ['All', ...new Set((Array.isArray(images) ? images : []).map(img => img.category))];
 

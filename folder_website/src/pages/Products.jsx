@@ -6,9 +6,8 @@ import { COMPANY_INFO } from '../data/products';
 import { generatePageTitle } from '../utils/seo';
 import { useLanguage } from '../context/LanguageContext';
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import useSWR from 'swr';
-
-const fetcher = (url) => fetch(url).then((res) => res.json());
+// Mengambil data dari GlobalDataContext (sudah di-preload saat awal)
+import { useGlobalData } from '../context/GlobalDataContext';
 
 // Custom funnel icon — 3 horizontal lines of decreasing width
 const FunnelIcon = () => (
@@ -35,11 +34,9 @@ const Products = () => {
         return () => document.removeEventListener('mousedown', handler);
     }, []);
 
-    const { data: products = [], isLoading: loading } = useSWR(
-        'https://api-pakuaty.kediritechnopark.com/api/products',
-        fetcher,
-        { refreshInterval: 60000, revalidateOnFocus: true }
-    );
+    // Ambil produk dari data yang sudah di-preload (tidak perlu fetch lagi)
+    const { products } = useGlobalData();
+    const loading = false; // Data sudah dimuat di preloader, tidak perlu loading state
 
     const productTypes = useMemo(() => {
         const types = products.map((p) =>

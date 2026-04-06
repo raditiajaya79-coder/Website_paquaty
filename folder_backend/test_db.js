@@ -1,18 +1,20 @@
-require('dotenv').config();
-console.log('DATABASE_PUBLIC_URL:', process.env.DATABASE_PUBLIC_URL ? 'DEFINED' : 'UNDEFINED');
-const { Pool } = require('pg');
-const pool = new Pool({
-    connectionString: process.env.DATABASE_PUBLIC_URL,
-    ssl: { rejectUnauthorized: false }
-});
+/**
+ * test_db.js
+ * Skrip sederhana untuk menguji koneksi ke PostgreSQL menggunakan konfigurasi terpusat.
+ */
+const pool = require('./config/db'); // Mengimpor pool yang sudah dikonfigurasi
 
-pool.connect()
-    .then(client => {
-        console.log('✅ Connection successful');
-        client.release();
-        process.exit(0);
+console.log('⏳ Mencoba menghubungkan ke PostgreSQL...');
+console.log('Konfigurasi Host:', process.env.DB_HOST || 'DATABASE_PUBLIC_URL');
+
+// Mencoba melakukan query sederhana untuk memastikan koneksi aktif
+pool.query('SELECT NOW()')
+    .then(res => {
+        console.log('✅ Koneksi Berhasil!');
+        console.log('Waktu Server:', res.rows[0].now); // Menampilkan waktu dari database
+        process.exit(0); // Keluar dengan sukses
     })
     .catch(err => {
-        console.error('❌ Connection failed:', err.message);
-        process.exit(1);
+        console.error('❌ Koneksi Gagal:', err.message); // Melaporkan kesalahan
+        process.exit(1); // Keluar dengan kode error
     });

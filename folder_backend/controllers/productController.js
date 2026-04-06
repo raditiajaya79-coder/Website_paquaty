@@ -3,6 +3,7 @@
  */
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger'); // Import utility logging
+const { deleteFile } = require('../utils/fileHelper'); // Import utility penghapus file
 
 // @desc    Ambil semua produk
 // @route   GET /api/products
@@ -95,6 +96,13 @@ exports.updateProduct = async (req, res) => {
   } = req.body;
 
   try {
+    // --- LOGIKA CLEANUP FILE (UPDATE) ---
+    // Sebelum melakukan update, kita ambil data produk lama dari database.
+    // Tujuannya adalah untuk membandingkan apakah gambar berubah.
+    const oldProductResult = await pool.query('SELECT image, detail_image FROM products WHERE id = $1', [id]);
+    const oldProduct = oldProductResult.rows[0]; // Simpan data lama
+
+    // Update data produk ke database PostgreSQL
     const result = await pool.query(
       `UPDATE products SET 
         name = $1, name_en = $2, grade = $3, grade_en = $4, origin = $5, origin_en = $6, moq = $7, image = $8, 
@@ -115,6 +123,16 @@ exports.updateProduct = async (req, res) => {
       return res.status(404).json({ error: 'Produk tidak ditemukan.' });
     }
 
+    // Jika update database berhasil, kita bersihkan file lama jika gambarnya berubah:
+    // Hapus gambar utama jika diganti
+    if (oldProduct && oldProduct.image && oldProduct.image !== image) {
+      deleteFile(oldProduct.image); // Panggil helper penghapus
+    }
+    // Hapus detail gambar jika diganti
+    if (oldProduct && oldProduct.detail_image && oldProduct.detail_image !== detail_image) {
+      deleteFile(oldProduct.detail_image); // Panggil helper penghapus
+    }
+
     // Catat aktivitas: Mengubah Produk
     await logActivity(req.admin.id, 'Mengubah Data Produk', name);
 
@@ -131,14 +149,21 @@ exports.updateProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
+    // Jalankan penghapusan data dari database dan ambil data yang dihapus (RETURNING *)
     const result = await pool.query('DELETE FROM products WHERE id = $1 RETURNING *', [id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Produk tidak ditemukan.' });
     }
 
+    // --- LOGIKA CLEANUP FILE (DELETE) ---
+    // Karena baris database sudah terhapus, kita hapus juga file fisiknya
+    const deletedProduct = result.rows[0];
+    if (deletedProduct.image) deleteFile(deletedProduct.image); // Hapus gambar utama
+    if (deletedProduct.detail_image) deleteFile(deletedProduct.detail_image); // Hapus detail gambar
+
     // Catat aktivitas: Menghapus Produk
-    await logActivity(req.admin.id, 'Menghapus Produk', result.rows[0].name);
+    await logActivity(req.admin.id, 'Menghapus Produk', deletedProduct.name);
 
     res.json({ message: 'Produk berhasil dihapus.' });
   } catch (error) {

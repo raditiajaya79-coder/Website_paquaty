@@ -22,22 +22,22 @@ const CTA = () => {
                         whileInView={{ opacity: [0, 1, 1], scale: [5, 0.85, 1], rotate: [-45, 12, 15] }}
                         viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.6, ease: "easeOut", times: [0, 0.7, 1] }}
-                        className="absolute top-8 -right-3 sm:top-4 sm:-right-4 md:top-4 md:-right-6 lg:-right-10 xl:-right-14 z-20 pointer-events-none transform origin-center"
+                        className="absolute -top-2 -right-1 sm:top-2 sm:-right-4 md:-top-6 md:-right-8 lg:-top-8 lg:-right-12 xl:-top-10 xl:-right-16 z-20 pointer-events-none transform origin-center"
                     >
-                        <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-[clamp(150px,15vw,200px)] md:h-[clamp(150px,15vw,200px)] rounded-full border-[3px] sm:border-[4px] md:border-[6px] border-red-600/95 flex items-center justify-center p-1 shadow-2xl bg-[#FFFDF8]">
-                            <div className="w-full h-full rounded-full border-[1px] md:border-[2.5px] border-red-600/90 flex flex-col items-center justify-center text-center p-1 bg-transparent">
-                                <span className="text-red-500 font-black text-[5.5px] sm:text-[7px] md:text-[clamp(10px,1vw,14px)] tracking-[0.15em] uppercase leading-tight px-1 w-full">
+                        <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-[clamp(150px,15vw,200px)] md:h-[clamp(150px,15vw,200px)] rounded-full border-[3px] sm:border-[4px] md:border-[6px] border-red-600/95 flex items-center justify-center p-1 sm:p-1.5 shadow-2xl bg-[#FFFDF8]">
+                            <div className="w-full h-full rounded-full border-[1px] md:border-[2.5px] border-red-600/90 flex flex-col items-center justify-center text-center p-1 sm:p-2 bg-transparent">
+                                <span className="text-red-500 font-black text-[6px] sm:text-[8px] md:text-[clamp(10px,1vw,14px)] tracking-[0.1em] sm:tracking-[0.15em] uppercase leading-tight px-0.5 w-full">
                                     Sustainability
                                 </span>
-                                <div className="w-[80%] h-px bg-red-500/60 my-[1px] sm:my-0.5 md:my-1.5"></div>
-                                <span className="text-red-500 font-black text-[9px] sm:text-[11px] md:text-[clamp(16px,2vw,22px)] tracking-[0.2em] font-serif uppercase leading-none opacity-95">
+                                <div className="w-[85%] h-px bg-red-500/60 my-[2px] sm:my-1 md:my-1.5"></div>
+                                <span className="text-red-500 font-black text-[10px] sm:text-[13px] md:text-[clamp(16px,2vw,22px)] tracking-[0.15em] sm:tracking-[0.2em] font-serif uppercase leading-none opacity-95">
                                     Report
                                 </span>
                             </div>
                         </div>
                     </motion.div>
 
-                    <h2 className="text-[clamp(1.75rem,5vw,3rem)] font-medium tracking-tight text-white mb-6 relative z-10 leading-[1.1]">
+                    <h2 className="text-[clamp(1.75rem,5vw,3rem)] font-medium tracking-tight text-white mb-6 mt-12 sm:mt-8 md:mt-2 relative z-10 leading-[1.1]">
                         {t('cta.title')}
                     </h2>
                     <p className="text-[clamp(1rem,1.5vw,1.25rem)] text-neutral-400 mb-10 max-w-2xl mx-auto relative z-10 font-light leading-relaxed">

@@ -82,8 +82,10 @@ const AdminLayout = () => {
 
                 {/* Dynamic Page Content — Halaman yang me-render kartu-kartu internal */}
                 <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-4 custom-scrollbar bg-slate-50/50">
-                    <div className="max-w-[1600px] mx-auto">
-                        <Outlet />
+                    <div className="max-w-[1600px] mx-auto min-h-[50vh] relative">
+                        <React.Suspense fallback={<div className="absolute inset-0 flex items-center justify-center"><div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>}>
+                            <Outlet />
+                        </React.Suspense>
                     </div>
                 </div>
             </main>

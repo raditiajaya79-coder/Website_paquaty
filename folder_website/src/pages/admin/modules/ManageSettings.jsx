@@ -168,42 +168,7 @@ const ManageSettings = () => {
                     <Clock className="w-40 h-40 absolute -right-10 -bottom-10 text-slate-900 opacity-[0.02] transform rotate-12 pointer-events-none" />
                 </motion.div>
 
-                {/* Vibilitas Fitur Section */}
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm relative overflow-hidden group"
-                >
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
-                            <ShieldCheck className="w-6 h-6" />
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-black text-[#1E293B] tracking-tight">Visibilitas Fitur</h3>
-                            <p className="text-[10px] text-[#64748B] font-bold uppercase tracking-widest">Kontrol tampilan frontend</p>
-                        </div>
-                    </div>
-
-                    <div className="space-y-5">
-                        <div className="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100">
-                            <div>
-                                <h4 className="text-sm font-bold text-[#1E293B]">Modul Sertifikat</h4>
-                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Tampilkan halaman sertifikasi</p>
-                            </div>
-                            <button
-                                onClick={() => handleUpdate('show_certificates', !settings.show_certificates)}
-                                disabled={saving}
-                                className={`w-14 h-7 rounded-full transition-all relative ${settings.show_certificates ? 'bg-emerald-500' : 'bg-slate-300'}`}
-                            >
-                                <div className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all ${settings.show_certificates ? 'right-1' : 'left-1'}`} />
-                            </button>
-                        </div>
-
-                    </div>
-
-                    <ShieldCheck className="w-40 h-40 absolute -right-10 -bottom-10 text-slate-900 opacity-[0.02] transform -rotate-12 pointer-events-none" />
-                </motion.div>
+                {/* Visibilitas Fitur Section Dihapus karena sudah ada di Manajemen Sertifikat (Redundan) */}
             </div>
 
             <Toast

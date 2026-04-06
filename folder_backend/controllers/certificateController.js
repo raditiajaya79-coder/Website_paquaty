@@ -3,6 +3,7 @@
  */
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger'); // Import utility logging
+const { deleteFile } = require('../utils/fileHelper'); // Import utility penghapus file
 
 exports.getAllCertificates = async (req, res) => {
   try {
@@ -63,11 +64,21 @@ exports.updateCertificate = async (req, res) => {
   const { id } = req.params;
   const { title, title_en, sub, sub_en, description, description_en, image, issued_by, year, is_pinned, is_active } = req.body;
   try {
+    // Ambil data sertifikat lama
+    const oldCertResult = await pool.query('SELECT image FROM certificates WHERE id = $1', [id]);
+    const oldCert = oldCertResult.rows[0];
+
     const result = await pool.query(
       `UPDATE certificates SET title = $1, title_en = $2, sub = $3, sub_en = $4, description = $5, description_en = $6, image = $7, issued_by = $8, year = $9, is_pinned = $10, is_active = $11
        WHERE id = $12 RETURNING *`,
       [title, title_en, sub, sub_en, description, description_en, image, issued_by, year, is_pinned, is_active, id]
     );
+    
+    // Jika update database berhasil, cek apakah gambar berubah
+    if (oldCert && oldCert.image && oldCert.image !== image) {
+      deleteFile(oldCert.image);
+    }
+
     // Catat aktivitas: Mengubah Sertifikat
     await logActivity(req.admin.id, 'Mengubah Data Sertifikat', title);
 
@@ -86,8 +97,14 @@ exports.deleteCertificate = async (req, res) => {
       return res.status(404).json({ error: 'Sertifikat tidak ditemukan.' });
     }
 
+    // --- CLEANUP FILE ---
+    const deletedCert = result.rows[0];
+    if (deletedCert.image) {
+      deleteFile(deletedCert.image);
+    }
+
     // Catat aktivitas: Menghapus Sertifikat
-    await logActivity(req.admin.id, 'Menghapus Sertifikat', result.rows[0].title);
+    await logActivity(req.admin.id, 'Menghapus Sertifikat', deletedCert.title);
 
     res.json({ message: 'Sertifikat dihapus.' });
   } catch (error) {

@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShoppingCart } from 'lucide-react';
+import { ArrowRight, ShoppingCart, Play, X } from 'lucide-react';
 import { PRODUCTS } from '../data/products';
 import CTA from '../components/CTA';
 import JourneySection from '../components/JourneySection';
 import { useLanguage } from '../context/LanguageContext';
-import { API_BASE_URL } from '../utils/api';
+// Mengambil data dari GlobalDataContext (sudah di-preload saat awal)
+import { useGlobalData } from '../context/GlobalDataContext';
 
 // ─── UTILS ──────────
 const getYouTubeID = (url) => {
@@ -22,7 +23,8 @@ const HERO_FLAVORS = [
         id: 1,
         name: "Original",
         tagline: "PURE TRADITION",
-        watermark: "ORIGINAL",
+        watermark_en: "ORIGINAL",
+        watermark_id: "ORIGINAL",
         bgColor: "#041e44ff",
         textColor: "#ffffffff",
         tilt: -8,
@@ -32,17 +34,20 @@ const HERO_FLAVORS = [
         id: 2,
         name: "Balado",
         tagline: "SPICY KICK",
-        watermark: "BALADO",
+        watermark_en: "BALADO",
+        watermark_id: "BALADO",
         bgColor: "#570e06ff",
         textColor: "#FFFFFF",
         tilt: 6,
-        ornaments: ["/images/ornaments/chili.png", "/images/ornaments/onion.png", "/images/ornaments/chili.png"]
+        mixBlend: true, // Gunakan trik CSS Multiply untuk transparansi otomatis dari BG putih murni
+        ornaments: ["/images/ornaments/balado_mix.png", "/images/ornaments/balado_mix.png", "/images/ornaments/balado_mix.png"]
     },
     {
         id: 3,
         name: "BBQ",
         tagline: "SMOKY BOLD",
-        watermark: "BARBEQUE",
+        watermark_en: "BARBEQUE",
+        watermark_id: "BARBEQUE",
         bgColor: "#501c06ff",
         textColor: "#FFFFFF",
         tilt: -10,
@@ -53,7 +58,8 @@ const HERO_FLAVORS = [
         id: 4,
         name: "Keju",
         tagline: "CHEESY DELIGHT",
-        watermark: "CHEESE",
+        watermark_en: "CHEESE",
+        watermark_id: "KEJU",
         bgColor: "#6d5207ff",
         textColor: "#ffffffff",
         tilt: 7,
@@ -63,7 +69,8 @@ const HERO_FLAVORS = [
         id: 5,
         name: "Sapi Panggang",
         tagline: "SAVORY ROAST",
-        watermark: "GRILLED",
+        watermark_en: "ROASTED",
+        watermark_id: "PANGGANG",
         bgColor: "#4d3006ff",
         textColor: "#FFFFFF",
         tilt: -6,
@@ -78,27 +85,13 @@ const ORNAMENT_POSITIONS = [
 ];
 
 const Home = () => {
-    const { t } = useLanguage();
+    const { t, lang } = useLanguage();
+    // Ambil settings dari data yang sudah di-preload (tidak perlu fetch lagi)
+    const { settings } = useGlobalData();
     const [activeIndex, setActiveIndex] = useState(0);
     const hasPlayedIntro = sessionStorage.getItem('pakuaty_intro_played');
     const [isRevealed, setIsRevealed] = useState(hasPlayedIntro === 'true');
-    const [settings, setSettings] = useState({});
-
-    // Fetch Settings untuk mengambil URL video dsb
-    useEffect(() => {
-        const fetchSettings = async () => {
-            try {
-                const res = await fetch(`${API_BASE_URL}/settings`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setSettings(data);
-                }
-            } catch (err) {
-                console.error("Gagal memuat pengaturan:", err);
-            }
-        };
-        fetchSettings();
-    }, []);
+    const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
     // Auto-cycle hero items
     useEffect(() => {
@@ -134,7 +127,7 @@ const Home = () => {
             {/* ══════════════════════════════════════
                 HERO — Idle Auto-Cycle Stage
             ════════════════════════════════════════ */}
-            <section 
+            <section
                 className="relative w-full flex items-center justify-center overflow-hidden"
                 style={{ height: 'calc(100vh / var(--desktop-zoom, 1))', minHeight: '95vh' }}
             >
@@ -162,10 +155,10 @@ const Home = () => {
                         >
 
                             <h1
-                                style={{ color: activeFlavor.textColor, fontSize: 'clamp(100px, 16vw, 280px)' }}
-                                className="font-black tracking-tighter uppercase leading-none select-none whitespace-nowrap opacity-75"
+                                style={{ color: activeFlavor.textColor, fontSize: 'clamp(70px, 18vw, 280px)' }}
+                                className="font-black tracking-[-0.05em] uppercase leading-none select-none whitespace-nowrap opacity-75 px-4"
                             >
-                                {activeFlavor.watermark}
+                                {lang === 'en' ? activeFlavor.watermark_en : activeFlavor.watermark_id}
                             </h1>
                         </motion.div>
                     </AnimatePresence>
@@ -199,7 +192,7 @@ const Home = () => {
                                     alt="ornament"
                                     animate={{ y: [0, -15, 0], scale: [1, 1.05, 1], rotate: [0, 5, 0] }}
                                     transition={{ duration: 8 + idx, repeat: Infinity, ease: "easeIn" }}
-                                    className="w-full h-full object-contain drop-shadow-2xl"
+                                    className={`w-full h-full object-contain ${activeFlavor.mixBlend ? 'mix-blend-multiply' : 'drop-shadow-2xl'}`}
                                     onError={(e) => {
                                         if (e.target.src !== '/images/pure logo pakuaty.png') {
                                             e.target.src = '/images/pure logo pakuaty.png';
@@ -239,7 +232,15 @@ const Home = () => {
                                     rotate: [activeFlavor.tilt, activeFlavor.tilt + 1.5, activeFlavor.tilt],
                                 }}
                                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                                className="w-full h-full object-contain filter drop-shadow-[0_80px_120px_rgba(0,0,0,0.45)] transition-transform duration-700"
+
+                                // --- PILIHAN SHADOW (Gunakan Ctrl + / untuk mematikan/menghidupkan) ---
+                                // Opsi 1: DENGAN Bayangan Putih Halus
+                                className="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(255,255,255,0.35)] transition-transform duration-700"
+
+                                // Opsi 2: TANPA Bayangan Sama Sekali (Polos)
+                                // className="w-full h-full object-contain transition-transform duration-700"
+                                // ----------------------------------------------------------------------
+
                                 onError={(e) => {
                                     if (e.target.src !== '/images/pure logo pakuaty.png') {
                                         e.target.src = '/images/pure logo pakuaty.png';
@@ -251,37 +252,46 @@ const Home = () => {
                     </AnimatePresence>
 
                     {/* ── Product Info Panel (Left Aligned, Shifted Left) ── */}
-                    <div className="absolute bottom-12 md:bottom-24 left-4 sm:left-6 md:left-6 lg:left-8 xl:left-10 max-w-xs sm:max-w-sm md:max-w-md pointer-events-none z-30">
+                    {/* Menggunakan max-width yang sedikit lebih lebar untuk keseimbangan teks baru */}
+                    <div className="absolute bottom-12 md:bottom-24 left-4 sm:left-6 md:left-6 lg:left-8 xl:left-10 max-w-[280px] sm:max-w-md md:max-w-lg pointer-events-none z-30">
                         <AnimatePresence mode="wait">
                             <motion.div
-                                key={`info-${activeIndex}`}
-                                initial={{ opacity: 0, x: -60 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: 30 }}
-                                transition={{ duration: 0.8, ease: "easeOut" }}
-                                style={{ color: activeFlavor.textColor }}
-                                className="flex flex-col gap-4 pointer-events-auto"
+                                key={`info-${activeIndex}`} // Key unik agar animasi terulang per flavor
+                                initial={{ opacity: 0, x: -60 }} // Animasi masuk: transparan + geser kiri
+                                animate={{ opacity: 1, x: 0 }} // Animasi aktif: muncul + posisi asli
+                                exit={{ opacity: 0, x: 30 }} // Animasi keluar: transparan + geser kanan
+                                transition={{ duration: 0.8, ease: "easeOut" }} // Kurva transisi eksponensial halus
+                                style={{ color: activeFlavor.textColor }} // Pewarnaan dinamis berbasis data flavor
+                                className="flex flex-col gap-4 md:gap-5 pointer-events-auto"
                             >
-                                <div className="flex flex-col gap-1 md:gap-2">
-                                    <span className="text-[9px] md:text-xs font-black tracking-[0.5em] uppercase opacity-70 drop-shadow-sm">{t('hero.global_artisan')}</span>
-                                    <h1 className="text-[clamp(1.5rem,3.5vw,2rem)] md:text-[clamp(1.75rem,4vw,2.75rem)] lg:text-[clamp(2.25rem,4.5vw,3.25rem)] font-black leading-[0.95] tracking-tighter uppercase italic drop-shadow-md">
+                                <div className="flex flex-col gap-2 md:gap-2.5">
+                                    {/* Label atas ditingkatkan sedikit ke md:text-[13px] agar lebih jelas */}
+                                    <span className="text-[10px] md:text-[13px] font-black tracking-[0.5em] uppercase opacity-70 drop-shadow-sm">
+                                        {t('hero.global_artisan')}
+                                    </span>
+                                    {/* Judul utama dinaikkan parameternya sedikit (3.75 -> 4.15) untuk dampak visual lebih kuat */}
+                                    <h1 className="text-[clamp(1.6rem,4.5vw,2.25rem)] md:text-[clamp(2.15rem,5vw,3.25rem)] lg:text-[clamp(2.55rem,5.5vw,4.15rem)] font-black leading-[0.92] tracking-tighter uppercase italic drop-shadow-md">
                                         {(t(`flavor.${activeFlavor.id}.tagline`)).split(' ').map((word, i) => (
-                                            <span key={i} className="block">{word}</span>
+                                            <span key={i} className="block">{word}</span> // Rendering baris per kata
                                         ))}
                                     </h1>
                                 </div>
 
-                                <p className="text-xs md:text-sm font-medium opacity-90 max-w-[260px] md:max-w-xs leading-relaxed">
+                                {/* Deskripsi dinaikkan sedikit ke 17px pada desktop untuk keterbacaan optimal */}
+                                <p className="text-sm md:text-base lg:text-[17px] font-medium opacity-90 max-w-[300px] md:max-w-sm lg:max-w-md leading-relaxed">
                                     {t('hero.desc_text')}
                                 </p>
 
                                 <div className="flex items-center gap-4 mt-2 md:mt-4">
+                                    {/* Tombol Order — Ukuran teks disesuaikan ke md:text-[13px] agar seimbang dengan title */}
                                     <Link
                                         to={`/products/${activeFlavor.id}`}
-                                        className="group inline-flex items-center gap-3 bg-white text-stone-dark px-6 py-3 md:px-7 md:py-3.5 rounded-full shadow-2xl hover:bg-brand-cyan hover:text-white transition-all duration-300 active:scale-95"
+                                        className="group inline-flex items-center gap-3 bg-white text-stone-dark px-7 py-3 md:px-8 md:py-4 rounded-full shadow-2xl hover:bg-brand-cyan hover:text-white transition-all duration-300 active:scale-95"
                                     >
-                                        <span className="text-[10px] md:text-xs font-black uppercase tracking-widest">{t('hero.order_now')}</span>
-                                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                        <span className="text-[11px] md:text-[13px] font-black uppercase tracking-widest">
+                                            {t('hero.order_now')}
+                                        </span>
+                                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                     </Link>
                                 </div>
                             </motion.div>
@@ -401,24 +411,34 @@ const Home = () => {
                                 initial={{ x: -60, opacity: 0 }}
                                 whileInView={{ x: 0, opacity: 1 }}
                                 transition={{ duration: 0.8 }}
-                                className="hidden sm:block w-full max-w-[240px] lg:max-w-[280px] aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-xl relative group bg-stone-100"
+                                onClick={() => settings.hero_video_url && setIsVideoModalOpen(true)}
+                                className={`hidden sm:block w-full max-w-[240px] lg:max-w-[280px] aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-xl relative group bg-stone-100 ${settings.hero_video_url ? 'cursor-pointer' : ''}`}
                             >
                                 {settings.hero_video_url && getYouTubeID(settings.hero_video_url) ? (
-                                    <div className="w-full h-full relative pointer-events-none">
-                                        {/* CSS Trick untuk Cover full Iframe tanpa blackbars di container 4:3 */}
-                                        <iframe
-                                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%]"
-                                            src={`https://www.youtube.com/embed/${getYouTubeID(settings.hero_video_url)}?autoplay=1&mute=1&loop=1&playlist=${getYouTubeID(settings.hero_video_url)}&controls=0&showinfo=0&rel=0`}
-                                            title="YouTube Profil Video"
-                                            frameBorder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowFullScreen
-                                        ></iframe>
-                                    </div>
+                                    <>
+                                        <div className="w-full h-full relative pointer-events-none transition-transform duration-700 group-hover:scale-105">
+                                            {/* CSS Trick untuk Cover full Iframe tanpa blackbars di container 4:3 */}
+                                            <iframe
+                                                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] pointer-events-none"
+                                                src={`https://www.youtube.com/embed/${getYouTubeID(settings.hero_video_url)}?autoplay=1&mute=1&loop=1&playlist=${getYouTubeID(settings.hero_video_url)}&controls=0&showinfo=0&rel=0`}
+                                                title="YouTube Profil Video"
+                                                frameBorder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                            ></iframe>
+                                        </div>
+                                        {/* Play Icon Overlay */}
+                                        <div className="absolute inset-0 bg-stone-dark/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                                            <div className="w-16 h-16 bg-[#DAA520] rounded-full flex items-center justify-center pl-1 shadow-lg transform scale-90 group-hover:scale-100 transition-all duration-300 cursor-pointer">
+                                                <Play className="w-8 h-8 text-white fill-white" />
+                                            </div>
+                                        </div>
+                                    </>
                                 ) : (
                                     <img
                                         src="/images/artisan_inset.png"
                                         alt="Artisan Process"
+                                        loading="lazy"
                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                         onError={(e) => {
                                             if (e.target.src !== '/images/pure logo pakuaty.png') {
@@ -483,6 +503,50 @@ const Home = () => {
 
             <JourneySection />
             <CTA />
+
+            {/* ══════════════════════════════════════
+                VIDEO MODAL POPUP
+            ════════════════════════════════════════ */}
+            <AnimatePresence>
+                {isVideoModalOpen && settings.hero_video_url && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="fixed inset-0 z-[9999] flex items-center justify-center bg-stone-dark/95 backdrop-blur-md px-4 sm:px-8 py-8"
+                        onClick={() => setIsVideoModalOpen(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
+                            className="bg-black w-full max-w-5xl aspect-video rounded-2xl md:rounded-3xl overflow-hidden relative shadow-2xl border border-white/5"
+                            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside video
+                        >
+                            {/* Close Button */}
+                            <button
+                                onClick={() => setIsVideoModalOpen(false)}
+                                className="absolute top-4 right-4 md:top-6 md:right-6 z-50 bg-black/40 hover:bg-[#DAA520] text-white p-2.5 rounded-full transition-all duration-300 backdrop-blur-md group shadow-lg border border-white/10"
+                            >
+                                <X className="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-90 transition-transform duration-300" />
+                            </button>
+
+                            {/* YouTube Iframe with Controls and Autoplay */}
+                            <iframe
+                                className="w-full h-full"
+                                src={`https://www.youtube.com/embed/${getYouTubeID(settings.hero_video_url)}?autoplay=1&controls=1&rel=0&modestbranding=1&showinfo=0`}
+                                title="YouTube Video"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            ></iframe>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
         </div>
     );
 };

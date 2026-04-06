@@ -188,20 +188,6 @@ const AnnouncementForm = () => {
                         <p className="text-[#64748B] mt-1 font-bold text-xs">Informasikan berita penting secara instan melalui pop-up website.</p>
                     </div>
                 </div>
-
-                <button
-                    type="button"
-                    onClick={handleMagicTranslate}
-                    disabled={isTranslating}
-                    className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-lg active:scale-95 ${isTranslating ? 'bg-slate-100 text-slate-400' : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:shadow-blue-200'}`}
-                >
-                    {isTranslating ? (
-                        <div className="w-4 h-4 border-2 border-slate-300 border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                        <Sparkles className="w-4 h-4" />
-                    )}
-                    {isTranslating ? 'Menerjemahkan...' : 'Magic Translate (EN)'}
-                </button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6 pb-8">
@@ -258,10 +244,19 @@ const AnnouncementForm = () => {
                         {/* English Section */}
                         <div className="bg-blue-50/30 border border-blue-100 rounded-[2.5rem] p-8 md:p-10 space-y-6">
                             <div className="flex items-center gap-3 mb-2">
-                                <div className="p-1 px-3 bg-blue-600 text-white rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-2">
-                                    <Sparkles className="w-3 h-3" />
-                                    English Translation
-                                </div>
+                                <button
+                                    type="button"
+                                    onClick={handleMagicTranslate}
+                                    disabled={isTranslating}
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-[9px] font-black text-indigo-600 rounded-md shadow-sm hover:bg-indigo-100 hover:text-indigo-700 transition-all disabled:opacity-50 uppercase tracking-widest"
+                                >
+                                    {isTranslating ? (
+                                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                    ) : (
+                                        <Wand2 className="w-3.5 h-3.5" />
+                                    )}
+                                    {isTranslating ? 'Menerjemahkan...' : 'Magic Translate (EN)'}
+                                </button>
                             </div>
 
                             <div className="space-y-2.5">
@@ -299,52 +294,25 @@ const AnnouncementForm = () => {
                         </div>
 
                         {/* Additional Info Section */}
-                        <div className="bg-white border border-slate-200 rounded-[2.5rem] p-8 md:p-10 space-y-8 shadow-sm">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                                <div className="space-y-6">
-                                    <div className="space-y-2.5">
-                                        <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Link Tujuan</label>
-                                        <input
-                                            type="text"
-                                            value={formData.link}
-                                            onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-                                            className="w-full bg-slate-50/50 border border-slate-200 rounded-xl py-4 px-6 font-bold text-[#1E293B] focus:ring-4 focus:ring-blue-100 transition-all text-sm"
-                                            placeholder="Misal: /products atau link eksternal"
-                                        />
-                                    </div>
-                                    <div className="space-y-2.5">
-                                        <ImageUploader
-                                            label="Gambar Banner (Upload)"
-                                            currentImage={formData.image}
-                                            onUploadSuccess={(url) => setFormData({ ...formData, image: url })}
-                                        />
-                                        <p className="text-[10px] font-bold text-slate-400 italic ml-1 leading-relaxed">Pilih file gambar untuk ditampilkan sebagai banner pop-up.</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Pratinjau Gambar</label>
-                                    <div className="relative group aspect-video bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl overflow-hidden flex flex-col items-center justify-center transition-all hover:border-blue-300">
-                                        {formData.image ? (
-                                            <img
-                                                src={formData.image || '/images/pure logo pakuaty.png'}
-                                                alt="Preview"
-                                                className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${(!formData.image || formData.image.includes('pure logo pakuaty.png')) ? 'opacity-20 grayscale' : ''}`}
-                                                onError={(e) => {
-                                                    if (!e.target.src.includes('pure%20logo%20pakuaty.png') && !e.target.src.includes('pure logo pakuaty.png')) {
-                                                        e.target.src = '/images/pure logo pakuaty.png';
-                                                        e.target.className += ' opacity-20 grayscale';
-                                                    }
-                                                }}
-                                            />
-                                        ) : (
-                                            <>
-                                                <ImageIcon className="w-8 h-8 text-slate-200 mb-2" />
-                                                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Preview Pop-Up</span>
-                                            </>
-                                        )}
-                                    </div>
-                                </div>
+                        <div className="bg-white border border-slate-200 rounded-[2.5rem] p-8 md:p-10 space-y-6 shadow-sm">
+                            <div className="space-y-2.5">
+                                <label className="text-[10px] font-black text-[#64748B] uppercase tracking-widest ml-1">Link Tujuan</label>
+                                <input
+                                    type="text"
+                                    value={formData.link}
+                                    onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+                                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl py-4 px-6 font-bold text-[#1E293B] focus:ring-4 focus:ring-blue-100 transition-all text-sm"
+                                    placeholder="Misal: /products atau link eksternal"
+                                />
+                            </div>
+                            <div className="space-y-2.5">
+                                <ImageUploader
+                                    label="Gambar Banner (Upload)"
+                                    currentImage={formData.image}
+                                    onUploadSuccess={(url) => setFormData({ ...formData, image: url })}
+                                    previewClassName="h-[250px] w-full"
+                                />
+                                <p className="text-[10px] font-bold text-slate-400 italic ml-1 leading-relaxed">Pilih file gambar untuk ditampilkan sebagai banner pop-up.</p>
                             </div>
                         </div>
                     </div>

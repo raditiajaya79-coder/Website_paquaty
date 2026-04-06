@@ -1,13 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { COMPANY_INFO } from '../data/products';
 import { useLanguage } from '../context/LanguageContext';
-import { API_BASE_URL } from '../utils/api';
+// Mengambil data dari GlobalDataContext (sudah di-preload saat awal)
+import { useGlobalData } from '../context/GlobalDataContext';
+import { generateContactHref } from '../utils/contact';
 const Footer = () => {
     const { t } = useLanguage();
-    const [footerContacts, setFooterContacts] = useState([]);
+    // Ambil contacts dari data yang sudah di-preload (tidak perlu fetch lagi)
+    const { contacts: allContacts } = useGlobalData();
 
-    // Custom SVG Logo Mapping for Footer (Slightly larger and branded)
+    // Filter kontak yang show_in_footer dari data context
+    const footerContacts = useMemo(() => {
+        if (!Array.isArray(allContacts)) return [];
+        return allContacts.filter(item => item.show_in_footer === 1 || item.show_in_footer === true);
+    }, [allContacts]);
     const FooterBrandIcons = {
         Instagram: () => (
             <svg viewBox="0 0 24 24" fill="url(#ig-grad-footer)" className="w-5 h-5">
@@ -47,7 +54,7 @@ const Footer = () => {
         ),
         Mail: () => (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-stone-dark">
-                <path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" />
+                <rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
             </svg>
         ),
         // Phone: ikon telepon klasik (gagang telepon), BUKAN WhatsApp
@@ -76,25 +83,6 @@ const Footer = () => {
         )
     };
 
-    useEffect(() => {
-        const fetchFooterContacts = async () => {
-            try {
-                const response = await fetch(`${API_BASE_URL}/contact`);
-                if (response.ok) {
-                    const data = await response.json();
-                    if (Array.isArray(data)) {
-                        // Filter yang show_in_footer
-                        const footerItems = data.filter(item => item.show_in_footer === 1 || item.show_in_footer === true);
-                        setFooterContacts(footerItems);
-                    }
-                }
-            } catch (err) {
-                console.error("Gagal memuat kontak di Footer", err);
-            }
-        };
-        fetchFooterContacts();
-    }, []);
-
     return (
         <footer className="bg-[#F1E4C3] pt-16 pb-12 border-t-2 border-brand-gold/60 relative overflow-hidden">
             {/* Soft Ambient Glows */}
@@ -119,30 +107,7 @@ const Footer = () => {
                         <div className="flex gap-4">
                             {footerContacts.map(contact => {
                                 const BrandIcon = FooterBrandIcons[contact.icon];
-                                // Smart URL generator: admin cukup masukkan data mentah
-                                const val = (contact.value || '').trim();
-                                let href = val; // Default: pakai value apa adanya
-                                // Jika sudah URL lengkap, langsung pakai
-                                if (!val.startsWith('http://') && !val.startsWith('https://')) {
-                                    // Generate URL berdasarkan platform
-                                    if (contact.icon === 'Mail') href = `mailto:${val}`;
-                                    else if (contact.icon === 'WhatsApp' || contact.icon === 'MessageCircle') {
-                                        let num = val.replace(/\D/g, '');
-                                        if (num.startsWith('0')) num = '62' + num.slice(1);
-                                        href = `https://wa.me/${num}`;
-                                    }
-                                    else if (contact.icon === 'Phone') {
-                                        let num = val.replace(/\D/g, '');
-                                        if (num.startsWith('0')) num = '62' + num.slice(1);
-                                        href = `tel:+${num}`;
-                                    }
-                                    else if (contact.icon === 'Instagram') href = `https://instagram.com/${val.replace(/^@/, '')}`;
-                                    else if (contact.icon === 'Facebook') href = `https://facebook.com/${val.replace(/^@/, '')}`;
-                                    else if (contact.icon === 'Tiktok') href = `https://tiktok.com/${val.startsWith('@') ? val : '@' + val}`;
-                                    else if (contact.icon === 'Twitter') href = `https://x.com/${val.replace(/^@/, '')}`;
-                                    else if (contact.icon === 'Shopee' || contact.icon === 'ShoppingBag') href = `https://shopee.co.id/${val}`;
-                                    else href = `https://${val}`;
-                                }
+                                const href = generateContactHref(contact);
                                 return (
                                     <a
                                         key={contact.id}

@@ -181,6 +181,26 @@ const EventForm = () => {
         }
     };
 
+    // Function to translate the title
+    const handleTranslateTitle = async () => {
+        if (!formData.title.trim()) {
+            setToast({ show: true, message: 'Harap isi Judul Utama (ID) terlebih dahulu.', type: 'error' });
+            return;
+        }
+
+        setIsTranslating(true);
+        try {
+            const translatedTitle = await translateText(formData.title);
+            setFormData(prev => ({ ...prev, title_en: translatedTitle }));
+            setToast({ show: true, message: 'Judul berhasil diterjemahkan!', type: 'success' });
+        } catch (error) {
+            console.error('Title translation failed:', error);
+            setToast({ show: true, message: 'Gagal menerjemahkan judul.', type: 'error' });
+        } finally {
+            setIsTranslating(false);
+        }
+    };
+
     // Handle Auto Translation for everything (Bulk)
     const handleTranslateAll = async () => {
         if (!formData.title && formData.content.every(b => !b.value)) {
@@ -373,7 +393,22 @@ const EventForm = () => {
                                 />
                             </div>
                             <div className="space-y-2.5">
-                                <label className="text-[10px] font-black text-blue-500/60 uppercase tracking-widest ml-1 italic">Main Title (EN)</label>
+                                <div className="flex items-center justify-between">
+                                    <label className="text-[10px] font-black text-blue-500/60 uppercase tracking-widest ml-1 italic">Main Title (EN)</label>
+                                    <button
+                                        type="button"
+                                        onClick={handleTranslateTitle}
+                                        disabled={isTranslating}
+                                        className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-[9px] font-black text-indigo-600 rounded-md shadow-sm hover:bg-indigo-100 hover:text-indigo-700 transition-all disabled:opacity-50 uppercase tracking-widest"
+                                    >
+                                        {isTranslating ? (
+                                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                        ) : (
+                                            <Wand2 className="w-3.5 h-3.5" />
+                                        )}
+                                        Translate Title
+                                    </button>
+                                </div>
                                 <input
                                     type="text"
                                     name="title_en"
@@ -456,12 +491,12 @@ const EventForm = () => {
                             type="button"
                             onClick={handleTranslateAll}
                             disabled={isTranslating}
-                            className="flex items-center gap-1.5 text-[10px] font-black text-brand-gold hover:text-brand-gold/80 transition-colors disabled:opacity-50 uppercase tracking-widest"
+                            className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-[9px] font-black text-indigo-600 rounded-md shadow-sm hover:bg-indigo-100 hover:text-indigo-700 transition-all disabled:opacity-50 uppercase tracking-widest"
                         >
                             {isTranslating ? (
-                                <Loader2 className="w-3 h-3 animate-spin" />
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
                             ) : (
-                                <Wand2 className="w-3 h-3" />
+                                <Wand2 className="w-3.5 h-3.5" />
                             )}
                             Magic Auto-Translate (Semua)
                         </button>
@@ -505,12 +540,12 @@ const EventForm = () => {
                                                 type="button"
                                                 onClick={() => handleTranslateBlock(index)}
                                                 disabled={isTranslating}
-                                                className="flex items-center gap-1.5 text-[9px] font-black text-blue-500 hover:text-blue-600 transition-colors disabled:opacity-50 uppercase tracking-widest"
+                                                className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-[9px] font-black text-indigo-600 rounded-md shadow-sm hover:bg-indigo-100 hover:text-indigo-700 transition-all disabled:opacity-50 uppercase tracking-widest"
                                             >
                                                 {isTranslating ? (
-                                                    <Loader2 className="w-3 h-3 animate-spin" />
+                                                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
                                                 ) : (
-                                                    <Wand2 className="w-3 h-3" />
+                                                    <Wand2 className="w-3.5 h-3.5" />
                                                 )}
                                                 Translate Block ini
                                             </button>

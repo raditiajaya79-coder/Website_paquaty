@@ -3,6 +3,7 @@
  */
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger'); // Import utility logging
+const { deleteFile } = require('../utils/fileHelper'); // Import utility penghapus file
 
 // @desc    Ambil semua foto galeri
 exports.getAllGallery = async (req, res) => {
@@ -67,6 +68,10 @@ exports.updateGallery = async (req, res) => {
   const { id } = req.params;
   const { title, title_en, category, image, span, aspect, is_pinned } = req.body;
   try {
+    // Ambil data galeri lama untuk dicek gambarnya
+    const oldGalleryResult = await pool.query('SELECT image FROM galleries WHERE id = $1', [id]);
+    const oldGallery = oldGalleryResult.rows[0];
+
     const result = await pool.query(
       `UPDATE galleries SET title = $1, title_en = $2, category = $3, image = $4, span = $5, aspect = $6, is_pinned = $7
        WHERE id = $8 RETURNING *`,
@@ -75,6 +80,11 @@ exports.updateGallery = async (req, res) => {
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Foto tidak ditemukan.' });
+    }
+
+    // Bersihkan file lama jika gambar berubah
+    if (oldGallery && oldGallery.image && oldGallery.image !== image) {
+      deleteFile(oldGallery.image);
     }
 
     // Catat aktivitas: Mengubah Galeri
@@ -97,8 +107,14 @@ exports.deleteGallery = async (req, res) => {
       return res.status(404).json({ error: 'Foto tidak ditemukan.' });
     }
 
+    // --- CLEANUP FILE ---
+    const deletedGallery = result.rows[0];
+    if (deletedGallery.image) {
+      deleteFile(deletedGallery.image);
+    }
+
     // Catat aktivitas: Menghapus Galeri
-    await logActivity(req.admin.id, 'Menghapus Foto Galeri', result.rows[0].title);
+    await logActivity(req.admin.id, 'Menghapus Foto Galeri', deletedGallery.title);
 
     res.json({ message: 'Foto berhasil dihapus dari galeri.' });
   } catch (error) {

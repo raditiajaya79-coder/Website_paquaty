@@ -23,7 +23,7 @@ export const PRODUCTS = [
             { label: "200 Gram", value: "200g" },
             { label: "325 Gram (Jar)", value: "325g-jar" }
         ],
-        image: "/logo-product-pure/01.ORIGINAL-HOLO-PNG - GRADING.webp",
+        image: "/logo-product-pure/01.ORIGINAL-HOLO-PNG-GRADING.webp",
         detailImage: "/images/keripik tempe original pakuaty.jpg",
         tag: "Best Seller",
         price: 12000,

@@ -10,32 +10,14 @@ import { COMPANY_INFO, FOUNDER } from '../data/products';
  * About — Halaman "Tentang Kami"
  * Berisi: header, filosofi nama perusahaan, pesan dari founder, core values, closing
  */
+import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import React, { useState, useEffect } from 'react';
-import { API_BASE_URL } from '../utils/api';
-
-/**
- * About — Halaman "Tentang Kami"
- * Berisi: header, filosofi nama perusahaan, pesan dari founder, core values, closing
- */
+// Mengambil data dari GlobalDataContext (sudah di-preload saat awal)
+import { useGlobalData } from '../context/GlobalDataContext';
 const About = () => {
     const { t } = useLanguage();
-    const [settings, setSettings] = useState({});
-
-    useEffect(() => {
-        const fetchSettings = async () => {
-            try {
-                const res = await fetch(`${API_BASE_URL}/settings`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setSettings(data);
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        };
-        fetchSettings();
-    }, []);
+    // Ambil settings dari data yang sudah di-preload (tidak perlu fetch lagi)
+    const { settings } = useGlobalData();
 
     // Konfigurasi animasi fade-in
     const fadeIn = {

@@ -3,6 +3,7 @@
  */
 const pool = require('../config/db');
 const { logActivity } = require('../utils/logger'); // Import utility logging
+const { deleteFile } = require('../utils/fileHelper'); // Import utility penghapus file
 
 // --- ARTICLES ---
 
@@ -68,20 +69,29 @@ exports.createArticle = async (req, res) => {
 };
 
 exports.updateArticle = async (req, res) => {
-  const { id } = req.params;
-  // Menerima data artikel yang diperbarui dari body request, termasuk status 'is_pinned'.
-  const { title, title_en, excerpt, excerpt_en, content, content_en, date, author, category, image, is_pinned } = req.body;
-  try {
-    // Memperbarui artikel yang ada di database berdasarkan ID.
-    // Menambahkan `is_pinned` ke daftar kolom yang dapat diperbarui.
-    const result = await pool.query(
-      `UPDATE articles SET title=$1, title_en=$2, excerpt=$3, excerpt_en=$4, content=$5, content_en=$6, date=$7, author=$8, category=$9, image=$10, is_pinned=$11
-       WHERE id=$12 RETURNING *`,
-      [title, title_en, excerpt, excerpt_en, content, content_en, date, author, category, image, is_pinned, id]
-    );
-    
-    // Catat aktivitas: Mengubah Artikel
-    await logActivity(req.admin.id, 'Mengubah Data Artikel', title);
+    const { id } = req.params;
+    // Menerima data artikel yang diperbarui dari body request, termasuk status 'is_pinned'.
+    const { title, title_en, excerpt, excerpt_en, content, content_en, date, author, category, image, is_pinned } = req.body;
+    try {
+      // Ambil data artikel lama untuk dibandingkan
+      const oldArticleResult = await pool.query('SELECT image FROM articles WHERE id = $1', [id]);
+      const oldArticle = oldArticleResult.rows[0];
+
+      // Memperbarui artikel yang ada di database berdasarkan ID.
+      // Menambahkan `is_pinned` ke daftar kolom yang dapat diperbarui.
+      const result = await pool.query(
+        `UPDATE articles SET title=$1, title_en=$2, excerpt=$3, excerpt_en=$4, content=$5, content_en=$6, date=$7, author=$8, category=$9, image=$10, is_pinned=$11
+         WHERE id=$12 RETURNING *`,
+        [title, title_en, excerpt, excerpt_en, content, content_en, date, author, category, image, is_pinned, id]
+      );
+      
+      // Jika update berhasil, hapus file lama jika gambar diganti
+      if (oldArticle && oldArticle.image && oldArticle.image !== image) {
+        deleteFile(oldArticle.image);
+      }
+
+      // Catat aktivitas: Mengubah Artikel
+      await logActivity(req.admin.id, 'Mengubah Data Artikel', title);
 
     res.json(result.rows[0]);
   } catch (error) {
@@ -100,8 +110,15 @@ exports.deleteArticle = async (req, res) => {
       return res.status(404).json({ error: 'Artikel tidak ditemukan.' });
     }
 
+    // --- CLEANUP FILE ---
+    // Hapus file fisik gambar artikel
+    const deletedArticle = result.rows[0];
+    if (deletedArticle.image) {
+      deleteFile(deletedArticle.image);
+    }
+
     // Catat aktivitas: Menghapus Artikel
-    await logActivity(req.admin.id, 'Menghapus Artikel', result.rows[0].title);
+    await logActivity(req.admin.id, 'Menghapus Artikel', deletedArticle.title);
 
     res.json({ message: 'Artikel dihapus.' });
   } catch (error) {
@@ -172,20 +189,29 @@ exports.createEvent = async (req, res) => {
 };
 
 exports.updateEvent = async (req, res) => {
-  const { id } = req.params;
-  // Menerima data event yang diperbarui dari body request, termasuk status 'is_pinned'.
-  const { title, title_en, description, description_en, date, location, image, status, is_pinned } = req.body;
-  try {
-    // Memperbarui event yang ada di database berdasarkan ID.
-    // Menambahkan `is_pinned` ke daftar kolom yang dapat diperbarui.
-    const result = await pool.query(
-      `UPDATE events SET title=$1, title_en=$2, description=$3, description_en=$4, date=$5, location=$6, image=$7, status=$8, is_pinned=$9
-       WHERE id=$10 RETURNING *`,
-      [title, title_en, description, description_en, date, location, image, status, is_pinned, id]
-    );
-    
-    // Catat aktivitas: Mengubah Event
-    await logActivity(req.admin.id, 'Mengubah Data Event', title);
+    const { id } = req.params;
+    // Menerima data event yang diperbarui dari body request, termasuk status 'is_pinned'.
+    const { title, title_en, description, description_en, date, location, image, status, is_pinned } = req.body;
+    try {
+      // Ambil data event lama untuk dibandingkan
+      const oldEventResult = await pool.query('SELECT image FROM events WHERE id = $1', [id]);
+      const oldEvent = oldEventResult.rows[0];
+
+      // Memperbarui event yang ada di database berdasarkan ID.
+      // Menambahkan `is_pinned` ke daftar kolom yang dapat diperbarui.
+      const result = await pool.query(
+        `UPDATE events SET title=$1, title_en=$2, description=$3, description_en=$4, date=$5, location=$6, image=$7, status=$8, is_pinned=$9
+         WHERE id=$10 RETURNING *`,
+        [title, title_en, description, description_en, date, location, image, status, is_pinned, id]
+      );
+      
+      // Jika update berhasil, hapus gambar lama jika diganti
+      if (oldEvent && oldEvent.image && oldEvent.image !== image) {
+        deleteFile(oldEvent.image);
+      }
+
+      // Catat aktivitas: Mengubah Event
+      await logActivity(req.admin.id, 'Mengubah Data Event', title);
 
     res.json(result.rows[0]);
   } catch (error) {
@@ -202,8 +228,14 @@ exports.deleteEvent = async (req, res) => {
       return res.status(404).json({ error: 'Event tidak ditemukan.' });
     }
 
+    // --- CLEANUP FILE ---
+    const deletedEvent = result.rows[0];
+    if (deletedEvent.image) {
+      deleteFile(deletedEvent.image);
+    }
+
     // Catat aktivitas: Menghapus Event
-    await logActivity(req.admin.id, 'Menghapus Event', result.rows[0].title);
+    await logActivity(req.admin.id, 'Menghapus Event', deletedEvent.title);
 
     res.json({ message: 'Event dihapus.' });
   } catch (error) {

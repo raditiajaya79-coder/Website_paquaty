@@ -417,12 +417,12 @@ const ProductForm = () => {
                                         type="button"
                                         onClick={handleTranslate}
                                         disabled={isTranslating}
-                                        className="flex items-center gap-1.5 text-[10px] font-black text-brand-gold hover:text-brand-gold/80 transition-colors disabled:opacity-50 uppercase tracking-widest"
+                                        className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-[9px] font-black text-indigo-600 rounded-md shadow-sm hover:bg-indigo-100 hover:text-indigo-700 transition-all disabled:opacity-50 uppercase tracking-widest"
                                     >
                                         {isTranslating ? (
-                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
                                         ) : (
-                                            <Wand2 className="w-3 h-3" />
+                                            <Wand2 className="w-3.5 h-3.5" />
                                         )}
                                         Magic Auto-Translate
                                     </button>
