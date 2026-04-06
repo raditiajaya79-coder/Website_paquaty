@@ -14,6 +14,7 @@ import Home from './pages/Home.jsx';
 const About = lazy(() => import('./pages/About.jsx'));
 const Products = lazy(() => import('./pages/Products.jsx'));
 const ProductDetail = lazy(() => import('./pages/ProductDetail.jsx'));
+const Production = lazy(() => import('./pages/Production.jsx'));
 const Contact = lazy(() => import('./pages/Contact.jsx'));
 const Events = lazy(() => import('./pages/Events.jsx'));
 const EventDetail = lazy(() => import('./pages/EventDetail.jsx'));
@@ -30,6 +31,7 @@ const ManageProducts = lazy(() => import('./pages/admin/modules/ManageProducts.j
 const ManageGallery = lazy(() => import('./pages/admin/modules/ManageGallery.jsx'));
 const ManageCertificates = lazy(() => import('./pages/admin/modules/ManageCertificates.jsx'));
 const ManageEvents = lazy(() => import('./pages/admin/modules/ManageEvents.jsx'));
+const ManageProduction = lazy(() => import('./pages/admin/modules/ManageProduction.jsx'));
 const ManageContact = lazy(() => import('./pages/admin/modules/ManageContact.jsx'));
 const ManageAnnouncements = lazy(() => import('./pages/admin/modules/ManageAnnouncements.jsx'));
 const ManageSettings = lazy(() => import('./pages/admin/modules/ManageSettings.jsx'));
@@ -54,10 +56,11 @@ function App() {
     const location = useLocation();
 
     return (
-        // AnimatePresence — Memungkinkan animasi transisi halaman
-        <AnimatePresence mode="wait">
+        <>
             <ScrollToTop />
-            <Routes location={location}>
+            {/* AnimatePresence — Memungkinkan animasi transisi halaman */}
+            <AnimatePresence mode="wait">
+                <Routes location={location} key={location.pathname}>
                 {/* 
             Route parent dengan MainLayout sebagai wrapper
             Semua child routes akan di-render di dalam MainLayout (via <Outlet />)
@@ -88,6 +91,9 @@ function App() {
 
                     {/* Halaman sertifikat — URL: /certificates */}
                     <Route path="/certificates" element={<Certificates />} />
+
+                    {/* Halaman tambahan */}
+                    <Route path="/production" element={<Production />} />
                 </Route>
 
                 {/* 
@@ -112,6 +118,8 @@ function App() {
                         <Route path="events" element={<ManageEvents />} />
                         <Route path="events/add" element={<EventForm />} />
                         <Route path="events/edit/:id" element={<EventForm />} />
+
+                        <Route path="production" element={<ManageProduction />} />
 
                         {/* Module Pengumuman */}
                         <Route path="announcements" element={<ManageAnnouncements />} />
@@ -139,6 +147,7 @@ function App() {
 
             </Routes>
         </AnimatePresence>
+        </>
     );
 }
 

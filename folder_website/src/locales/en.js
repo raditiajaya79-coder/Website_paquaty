@@ -5,6 +5,9 @@ export const en = {
     "nav.about": "About Us",
     "nav.certificates": "Certificates",
     "nav.gallery": "Gallery",
+    "nav.production_root": "Production",
+    "nav.production_sub": "Production Process",
+    "nav.sustainability": "Sustainability",
     "nav.events": "Events",
     "nav.contact": "Contact",
     "nav.partner": "Be a Partner",
@@ -23,6 +26,8 @@ export const en = {
     "seo.events_desc": "Stay updated with Pakuaty's latest events, heritage stories, and export milestones.",
     "seo.contact_title": "Contact Our Team",
     "seo.contact_desc": "Get in touch with Pakuaty for wholesale inquiries and partnership opportunities.",
+    "seo.production_title": "Art of Production Process",
+    "seo.sustainability_title": "Sustainability & Impact Report",
     "seo.products_title": "Our Products",
 
     // Hero Section

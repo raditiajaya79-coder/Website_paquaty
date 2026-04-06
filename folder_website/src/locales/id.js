@@ -5,6 +5,9 @@ export const id = {
     "nav.about": "Tentang Kami",
     "nav.certificates": "Sertifikasi",
     "nav.gallery": "Galeri",
+    "nav.production_root": "Produksi",
+    "nav.production_sub": "Proses Produksi",
+    "nav.sustainability": "Sustainability",
     "nav.events": "Acara",
     "nav.contact": "Kontak",
     "nav.partner": "Jadi Mitra",
@@ -23,6 +26,8 @@ export const id = {
     "seo.events_desc": "Tetap terupdate dengan acara terbaru Pakuaty, kisah warisan, dan pencapaian ekspor.",
     "seo.contact_title": "Hubungi Tim Kami",
     "seo.contact_desc": "Hubungi Pakuaty untuk pertanyaan grosir dan peluang kemitraan.",
+    "seo.production_title": "Seni Proses Produksi",
+    "seo.sustainability_title": "Laporan Keberlanjutan & Dampak",
     "seo.products_title": "Produk Kami",
 
     // Hero Section

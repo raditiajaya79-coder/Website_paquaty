@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ArrowRight, Menu, X, Phone, Mail, Globe, ShoppingBag, Video, MessageCircle, Link as LinkIcon } from 'lucide-react';
+import { ArrowRight, Menu, X, Phone, Mail, Globe, ShoppingBag, Video, MessageCircle, Link as LinkIcon, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 // Mengambil data dari GlobalDataContext (sudah di-preload saat awal)
 import { useGlobalData } from '../context/GlobalDataContext';
@@ -127,6 +127,7 @@ const Navbar = () => {
     const navLinks = [
         { name: t('nav.products'), path: "/products" },
         { name: t('nav.about'), path: "/about" },
+        { name: t('nav.production_root'), path: "/production" },
         { name: t('nav.gallery'), path: "/gallery" },
         ...(hasCertificates ? [{ name: t('nav.certificates'), path: "/certificates" }] : []),
         { name: t('nav.events'), path: "/events" },
@@ -225,13 +226,14 @@ const Navbar = () => {
                         <div className="flex flex-col gap-2 relative z-10">
                             {navLinks.map((link, idx) => (
                                 <motion.div
-                                    key={link.path}
+                                    key={link.name}
                                     initial={{ opacity: 0, x: 5 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: idx * 0.05 }}
                                 >
                                     <NavLink
                                         to={link.path}
+                                        onClick={() => setIsMenuOpen(false)}
                                         className={({ isActive }) => `text-lg font-bold tracking-tight transition-all duration-300 flex items-center gap-2 ${isActive ? 'text-brand-cyan' : 'text-stone-dark hover:text-brand-cyan'}`}
                                     >
                                         <span className="text-[7px] font-black text-brand-gold">0{idx + 1}</span>

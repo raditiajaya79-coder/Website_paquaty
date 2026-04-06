@@ -18,7 +18,7 @@ import { useGlobalData } from '../context/GlobalDataContext';
 
 const Preloader = () => {
     // Ambil status loading dari GlobalDataContext
-    const { isLoaded, loadingProgress } = useGlobalData();
+    const { isLoaded, loadingProgress, loadingMessage } = useGlobalData();
 
     return (
         <AnimatePresence>
@@ -139,16 +139,17 @@ const Preloader = () => {
                                 />
                             </div>
 
-                            {/* Teks Status — Warm dan friendly */}
-                            <p
-                                className="text-[10px] font-bold tracking-[0.3em] uppercase"
-                                style={{ color: 'rgba(28,25,23,0.25)' }} // stone-dark transparan
+                            {/* Teks Status — Dinamis dari GlobalDataContext */}
+                            <motion.p
+                                key={loadingMessage} // Trigger animasi setiap kali pesan berubah
+                                initial={{ opacity: 0, y: 5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="text-[10px] font-bold tracking-[0.3em] uppercase text-center"
+                                style={{ color: 'rgba(28,25,23,0.35)' }} // stone-dark transparan
                             >
-                                {loadingProgress < 100
-                                    ? 'Preparing...'  // Bahasa yang lebih friendly dari "Loading"
-                                    : '✓ Ready'
-                                }
-                            </p>
+                                {loadingMessage}
+                            </motion.p>
+
                         </motion.div>
                     </div>
                 </motion.div>
