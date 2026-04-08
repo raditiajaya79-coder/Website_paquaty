@@ -84,7 +84,7 @@ exports.updateGallery = async (req, res) => {
 
     // Bersihkan file lama jika gambar berubah
     if (oldGallery && oldGallery.image && oldGallery.image !== image) {
-      deleteFile(oldGallery.image);
+      await deleteFile(oldGallery.image);
     }
 
     // Catat aktivitas: Mengubah Galeri
@@ -110,7 +110,7 @@ exports.deleteGallery = async (req, res) => {
     // --- CLEANUP FILE ---
     const deletedGallery = result.rows[0];
     if (deletedGallery.image) {
-      deleteFile(deletedGallery.image);
+      await deleteFile(deletedGallery.image);
     }
 
     // Catat aktivitas: Menghapus Galeri

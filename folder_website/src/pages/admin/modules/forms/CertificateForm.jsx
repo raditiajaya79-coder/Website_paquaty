@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'; // Ikon
 import Toast from '../../../../components/admin/Toast'; // Komponen Toast
 import ImageUploader from '../../../../components/admin/ImageUploader'; // Import uploader baru
-import { API_BASE_URL } from '../../../../utils/api';
+import { API_BASE_URL, api } from '../../../../utils/api';
 import { translateText } from '../../../../utils/translate';
 import { Wand2, Loader2 } from 'lucide-react';
 
@@ -45,6 +45,7 @@ const CertificateForm = () => {
     });
     const [isTranslating, setIsTranslating] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null); // File sertifikat baru
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' }); // State untuk notifikasi feedback
 
     // Simulasi pengambilan data jika mode edit
@@ -124,6 +125,23 @@ const CertificateForm = () => {
         setLoading(true);
 
         try {
+            let dataToSend = { ...formData };
+
+            // --- TAHAP 1: Upload file jika ada file baru ---
+            if (selectedFile) {
+                setToast({ show: true, message: 'Mengunggah sertifikat...', type: 'success' });
+                const result = await api.upload(selectedFile);
+                dataToSend.image = result.url;
+            }
+
+            // Validasi: pastikan ada gambar sertifikat
+            if (!dataToSend.image && !isEditMode) {
+                setToast({ show: true, message: 'Harap pilih dokumen sertifikat.', type: 'error' });
+                setLoading(false);
+                return;
+            }
+
+            // --- TAHAP 2: Simpan data ke DB ---
             const token = localStorage.getItem('admin_token'); // Ambil token auth
             const url = isEditMode
                 ? `${API_BASE_URL}/certificates/${id}` // Endpoint update
@@ -131,9 +149,9 @@ const CertificateForm = () => {
             const method = isEditMode ? 'PUT' : 'POST'; // Tentukan metode HTTP
 
             const submissionData = {
-                ...formData,
-                is_active: formData.is_active ? 1 : 0,
-                is_pinned: formData.is_pinned ? 1 : 0
+                ...dataToSend,
+                is_active: dataToSend.is_active ? 1 : 0,
+                is_pinned: dataToSend.is_pinned ? 1 : 0
             };
 
             const response = await fetch(url, {
@@ -363,7 +381,7 @@ const CertificateForm = () => {
                         <ImageUploader
                             label="Dokumen Sertifikat (Semua Format)"
                             currentImage={formData.image}
-                            onUploadSuccess={(url) => setFormData({ ...formData, image: url })}
+                            onFileSelect={(file) => setSelectedFile(file)}
                         />
                         <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100/50 text-center">
                             <p className="text-[10px] font-bold text-blue-400 uppercase tracking-widest leading-relaxed">

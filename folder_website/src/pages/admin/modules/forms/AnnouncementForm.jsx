@@ -18,7 +18,7 @@ import {
     UploadCloud
 } from 'lucide-react'; // Ikon
 import ImageUploader from '../../../../components/admin/ImageUploader';
-import { API_BASE_URL } from '../../../../utils/api';
+import { API_BASE_URL, api } from '../../../../utils/api';
 
 const Toast = ({ message, type, onClose }) => (
     <motion.div
@@ -57,6 +57,7 @@ const AnnouncementForm = () => {
     });
     const [loading, setLoading] = useState(false);
     const [isTranslating, setIsTranslating] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null); // File image pengumuman
     const [toast, setToast] = useState(null);
 
     useEffect(() => {
@@ -137,6 +138,16 @@ const AnnouncementForm = () => {
         setLoading(true);
 
         try {
+            let dataToSend = { ...formData };
+
+            // --- TAHAP 1: Upload file jika ada ---
+            if (selectedFile) {
+                setToast({ message: 'Mengunggah banner...', type: 'success' });
+                const result = await api.upload(selectedFile);
+                dataToSend.image = result.url;
+            }
+
+            // --- TAHAP 2: Simpan Data ---
             const token = localStorage.getItem('admin_token');
             const url = isEditMode
                 ? `${API_BASE_URL}/announcements/${id}`
@@ -149,7 +160,7 @@ const AnnouncementForm = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(dataToSend)
             });
 
             if (response.ok) {
@@ -309,7 +320,7 @@ const AnnouncementForm = () => {
                                 <ImageUploader
                                     label="Gambar Banner (Upload)"
                                     currentImage={formData.image}
-                                    onUploadSuccess={(url) => setFormData({ ...formData, image: url })}
+                                    onFileSelect={(file) => setSelectedFile(file)}
                                     previewClassName="h-[250px] w-full"
                                 />
                                 <p className="text-[10px] font-bold text-slate-400 italic ml-1 leading-relaxed">Pilih file gambar untuk ditampilkan sebagai banner pop-up.</p>

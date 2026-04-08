@@ -20,6 +20,11 @@ const dashboardController = require('../controllers/dashboardController'); // Im
 const settingsController = require('../controllers/settingsController'); // Import controller settings
 
 const upload = require('../middleware/upload'); // Import middleware upload
+const imageController = require('../controllers/imageController'); // Import image proxy controller
+
+// --- IMAGE PROXY / VIEW ROUTES ---
+// Endpoint publik untuk menyajikan gambar dari Minio (Bypass SSL/CORS)
+router.get('/view-image/:filename', imageController.serveImage);
 
 // --- DASHBOARD ROUTES ---
 // Endpoint untuk mengambil ringkasan angka di dashboard (Admin Only)
@@ -30,18 +35,24 @@ router.delete('/dashboard/logs', auth, dashboardController.deleteAllLogs);
 router.delete('/dashboard/logs/:id', auth, dashboardController.deleteLog);
 
 // --- UPLOAD ROUTES ---
+const { uploadToMinio } = require('../utils/minioHelper'); // Import utility Minio
+
 // Endpoint khusus untuk menerima file dari device
-router.post('/upload', auth, upload.single('image'), (req, res) => {
+router.post('/upload', auth, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'Tidak ada file yang diunggah.' });
     }
-    // Balas dengan URL publik file yang bisa diakses dari frontend
-    // Format: /uploads/nama-file.ext
-    const fileUrl = `/uploads/${req.file.filename}`;
+
+    // Panggil helper untuk upload ke Minio
+    // Helper akan mengembalikan URL absolut (http://.../bucket/file.jpg)
+    const fileUrl = await uploadToMinio(req.file);
+
+    // Balas dengan URL publik
     res.json({ url: fileUrl });
   } catch (error) {
-    res.status(500).json({ error: 'Gagal mengunggah file: ' + error.message });
+    console.error('[UPLOAD] ❌ Error:', error.message);
+    res.status(500).json({ error: 'Gagal mengunggah ke Minio: ' + error.message });
   }
 });
 

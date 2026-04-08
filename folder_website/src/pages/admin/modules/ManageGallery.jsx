@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'; // Ikon
 import ConfirmModal from '../../../components/admin/ConfirmModal';
 import Toast from '../../../components/admin/Toast';
-import { API_BASE_URL } from '../../../utils/api';
+import { API_BASE_URL, getImageUrl } from '../../../utils/api';
 
 /**
  * ManageGallery Component — Halaman pengelolaan galeri foto.
@@ -179,17 +179,17 @@ const ManageGallery = () => {
                     >
                         {/* Image Container */}
                         <div className="aspect-[4/5] bg-slate-50 flex items-center justify-center overflow-hidden relative shadow-inner">
-                             <img
-                                 src={img.image || '/images/pure logo pakuaty.png'}
-                                 alt={img.title}
-                                 className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 ${(!img.image || img.image.includes('pure logo pakuaty.png')) ? 'opacity-20 grayscale' : ''}`}
-                                 onError={(e) => {
-                                     if (!e.target.src.includes('pure%20logo%20pakuaty.png') && !e.target.src.includes('pure logo pakuaty.png')) {
-                                         e.target.src = '/images/pure logo pakuaty.png';
-                                         e.target.className += ' opacity-20 grayscale';
-                                     }
-                                 }}
-                             />
+                            <img
+                                src={getImageUrl(img.image)}
+                                alt={img.title}
+                                className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 ${(!img.image || img.image.includes('pure logo pakuaty.png')) ? 'opacity-20 grayscale' : ''}`}
+                                onError={(e) => {
+                                    if (!e.target.src.includes('pure%20logo%20pakuaty.png') && !e.target.src.includes('pure logo pakuaty.png')) {
+                                        e.target.src = '/images/pure logo pakuaty.png';
+                                        e.target.className += ' opacity-20 grayscale';
+                                    }
+                                }}
+                            />
 
                             {/* Hover Actions Overlay */}
                             <div className="absolute inset-0 bg-slate-900/70 xl:opacity-0 xl:group-hover:opacity-100 transition-all duration-300 flex flex-col justify-center items-center p-3 sm:p-6 backdrop-blur-[2px] opacity-100 sm:opacity-0 group-hover:opacity-100">

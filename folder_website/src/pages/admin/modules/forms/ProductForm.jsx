@@ -16,7 +16,7 @@ import {
 import ImageUploader from '../../../../components/admin/ImageUploader';
 import { translateText } from '../../../../utils/translate';
 import Toast from '../../../../components/admin/Toast';
-import { API_BASE_URL } from '../../../../utils/api';
+import { API_BASE_URL, api } from '../../../../utils/api';
 
 /**
  * ProductForm Component — Halaman khusus untuk tambah/edit produk.
@@ -52,6 +52,8 @@ const ProductForm = () => {
     const [isTranslating, setIsTranslating] = useState(false);
     const [loading, setLoading] = useState(false);
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+    const [selectedImageFile, setSelectedImageFile] = useState(null); // File foto utama (belum diupload)
+    const [selectedDetailFile, setSelectedDetailFile] = useState(null); // File foto detail (belum diupload)
 
     // Ambil data produk jika dalam mode edit
     useEffect(() => {
@@ -127,11 +129,32 @@ const ProductForm = () => {
         }
     };
 
+    /**
+     * handleSubmit — Proses simpan produk.
+     * Tahap 1: Upload file gambar (jika ada file baru) ke Minio.
+     * Tahap 2: Simpan semua data produk ke database.
+     */
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
+        e.preventDefault(); // Cegah reload halaman
+        setLoading(true); // Tampilkan loading
 
         try {
+            // Siapkan salinan data form
+            let dataToSend = { ...formData };
+
+            // --- TAHAP 1: Upload file baru ke Minio (jika ada) ---
+            if (selectedImageFile) {
+                setToast({ show: true, message: 'Mengunggah foto utama...', type: 'success' });
+                const result = await api.upload(selectedImageFile);
+                dataToSend.image = result.url; // URL dari Minio proxy
+            }
+            if (selectedDetailFile) {
+                setToast({ show: true, message: 'Mengunggah foto detail...', type: 'success' });
+                const result = await api.upload(selectedDetailFile);
+                dataToSend.detail_image = result.url; // URL dari Minio proxy
+            }
+
+            // --- TAHAP 2: Simpan data ke database ---
             const token = localStorage.getItem('admin_token');
             const url = isEditMode
                 ? `${API_BASE_URL}/products/${id}`
@@ -140,21 +163,21 @@ const ProductForm = () => {
 
             // Bersihkan data sebelum kirim (pastikan angka adalah angka)
             const submissionData = {
-                ...formData,
-                price: parseInt(formData.price.replace(/[^0-9]/g, '')),
-                original_price: parseInt(formData.original_price.replace(/[^0-9]/g, '')),
-                is_bestseller: formData.is_bestseller ? 1 : 0,
-                is_hero: formData.is_hero ? 1 : 0,
-                packaging_options: formData.packaging_options
+                ...dataToSend,
+                price: parseInt(String(dataToSend.price).replace(/[^0-9]/g, '')),
+                original_price: parseInt(String(dataToSend.original_price).replace(/[^0-9]/g, '')),
+                is_bestseller: dataToSend.is_bestseller ? 1 : 0,
+                is_hero: dataToSend.is_hero ? 1 : 0,
+                packaging_options: dataToSend.packaging_options
             };
 
             const response = await fetch(url, {
                 method,
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Content-Type': 'application/json', // Kirim sebagai JSON
+                    'Authorization': `Bearer ${token}` // Sertakan token admin
                 },
-                body: JSON.stringify(submissionData)
+                body: JSON.stringify(submissionData) // Kirim data produk lengkap
             });
 
             if (response.ok) {
@@ -169,9 +192,9 @@ const ProductForm = () => {
                 setToast({ show: true, message: 'Gagal menyimpan: ' + (errorData.error || 'Terjadi kesalahan'), type: 'error' });
             }
         } catch (err) {
-            setToast({ show: true, message: 'Kesalahan jaringan: ' + err.message, type: 'error' });
+            setToast({ show: true, message: 'Kesalahan: ' + err.message, type: 'error' });
         } finally {
-            setLoading(false);
+            setLoading(false); // Matikan loading
         }
     };
 
@@ -459,7 +482,7 @@ const ProductForm = () => {
                                     <ImageUploader
                                         label="Foto Utama (Semua Format)"
                                         currentImage={formData.image}
-                                        onUploadSuccess={(url) => setFormData({ ...formData, image: url })}
+                                        onFileSelect={(file) => setSelectedImageFile(file)}
                                     />
                                     <p className="text-[9px] font-bold text-slate-400 italic ml-1">Unggah foto produk terbaik. Semua format (JPG, PNG, WebP) didukung.</p>
                                 </div>
@@ -469,7 +492,7 @@ const ProductForm = () => {
                                     <ImageUploader
                                         label="Foto Detail (Semua Format)"
                                         currentImage={formData.detail_image}
-                                        onUploadSuccess={(url) => setFormData({ ...formData, detail_image: url })}
+                                        onFileSelect={(file) => setSelectedDetailFile(file)}
                                     />
                                     <p className="text-[9px] font-bold text-slate-400 italic ml-1">Unggah foto suasana atau detail kemasan produk.</p>
                                 </div>

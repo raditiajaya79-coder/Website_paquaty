@@ -5,17 +5,26 @@
 const fs = require('fs'); // Modul File System Node.js
 const path = require('path'); // Modul Path Node.js untuk manipulasi alamat file
 
+const { deleteFromMinio } = require('./minioHelper'); // Import helper Minio
+
 /**
- * Menghapus file gambar dari folder uploads secara aman.
- * @param {string} fileUrl - URL file yang disimpan di DB (contoh: "/uploads/image.jpg")
+ * Menghapus file gambar secara aman (Mendukung lokal dan Minio).
+ * @param {string} fileUrl - URL file yang disimpan di DB
  */
-exports.deleteFile = (fileUrl) => {
+exports.deleteFile = async (fileUrl) => {
     // Pastikan parameter tidak kosong
     if (!fileUrl) return;
 
     try {
+        // --- LOGIKA MINIO ---
+        // Jika URL diawali dengan http/https, kita asumsikan ini adalah file Minio
+        if (fileUrl.startsWith('http')) {
+            await deleteFromMinio(fileUrl);
+            return;
+        }
+
+        // --- LOGIKA LOKAL (Backward Compatibility) ---
         // Ambil nama file dari URL (bagian terakhir setelah "/")
-        // Gunakan decodeURIComponent untuk menangani karakter khusus seperti %20 (spasi)
         const fileName = decodeURIComponent(fileUrl.split('/').pop());
 
         // Lokasi absolut folder 'uploads' relatif terhadap file ini
@@ -25,13 +34,11 @@ exports.deleteFile = (fileUrl) => {
         if (fs.existsSync(filePath)) {
             fs.unlink(filePath, (err) => {
                 if (err) {
-                    console.error(`[FILEHELPER] ❌ Gagal menghapus file "${fileName}":`, err.message);
+                    console.error(`[FILEHELPER] ❌ Gagal menghapus file lokal "${fileName}":`, err.message);
                 } else {
                     console.log(`[FILEHELPER] ✅ Berhasil menghapus file fisik: "${fileName}"`);
                 }
             });
-        } else {
-            console.warn(`[FILEHELPER] ⚠️ File tidak ditemukan di server: "${fileName}" (Melewati...)`);
         }
     } catch (error) {
         console.error(`[FILEHELPER] ❌ Error saat memproses penghapusan:`, error.message);

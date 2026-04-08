@@ -61,10 +61,31 @@ exports.login = async (req, res) => {
 };
 
 /**
- * getCurrentAdmin — Mengambil data admin yang sedang login (payload dari token)
+ * getCurrentAdmin — Mengambil data admin terbaru dari database (berdasarkan ID di token)
+ * Berguna untuk memastikan dashboard mendapatkan data terbaru (username/fullname) 
+ * meskipun data di token belum diperbarui.
  */
-exports.getCurrentAdmin = (req, res) => {
-  res.json(req.admin); // Data admin sudah dimasukkan ke req oleh authMiddleware
+exports.getCurrentAdmin = async (req, res) => {
+  try {
+    const adminId = req.admin.id; // Ambil ID dari token JWT
+
+    // Ambil data admin terbaru dari database (Kecuali password_hash)
+    const result = await pool.query(
+      'SELECT id, username, full_name, role, created_at FROM admins WHERE id = $1',
+      [adminId]
+    );
+
+    // Jika admin tidak ditemukan (misal: akun dihapus saat sesi aktif)
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Data admin tidak ditemukan.' });
+    }
+
+    // Mengirim data admin terbaru ke frontend
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error(`[AUTH] ❌ Get Current Admin Error: ${error.message}`);
+    res.status(500).json({ error: 'Gagal memuat profil admin.' });
+  }
 };
 
 /**

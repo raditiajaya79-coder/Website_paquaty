@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'; // Ikon
 import Toast from '../../../../components/admin/Toast'; // Komponen Toast
 import ImageUploader from '../../../../components/admin/ImageUploader';
-import { API_BASE_URL } from '../../../../utils/api';
+import { API_BASE_URL, api } from '../../../../utils/api';
 import { translateText } from '../../../../utils/translate';
 import { Wand2, Loader2 } from 'lucide-react';
 
@@ -38,6 +38,7 @@ const GalleryForm = () => {
     const [isTranslating, setIsTranslating] = useState(false);
     const [loading, setLoading] = useState(false); // State untuk loading indicator
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' }); // State untuk notifikasi feedback
+    const [selectedFile, setSelectedFile] = useState(null); // State untuk menyimpan file yang dipilih (belum diupload)
 
     // Fungsi untuk mengambil data galeri (dokumentasi) dari API
     const fetchGalleryData = async () => {
@@ -91,27 +92,54 @@ const GalleryForm = () => {
         }
     };
 
-    // simplified to text input
-    const handleImageChange = (e) => { };
+    // Tidak digunakan lagi — upload ditangani langsung oleh handleSubmit
 
+    /**
+     * handleSubmit — Proses simpan data.
+     * Tahap 1: Jika ada file baru yang dipilih, upload ke Minio terlebih dahulu.
+     * Tahap 2: Simpan semua data (termasuk URL gambar dari upload) ke database.
+     */
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
+        e.preventDefault(); // Cegah reload halaman
+        setLoading(true); // Tampilkan indikator loading
 
         try {
+            // Siapkan salinan data form untuk dikirim
+            let dataToSend = { ...formData };
+
+            // --- TAHAP 1: Upload file ke Minio (jika ada file baru) ---
+            if (selectedFile) {
+                setToast({ show: true, message: 'Mengunggah gambar...', type: 'success' });
+                const uploadResult = await api.upload(selectedFile); // Panggil API upload
+
+                // Cek apakah URL dari server sudah absolut atau masih relatif
+                const urlFromApi = uploadResult.url;
+                dataToSend.image = (urlFromApi.startsWith('http') || urlFromApi.startsWith('//'))
+                    ? urlFromApi // Sudah URL lengkap dari Minio proxy
+                    : urlFromApi; // Simpan apa adanya (backend yang mengatur)
+            }
+
+            // Validasi: pastikan ada gambar (baik dari upload baru atau dari data lama)
+            if (!dataToSend.image && !isEditMode) {
+                setToast({ show: true, message: 'Harap pilih gambar terlebih dahulu.', type: 'error' });
+                setLoading(false);
+                return;
+            }
+
+            // --- TAHAP 2: Simpan data ke database ---
             const token = localStorage.getItem('admin_token');
             const url = isEditMode
-                ? `${API_BASE_URL}/gallery/${id}`
-                : `${API_BASE_URL}/gallery`;
+                ? `${API_BASE_URL}/gallery/${id}` // Endpoint update
+                : `${API_BASE_URL}/gallery`; // Endpoint create
             const method = isEditMode ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
                 method,
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Content-Type': 'application/json', // Kirim sebagai JSON
+                    'Authorization': `Bearer ${token}` // Sertakan token admin
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(dataToSend) // Kirim data form (sudah termasuk URL gambar)
             });
 
             if (response.ok) {
@@ -119,16 +147,16 @@ const GalleryForm = () => {
                     show: true,
                     message: isEditMode ? 'Dokumentasi berhasil diperbarui!' : 'Dokumentasi berhasil ditambahkan!',
                     type: 'success'
-                }); // Notifikasi sukses yang cantik
+                });
                 setTimeout(() => navigate('/admin/gallery'), 1500); // Kembali ke list setelah jeda
             } else {
                 const errorData = await response.json();
                 setToast({ show: true, message: 'Gagal menyimpan: ' + (errorData.error || 'Terjadi kesalahan sistem'), type: 'error' });
             }
         } catch (err) {
-            setToast({ show: true, message: 'Kesalahan jaringan: ' + err.message, type: 'error' });
+            setToast({ show: true, message: 'Kesalahan: ' + err.message, type: 'error' });
         } finally {
-            setLoading(false);
+            setLoading(false); // Matikan loading indicator
         }
     };
 
@@ -228,7 +256,7 @@ const GalleryForm = () => {
                                     <ImageUploader
                                         label="Foto Dokumentasi"
                                         currentImage={formData.image}
-                                        onUploadSuccess={(url) => setFormData({ ...formData, image: url })}
+                                        onFileSelect={(file) => setSelectedFile(file)}
                                     />
                                 </div>
                             </div>

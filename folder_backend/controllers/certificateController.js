@@ -76,7 +76,7 @@ exports.updateCertificate = async (req, res) => {
     
     // Jika update database berhasil, cek apakah gambar berubah
     if (oldCert && oldCert.image && oldCert.image !== image) {
-      deleteFile(oldCert.image);
+      await deleteFile(oldCert.image);
     }
 
     // Catat aktivitas: Mengubah Sertifikat
@@ -100,7 +100,7 @@ exports.deleteCertificate = async (req, res) => {
     // --- CLEANUP FILE ---
     const deletedCert = result.rows[0];
     if (deletedCert.image) {
-      deleteFile(deletedCert.image);
+      await deleteFile(deletedCert.image);
     }
 
     // Catat aktivitas: Menghapus Sertifikat

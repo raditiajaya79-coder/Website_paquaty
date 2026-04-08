@@ -64,7 +64,7 @@ exports.updateAnnouncement = async (req, res) => {
 
     // Cleanup jika gambar berubah
     if (oldAnn && oldAnn.image && oldAnn.image !== image) {
-      deleteFile(oldAnn.image);
+      await deleteFile(oldAnn.image);
     }
 
     // Catat aktivitas: Mengubah Pengumuman
@@ -88,7 +88,7 @@ exports.deleteAnnouncement = async (req, res) => {
     // --- CLEANUP FILE ---
     const deletedAnn = result.rows[0];
     if (deletedAnn.image) {
-      deleteFile(deletedAnn.image);
+      await deleteFile(deletedAnn.image);
     }
 
     // Catat aktivitas: Menghapus Pengumuman

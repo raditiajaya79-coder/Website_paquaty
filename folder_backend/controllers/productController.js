@@ -126,11 +126,11 @@ exports.updateProduct = async (req, res) => {
     // Jika update database berhasil, kita bersihkan file lama jika gambarnya berubah:
     // Hapus gambar utama jika diganti
     if (oldProduct && oldProduct.image && oldProduct.image !== image) {
-      deleteFile(oldProduct.image); // Panggil helper penghapus
+      await deleteFile(oldProduct.image); // Panggil helper penghapus
     }
     // Hapus detail gambar jika diganti
     if (oldProduct && oldProduct.detail_image && oldProduct.detail_image !== detail_image) {
-      deleteFile(oldProduct.detail_image); // Panggil helper penghapus
+      await deleteFile(oldProduct.detail_image); // Panggil helper penghapus
     }
 
     // Catat aktivitas: Mengubah Produk
@@ -159,8 +159,8 @@ exports.deleteProduct = async (req, res) => {
     // --- LOGIKA CLEANUP FILE (DELETE) ---
     // Karena baris database sudah terhapus, kita hapus juga file fisiknya
     const deletedProduct = result.rows[0];
-    if (deletedProduct.image) deleteFile(deletedProduct.image); // Hapus gambar utama
-    if (deletedProduct.detail_image) deleteFile(deletedProduct.detail_image); // Hapus detail gambar
+    if (deletedProduct.image) await deleteFile(deletedProduct.image); // Hapus gambar utama
+    if (deletedProduct.detail_image) await deleteFile(deletedProduct.detail_image); // Hapus detail gambar
 
     // Catat aktivitas: Menghapus Produk
     await logActivity(req.admin.id, 'Menghapus Produk', deletedProduct.name);

@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { Instagram, Search, X, ChevronDown } from 'lucide-react';
 import { generatePageTitle } from '../utils/seo';
 import { useLanguage } from '../context/LanguageContext';
+import { getImageUrl } from '../utils/api';
 // Mengambil data dari GlobalDataContext (sudah di-preload saat awal)
 import { useGlobalData } from '../context/GlobalDataContext';
 
@@ -203,7 +204,7 @@ const Gallery = () => {
                                     >
                                         <div className="relative overflow-hidden">
                                             <img
-                                                src={img.image}
+                                                src={getImageUrl(img.image)}
                                                 alt={img.title}
                                                 className="w-full h-auto object-cover transition-all duration-1000 group-hover:scale-105"
                                             />
@@ -287,7 +288,7 @@ const Gallery = () => {
                         >
                             <div className="relative w-full overflow-hidden rounded-3xl md:rounded-[3rem] bg-stone-900 shadow-2xl border border-white/5">
                                 <img
-                                    src={selectedImage.image}
+                                    src={getImageUrl(selectedImage.image)}
                                     alt={selectedImage.title}
                                     className="w-full h-auto max-h-[80vh] object-contain mx-auto"
                                 />

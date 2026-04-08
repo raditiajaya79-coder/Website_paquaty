@@ -102,12 +102,11 @@ function App() {
                 */}
                 <Route path="/admin/login" element={<Login />} />
 
-                {/* Redirect /admin langsung ke dashboard agar tidak blank */}
-                <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
-
                 {/* AREA YANG DILINDUNGI (Wajib Login) */}
                 <Route element={<ProtectedRoute />}>
                     <Route path="/admin" element={<AdminLayout />}>
+                        {/* Jika mengunjungi /admin, otomatis ke dashboard */}
+                        <Route index element={<Navigate to="dashboard" replace />} />
                         <Route path="dashboard" element={<Dashboard />} />
                         {/* Module Produk */}
                         <Route path="products" element={<ManageProducts />} />

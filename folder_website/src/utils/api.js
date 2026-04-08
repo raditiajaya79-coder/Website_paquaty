@@ -15,6 +15,20 @@ export const API_BASE_URL = isLocal
 // Backend menyajikan file statis di root: /uploads/filename.ext (bukan /api/uploads/)
 export const UPLOAD_BASE_URL = API_BASE_URL.replace(/\/api$/, ''); // → https://api-pakuaty.kediritechnopark.com
 
+/**
+ * getImageUrl — Mengubah path gambar dari database menjadi URL yang bisa dibuka browser.
+ * Menangani URL absolut (Minio) dan path relatif (folder /uploads).
+ * @param {string} path - Path atau URL dari database 
+ */
+export const getImageUrl = (path) => {
+  if (!path) return '/images/pure logo pakuaty.png';
+  if (path.startsWith('http') || path.startsWith('//')) return path;
+  
+  // Jika path dimulai dengan /uploads, hapus awalannya agar tidak dobel saat digabung dengan UPLOAD_BASE_URL
+  const cleanPath = path.startsWith('/uploads') ? path : `/uploads/${path}`;
+  return `${UPLOAD_BASE_URL}${cleanPath.replace(/\/+/g, '/')}`;
+};
+
 // === Manajemen Token JWT ===
 
 export function setToken(token) {

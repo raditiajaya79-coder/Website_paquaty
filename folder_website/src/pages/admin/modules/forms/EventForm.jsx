@@ -19,7 +19,7 @@ import {
 import Toast from '../../../../components/admin/Toast';
 import ImageUploader from '../../../../components/admin/ImageUploader';
 import { translateText } from '../../../../utils/translate';
-import { API_BASE_URL } from '../../../../utils/api';
+import { API_BASE_URL, api } from '../../../../utils/api';
 
 /**
  * EventForm Component — Halaman khusus untuk buat/edit Agenda & Artikel.
@@ -49,7 +49,9 @@ const EventForm = () => {
     });
     const [isTranslating, setIsTranslating] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [toast, setToast] = useState({ show: false, message: '', type: 'success' }); // State untuk notifikasi feedback
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+    const [selectedCoverFile, setSelectedCoverFile] = useState(null); // File cover/banner (belum diupload)
+    const [pendingImageFiles, setPendingImageFiles] = useState({}); // Map index blok -> File gambar inline
 
     // Simulasi pengambilan data jika mode edit
     useEffect(() => {
@@ -239,41 +241,64 @@ const EventForm = () => {
         }
     };
 
-    // Handle Submit — Mengirim data ke API (POST/PUT)
+    /**
+     * handleSubmit — Proses simpan event/artikel.
+     * Tahap 1: Upload semua file gambar (cover + inline) ke Minio.
+     * Tahap 2: Simpan semua data ke database.
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
 
         try {
-            const token = localStorage.getItem('admin_token'); // Token auth admin
-            const endpoint = formData.type === 'Article' ? 'articles' : 'events';
+            // Siapkan salinan data
+            let dataToSend = { ...formData };
+
+            // --- TAHAP 1a: Upload cover image (jika ada file baru) ---
+            if (selectedCoverFile) {
+                setToast({ show: true, message: 'Mengunggah gambar cover...', type: 'success' });
+                const result = await api.upload(selectedCoverFile);
+                dataToSend.image = result.url;
+            }
+
+            // --- TAHAP 1b: Upload inline image blocks (jika ada file baru) ---
+            const updatedContent = [...dataToSend.content];
+            for (const [indexStr, file] of Object.entries(pendingImageFiles)) {
+                const idx = parseInt(indexStr);
+                setToast({ show: true, message: `Mengunggah gambar konten ${idx + 1}...`, type: 'success' });
+                const result = await api.upload(file);
+                updatedContent[idx] = { ...updatedContent[idx], value: result.url };
+            }
+            dataToSend.content = updatedContent;
+
+            // --- TAHAP 2: Simpan ke database ---
+            const token = localStorage.getItem('admin_token');
+            const endpoint = dataToSend.type === 'Article' ? 'articles' : 'events';
             const url = isEditMode
-                ? `${API_BASE_URL}/${endpoint}/${id}` // URL Edit
-                : `${API_BASE_URL}/${endpoint}`; // URL Create
+                ? `${API_BASE_URL}/${endpoint}/${id}`
+                : `${API_BASE_URL}/${endpoint}`;
             const method = isEditMode ? 'PUT' : 'POST';
 
-            // Siapkan payload sesuai schema backend (Konversi content ke field yang sesuai)
             const payload = {
-                ...formData,
-                is_pinned: formData.is_pinned ? 1 : 0
+                ...dataToSend,
+                is_pinned: dataToSend.is_pinned ? 1 : 0
             };
 
-            // Serialize content blocks to JSON string
-            const serializedContent = JSON.stringify(formData.content);
-            const serializedContentEn = JSON.stringify(formData.content_en);
+            // Serialize content blocks ke JSON string
+            const serializedContent = JSON.stringify(dataToSend.content);
+            const serializedContentEn = JSON.stringify(dataToSend.content_en);
 
-            if (formData.type === 'Event') {
+            if (dataToSend.type === 'Event') {
                 payload.description = serializedContent;
                 payload.description_en = serializedContentEn;
             } else {
                 payload.content = serializedContent;
                 payload.content_en = serializedContentEn;
-                // Generate excerpt from the first text block
-                const firstTextBlock = formData.content.find(b => b.type === 'text');
+                const firstTextBlock = dataToSend.content.find(b => b.type === 'text');
                 const excerptSource = firstTextBlock ? firstTextBlock.value : '';
                 payload.excerpt = excerptSource.substring(0, 150) + (excerptSource.length > 150 ? '...' : '');
 
-                const firstTextBlockEn = formData.content_en.find(b => b.type === 'text');
+                const firstTextBlockEn = dataToSend.content_en.find(b => b.type === 'text');
                 const excerptSourceEn = firstTextBlockEn ? firstTextBlockEn.value : '';
                 payload.excerpt_en = excerptSourceEn.substring(0, 150) + (excerptSourceEn.length > 150 ? '...' : '');
             }
@@ -284,17 +309,15 @@ const EventForm = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(payload) // Kirim payload data
+                body: JSON.stringify(payload)
             });
 
             if (response.ok) {
-                // Notifikasi Sukses
                 setToast({
                     show: true,
-                    message: `${formData.type === 'Article' ? 'Artikel' : 'Event'} berhasil ${isEditMode ? 'diperbarui' : 'diterbitkan'}!`,
+                    message: `${dataToSend.type === 'Article' ? 'Artikel' : 'Event'} berhasil ${isEditMode ? 'diperbarui' : 'diterbitkan'}!`,
                     type: 'success'
                 });
-                // Kembali ke list setelah jeda
                 setTimeout(() => navigate('/admin/events'), 1500);
             } else {
                 const errorData = await response.json();
@@ -466,7 +489,7 @@ const EventForm = () => {
                             <ImageUploader
                                 label="Gambar Cover / Banner (Semua Format)"
                                 currentImage={formData.image}
-                                onUploadSuccess={(url) => setFormData({ ...formData, image: url })}
+                                onFileSelect={(file) => setSelectedCoverFile(file)}
                             />
                         </div>
                         <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 text-left flex-1 flex flex-col justify-center">
@@ -573,7 +596,10 @@ const EventForm = () => {
                                         <ImageUploader
                                             label={`Gambar Konten ${index + 1}`}
                                             currentImage={block.value}
-                                            onUploadSuccess={(url) => updateBlock(index, url)}
+                                            onFileSelect={(file) => {
+                                                // Simpan file ke Map pending, upload dilakukan saat submit
+                                                setPendingImageFiles(prev => ({ ...prev, [index]: file }));
+                                            }}
                                         />
                                     </div>
                                 )}

@@ -12,37 +12,29 @@ if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Konfigurasi Penyimpanan (Storage)
-const storage = multer.diskStorage({
-  // Tentukan folder tujuan penyimpanan
-  destination: (req, file, cb) => {
-    cb(null, uploadDir); // Simpan ke folder /uploads di backend
-  },
-  // Tentukan format nama file agar unik dan rapi
-  filename: (req, file, cb) => {
-    // Format: TIMESTAMP-ORIGINALNAME (Hilangkan spasi untuk keamanan URL)
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const cleanFileName = file.originalname.replace(/\s+/g, '-').toLowerCase();
-    cb(null, `${uniqueSuffix}-${cleanFileName}`);
-  }
-});
+// Konfigurasi Penyimpanan (Memory)
+// Kita menggunakan memoryStorage karena file akan langsung diunggah ke Minio
+// tanpa perlu disimpan sementara di disk server backend.
+const storage = multer.memoryStorage();
 
 // Filter File (Hanya izinkan gambar)
 const fileFilter = (req, file, cb) => {
+  // Hanya izinkan format gambar populer
   const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
   if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true); // Izinkan
+    cb(null, true); // Lolos filter
   } else {
-    cb(new Error('Format file tidak didukung. Gunakan JPG, PNG, atau WEBP.'), false); // Tolak
+    // Beri pesan error jika format tidak sesuai
+    cb(new Error('Format file tidak didukung. Gunakan JPG, PNG, atau WEBP.'), false);
   }
 };
 
-// Inisialisasi Multer
+// Inisialisasi Multer dengan kapasitas maksimal 5MB
 const upload = multer({
-  storage: storage,
+  storage: storage, // Gunakan memory storage
   fileFilter: fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024 // Batas maksimal 5MB
+    fileSize: 5 * 1024 * 1024 // Batas 5MB per file
   }
 });
 

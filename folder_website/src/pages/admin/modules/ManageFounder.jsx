@@ -40,10 +40,22 @@ const ManageFounder = () => {
         }
     };
 
-    const handleUpdate = async (key, value) => {
+    const handleUpdate = async (file) => {
+        if (!file) return;
         try {
             setSaving(true);
-            await api.put('/settings', { key, value });
+            setToast({
+                show: true,
+                message: 'Mengunggah foto founder...',
+                type: 'success'
+            });
+
+            // Upload ke Minio via API proxy
+            const result = await api.upload(file);
+            const value = result.url;
+
+            // Simpan URL ke pengaturan
+            await api.put('/settings', { key: 'founder_image', value });
 
             setToast({
                 show: true,
@@ -109,7 +121,7 @@ const ManageFounder = () => {
                             <ImageUploader
                                 label="Foto Founder (Semua Format)"
                                 currentImage={founderImage}
-                                onUploadSuccess={(url) => handleUpdate('founder_image', url)}
+                                onFileSelect={(file) => handleUpdate(file)}
                                 previewClassName="w-full max-w-[280px] aspect-[4/5] mx-auto min-h-[350px]"
                             />
                             <div className="bg-purple-50/50 p-4 rounded-xl border border-purple-100/50 text-center mt-4">

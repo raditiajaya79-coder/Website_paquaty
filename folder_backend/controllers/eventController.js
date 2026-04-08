@@ -87,7 +87,7 @@ exports.updateArticle = async (req, res) => {
       
       // Jika update berhasil, hapus file lama jika gambar diganti
       if (oldArticle && oldArticle.image && oldArticle.image !== image) {
-        deleteFile(oldArticle.image);
+        await deleteFile(oldArticle.image);
       }
 
       // Catat aktivitas: Mengubah Artikel
@@ -114,7 +114,7 @@ exports.deleteArticle = async (req, res) => {
     // Hapus file fisik gambar artikel
     const deletedArticle = result.rows[0];
     if (deletedArticle.image) {
-      deleteFile(deletedArticle.image);
+      await deleteFile(deletedArticle.image);
     }
 
     // Catat aktivitas: Menghapus Artikel
@@ -207,7 +207,7 @@ exports.updateEvent = async (req, res) => {
       
       // Jika update berhasil, hapus gambar lama jika diganti
       if (oldEvent && oldEvent.image && oldEvent.image !== image) {
-        deleteFile(oldEvent.image);
+        await deleteFile(oldEvent.image);
       }
 
       // Catat aktivitas: Mengubah Event
@@ -231,7 +231,7 @@ exports.deleteEvent = async (req, res) => {
     // --- CLEANUP FILE ---
     const deletedEvent = result.rows[0];
     if (deletedEvent.image) {
-      deleteFile(deletedEvent.image);
+      await deleteFile(deletedEvent.image);
     }
 
     // Catat aktivitas: Menghapus Event
