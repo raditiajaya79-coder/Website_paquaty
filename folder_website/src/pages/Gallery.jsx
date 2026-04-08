@@ -206,6 +206,7 @@ const Gallery = () => {
                                             <img
                                                 src={getImageUrl(img.image)}
                                                 alt={img.title}
+                                                loading="lazy"
                                                 className="w-full h-auto object-cover transition-all duration-1000 group-hover:scale-105"
                                             />
                                             {/* Gradient Overlay (Sesuai gambar yang diinginkan user) */}

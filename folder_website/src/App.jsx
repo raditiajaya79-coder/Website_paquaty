@@ -58,9 +58,9 @@ function App() {
     return (
         <>
             <ScrollToTop />
-            {/* AnimatePresence — Memungkinkan animasi transisi halaman */}
-            <AnimatePresence mode="wait">
-                <Routes location={location} key={location.pathname}>
+            {/* Routes root - tidak ada transisi/penguncian key di level ini. 
+                Transisi halaman dikelola secara mandiri di dalam MainLayout & AdminLayout */}
+            <Routes location={location}>
                 {/* 
             Route parent dengan MainLayout sebagai wrapper
             Semua child routes akan di-render di dalam MainLayout (via <Outlet />)
@@ -145,7 +145,6 @@ function App() {
                 </Route>
 
             </Routes>
-        </AnimatePresence>
         </>
     );
 }

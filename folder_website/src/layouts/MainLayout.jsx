@@ -1,7 +1,7 @@
 // MainLayout.jsx — Wrapper utama untuk layout website
 import React from 'react';
-import { Outlet } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { Outlet, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
 import AnnouncementPopup from '../components/AnnouncementPopup.jsx';
@@ -22,6 +22,7 @@ import { useGlobalData } from '../context/GlobalDataContext.jsx';
 const MainLayout = () => {
     // Ambil status loading dari GlobalDataContext
     const { isLoaded } = useGlobalData();
+    const location = useLocation();
 
     return (
         <>
@@ -47,17 +48,19 @@ const MainLayout = () => {
                 Main Content Area with Premium Transitions
               */}
                     <main className="flex-grow">
-                        <motion.div
-                            key={window.location.pathname}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center pt-20"><div className="w-8 h-8 rounded-full bg-brand-cream animate-ping" /></div>}>
-                                <Outlet />
-                            </React.Suspense>
-                        </motion.div>
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={location.pathname}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center pt-20"><div className="w-8 h-8 border-4 border-brand-blue border-t-transparent rounded-full animate-spin" /></div>}>
+                                    <Outlet />
+                                </React.Suspense>
+                            </motion.div>
+                        </AnimatePresence>
                     </main>
 
                     {/* Komponen Informasi Bawah */}

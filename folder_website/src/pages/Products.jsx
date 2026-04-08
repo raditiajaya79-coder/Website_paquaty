@@ -241,7 +241,8 @@ const Products = () => {
                                                     <img
                                                         src={product.image}
                                                         alt={product.name}
-                                                        className="relative z-10 max-w-full max-h-full object-contain transition-all duration-1000 group-hover:scale-110 drop-shadow-2xl"
+                                                        loading="lazy"
+                                                        className="relative z-10 max-w-full max-h-full object-contain transition-all duration-1000 group-hover:scale-110 drop-shadow-md md:drop-shadow-2xl"
                                                         onError={(e) => {
                                                             if (e.target.src !== '/images/pure logo pakuaty.png') {
                                                                 e.target.src = '/images/pure logo pakuaty.png';

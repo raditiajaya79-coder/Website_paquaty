@@ -92,6 +92,15 @@ const Home = () => {
     const hasPlayedIntro = sessionStorage.getItem('pakuaty_intro_played');
     const [isRevealed, setIsRevealed] = useState(hasPlayedIntro === 'true');
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+    
+    // Deteksi Mobile Viewport untuk Optimasi Performa (Mematikan animasi berat & iframe background di HP)
+    const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // Auto-cycle hero items
     useEffect(() => {
@@ -164,10 +173,10 @@ const Home = () => {
                     </AnimatePresence>
                 </div>
 
-                {/* ── Flavor Ornaments (Dropped from above) ── */}
-                <div className="absolute inset-0 z-[3] pointer-events-none">
+                {/* ── Flavor Ornaments (Dihilangkan di mobile agar ringan) ── */}
+                <div className="absolute inset-0 z-[3] pointer-events-none hidden md:block">
                     <AnimatePresence mode="popLayout">
-                        {activeFlavor.ornaments.map((imgPath, idx) => (
+                        {!isMobile && activeFlavor.ornaments.map((imgPath, idx) => (
                             <motion.div
                                 key={`${activeIndex}-ornament-${idx}`}
                                 initial={{ opacity: 0, y: -400, rotate: 0 }}
@@ -207,22 +216,22 @@ const Home = () => {
 
                 {/* ── Central Product Stage ── */}
                 <div className="relative z-10 w-full max-w-7xl mx-auto px-6 h-full flex items-center justify-center">
-                    <AnimatePresence mode="popLayout">
+                    <AnimatePresence>
                         <motion.div
                             key={`product-${activeIndex}`}
-                            initial={{ opacity: 0, y: -700, scale: 0.6 }}
+                            initial={{ opacity: 0, y: isMobile ? -100 : -700, scale: isMobile ? 0.8 : 0.6 }}
                             animate={{
                                 opacity: 1,
                                 y: 0,
                                 scale: 1,
                                 rotate: activeFlavor.tilt,
                             }}
-                            exit={{ opacity: 0, y: 700, scale: 0.6 }}
+                            exit={{ opacity: 0, y: isMobile ? 100 : 700, scale: isMobile ? 0.8 : 0.6 }}
                             transition={{
-                                duration: 1.1,
+                                duration: isMobile ? 0.7 : 1.1,
                                 ease: [0.16, 1, 0.3, 1],
                             }}
-                            className="hero-product-img relative w-[75vw] h-[75vw] max-w-[320px] max-h-[320px] -translate-y-[8vh] sm:translate-y-0 sm:w-[22rem] sm:h-[22rem] md:w-[35vw] md:h-[35vw] lg:w-[30vw] lg:max-w-[400px] xl:max-w-[460px] md:max-w-[70vh] md:max-h-[70vh] flex items-center justify-center lg:translate-y-5 z-10"
+                            className="absolute hero-product-img w-[75vw] h-[75vw] max-w-[320px] max-h-[320px] -translate-y-[8vh] sm:translate-y-0 sm:w-[22rem] sm:h-[22rem] md:w-[35vw] md:h-[35vw] lg:w-[30vw] lg:max-w-[400px] xl:max-w-[460px] md:max-w-[70vh] md:max-h-[70vh] flex items-center justify-center lg:translate-y-5 z-10"
                         >
                             <motion.img
                                 src={activeProduct?.image}
@@ -233,9 +242,9 @@ const Home = () => {
                                 }}
                                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
 
-                                // --- PILIHAN SHADOW (Gunakan Ctrl + / untuk mematikan/menghidupkan) ---
-                                // Opsi 1: DENGAN Bayangan Putih Halus
-                                className="w-full h-full object-contain filter drop-shadow-[0_0_20px_rgba(255,255,255,0.35)] transition-transform duration-700"
+                                // --- PERFORMA OPTIMASI: Shadow putih bersinar (heavy GPU) hanya aktif di Desktop (md:)
+                                // Di mobile, kita gunakan shadow biasa agar tidak lag.
+                                className="w-full h-full object-contain filter drop-shadow-xl md:drop-shadow-[0_0_20px_rgba(255,255,255,0.35)] transition-transform duration-700"
 
                                 // Opsi 2: TANPA Bayangan Sama Sekali (Polos)
                                 // className="w-full h-full object-contain transition-transform duration-700"
@@ -414,7 +423,8 @@ const Home = () => {
                                 onClick={() => settings.hero_video_url && setIsVideoModalOpen(true)}
                                 className={`hidden sm:block w-full max-w-[240px] lg:max-w-[280px] aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-xl relative group bg-stone-100 ${settings.hero_video_url ? 'cursor-pointer' : ''}`}
                             >
-                                {settings.hero_video_url && getYouTubeID(settings.hero_video_url) ? (
+                                {/* Optimasi Performa: Video Iframe dimatikan sepenuhnya jika dibuka via HP */}
+                                {!isMobile && settings.hero_video_url && getYouTubeID(settings.hero_video_url) ? (
                                     <>
                                         <div className="w-full h-full relative pointer-events-none transition-transform duration-700 group-hover:scale-105">
                                             {/* CSS Trick untuk Cover full Iframe tanpa blackbars di container 4:3 */}
@@ -423,6 +433,7 @@ const Home = () => {
                                                 src={`https://www.youtube.com/embed/${getYouTubeID(settings.hero_video_url)}?autoplay=1&mute=1&loop=1&playlist=${getYouTubeID(settings.hero_video_url)}&controls=0&showinfo=0&rel=0`}
                                                 title="YouTube Profil Video"
                                                 frameBorder="0"
+                                                loading="lazy"
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 allowFullScreen
                                             ></iframe>

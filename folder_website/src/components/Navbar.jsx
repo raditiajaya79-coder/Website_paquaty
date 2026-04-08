@@ -135,9 +135,15 @@ const Navbar = () => {
     ];
 
     return (
-        <nav className={`fixed top-0 w-full z-[100] transition-all duration-700 ${isTransparent
-            ? 'bg-transparent border-transparent py-2'
-            : 'bg-white/90 backdrop-blur-xl border-b border-stone-border/50 py-0 shadow-soft'
+        <nav 
+            style={{ 
+                top: '-4px', 
+                paddingBottom: isTransparent ? '0.5rem' : '0px',
+                paddingTop: isTransparent ? '0.75rem' : '4px' 
+            }}
+            className={`fixed w-full z-[100] transition-all duration-700 ${isTransparent
+            ? 'bg-transparent border-transparent'
+            : 'bg-white/90 backdrop-blur-xl border-b border-stone-border/50 shadow-soft'
             }`}>
             <div className="max-w-7xl mx-auto px-6 h-14 md:h-16 flex items-center justify-between">
                 <Link to="/" className="flex gap-3 items-center group relative">
@@ -221,16 +227,11 @@ const Navbar = () => {
                         animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, x: 10, y: -10 }}
                         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                        className="fixed top-20 right-4 w-[65vw] max-w-[240px] bg-white/75 backdrop-blur-3xl z-[120] md:hidden flex flex-col py-6 px-6 rounded-[1.5rem] border border-white/80 shadow-[0_20px_40px_rgba(0,0,0,0.15)] overflow-hidden"
+                        className="fixed top-20 right-4 w-[65vw] max-w-[240px] bg-white/95 backdrop-blur-md z-[120] md:hidden flex flex-col py-6 px-6 rounded-[1.5rem] border border-white/80 shadow-2xl overflow-hidden"
                     >
                         <div className="flex flex-col gap-2 relative z-10">
                             {navLinks.map((link, idx) => (
-                                <motion.div
-                                    key={link.name}
-                                    initial={{ opacity: 0, x: 5 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: idx * 0.05 }}
-                                >
+                                <div key={link.name} className="animate-in fade-in slide-in-from-right-2 duration-300" style={{ animationDelay: `${idx * 40}ms`, animationFillMode: 'both' }}>
                                     <NavLink
                                         to={link.path}
                                         onClick={() => setIsMenuOpen(false)}
@@ -239,7 +240,7 @@ const Navbar = () => {
                                         <span className="text-[7px] font-black text-brand-gold">0{idx + 1}</span>
                                         {link.name}
                                     </NavLink>
-                                </motion.div>
+                                </div>
                             ))}
                         </div>
 
@@ -259,39 +260,31 @@ const Navbar = () => {
                         </div>
 
 
-                        {/* Mobile Header Contacts — Restored Original Circle Style */}
                         {headerContacts.length > 0 && (
                             <div className="flex justify-center gap-4 mb-4 relative z-10">
                                 {headerContacts.map((contact, idx) => {
                                     const BrandIcon = NavbarBrandIcons[contact.icon];
                                     return (
-                                        <motion.a
+                                        <a
                                             key={contact.id}
                                             href={(contact.value && contact.value.startsWith('http')) ? contact.value : (contact.icon === 'Phone' ? `tel:${contact.value}` : (contact.icon === 'Mail' ? `mailto:${contact.value}` : `https://${contact.value}`))}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: 0.15 + (idx * 0.05) }}
-                                            className="p-2.5 rounded-full bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)] text-stone-dark hover:scale-110 active:scale-95 transition-all"
+                                            className="p-2.5 rounded-full bg-white shadow-sm text-stone-dark hover:scale-110 active:scale-95 transition-all animate-in fade-in slide-in-from-bottom-2 duration-300"
+                                            style={{ animationDelay: `${150 + (idx * 40)}ms`, animationFillMode: 'both' }}
                                         >
                                             {BrandIcon ? <BrandIcon /> : <NavbarBrandIcons.Default />}
-                                        </motion.a>
+                                        </a>
                                     )
                                 })}
                             </div>
                         )}
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.25 }}
-                            className="relative z-10"
-                        >
+                        <div className="relative z-10 animate-in fade-in flex-in duration-300" style={{ animationDelay: '250ms', animationFillMode: 'both' }}>
                             <Link to="/contact" className="w-full py-3 bg-brand-gold text-stone-dark rounded-full font-black text-[7px] uppercase tracking-[0.15em] flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-transform">
                                 {t('nav.connect')}
                                 <ArrowRight className="w-3 h-3" />
                             </Link>
-                        </motion.div>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
