@@ -15,7 +15,9 @@ import {
     Image as ImageIcon,
     Sparkles,
     Check,
-    UploadCloud
+    UploadCloud,
+    Wand2,
+    Loader2
 } from 'lucide-react'; // Ikon
 import ImageUploader from '../../../../components/admin/ImageUploader';
 import { API_BASE_URL, api } from '../../../../utils/api';
