@@ -11,15 +11,15 @@ import MainLayout from './layouts/MainLayout.jsx';
 
 // Pages — setiap halaman website publik
 import Home from './pages/Home.jsx';
-const About = lazy(() => import('./pages/About.jsx'));
-const Products = lazy(() => import('./pages/Products.jsx'));
-const ProductDetail = lazy(() => import('./pages/ProductDetail.jsx'));
-const Production = lazy(() => import('./pages/Production.jsx'));
-const Contact = lazy(() => import('./pages/Contact.jsx'));
-const Events = lazy(() => import('./pages/Events.jsx'));
-const EventDetail = lazy(() => import('./pages/EventDetail.jsx'));
-const Gallery = lazy(() => import('./pages/Gallery.jsx'));
-const Certificates = lazy(() => import('./pages/Certificates.jsx'));
+import About from './pages/About.jsx';
+import Products from './pages/Products.jsx';
+import ProductDetail from './pages/ProductDetail.jsx';
+import Production from './pages/Production.jsx';
+import Contact from './pages/Contact.jsx';
+import Events from './pages/Events.jsx';
+import EventDetail from './pages/EventDetail.jsx';
+import Gallery from './pages/Gallery.jsx';
+import Certificates from './pages/Certificates.jsx';
 
 // Admin Pages — Area khusus pengelolaan konten
 const Login = lazy(() => import('./pages/admin/Login.jsx'));

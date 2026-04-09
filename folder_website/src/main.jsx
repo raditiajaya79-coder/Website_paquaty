@@ -14,19 +14,24 @@ import { LanguageProvider } from './context/LanguageContext.jsx';
 // GlobalDataProvider — Menyediakan data API yang sudah di-preload ke seluruh app
 import { GlobalDataProvider } from './context/GlobalDataContext.jsx';
 
+import ErrorBoundary from './components/ErrorBoundary.jsx';
+
 // Mount React app ke DOM element #root di index.html
 createRoot(document.getElementById('root')).render(
     // StrictMode — mendeteksi masalah potensial saat development
     <StrictMode>
-        <HelmetProvider>
-            <LanguageProvider>
-                <BrowserRouter>
-                    {/* GlobalDataProvider — Fetch semua data di awal, simpan di context */}
-                    <GlobalDataProvider>
-                        <App />
-                    </GlobalDataProvider>
-                </BrowserRouter>
-            </LanguageProvider>
-        </HelmetProvider>
+        <ErrorBoundary>
+            <HelmetProvider>
+                <LanguageProvider>
+                    <BrowserRouter>
+                        {/* GlobalDataProvider — Fetch semua data di awal, simpan di context */}
+                        <GlobalDataProvider>
+                            <App />
+                        </GlobalDataProvider>
+                    </BrowserRouter>
+                </LanguageProvider>
+            </HelmetProvider>
+        </ErrorBoundary>
     </StrictMode>
 );
+

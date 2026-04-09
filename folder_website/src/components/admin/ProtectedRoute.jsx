@@ -39,7 +39,15 @@ const ProtectedRoute = () => {
             }
         };
 
+        // Listener untuk event logout otomatis (dari api.js interceptor)
+        const handleForceLogout = () => {
+            setIsAuthenticated(false);
+        };
+        window.addEventListener('pakuaty_logout', handleForceLogout);
+
         verifyToken();
+
+        return () => window.removeEventListener('pakuaty_logout', handleForceLogout);
     }, [token]);
 
     // Tampilkan loading screen sederhana saat sedang verifikasi ke server

@@ -1,6 +1,6 @@
 // MainLayout.jsx — Wrapper utama untuk layout website
 import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useOutlet } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
@@ -23,6 +23,7 @@ const MainLayout = () => {
     // Ambil status loading dari GlobalDataContext
     const { isLoaded } = useGlobalData();
     const location = useLocation();
+    const currentOutlet = useOutlet();
 
     return (
         <>
@@ -56,9 +57,7 @@ const MainLayout = () => {
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 0.3 }}
                             >
-                                <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center pt-20"><div className="w-8 h-8 border-4 border-brand-blue border-t-transparent rounded-full animate-spin" /></div>}>
-                                    <Outlet />
-                                </React.Suspense>
+                                {currentOutlet ? React.cloneElement(currentOutlet, { key: location.pathname }) : null}
                             </motion.div>
                         </AnimatePresence>
                     </main>

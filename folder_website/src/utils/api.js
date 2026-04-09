@@ -4,11 +4,9 @@
  * Menyimpan dan mengirim JWT token secara otomatis di setiap request.
  */
 
-// Tentukan base URL secara dinamis berdasarkan lokasi (localhost vs production)
-const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-export const API_BASE_URL = isLocal 
-  ? "http://localhost:5000/api"  // URL lokal untuk development
-  : "https://api-pakuaty.kediritechnopark.com/api"; // URL produksi otomatis
+// Mengambil base API URL secara dinamis dari file .env (Sangat disarankan untuk Production)
+// Fallback ke localhost jika environment gagal diload.
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://api-pakuaty.kediritechnopark.com/api";
 
 
 // URL dasar untuk file upload — tanpa suffix /api
