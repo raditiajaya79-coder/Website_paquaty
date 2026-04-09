@@ -49,17 +49,12 @@ const MainLayout = () => {
                 Main Content Area with Premium Transitions
               */}
                     <main className="flex-grow">
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={location.pathname}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.3 }}
-                            >
-                                {currentOutlet ? React.cloneElement(currentOutlet, { key: location.pathname }) : null}
-                            </motion.div>
-                        </AnimatePresence>
+                        {/* Perbaikan Kestabilan Layout (Fix Blank Page)
+                            Dihapusnya framer-motion AnimatePresence di area root sini 
+                            agar tidak konflik dengan AnimatePresence internal halaman (seperti Home/Products). */}
+                        <div className="w-full h-full animate-in fade-in duration-500">
+                            <Outlet />
+                        </div>
                     </main>
 
                     {/* Komponen Informasi Bawah */}

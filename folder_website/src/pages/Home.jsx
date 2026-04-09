@@ -126,8 +126,7 @@ const Home = () => {
 
     const fadeIn = {
         initial: { opacity: 0, y: 20 },
-        whileInView: { opacity: 1, y: 0 },
-        viewport: { once: true },
+        animate: { opacity: 1, y: 0 },
         transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] }
     };
 
@@ -405,7 +404,7 @@ const Home = () => {
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
                         <motion.h2
                             initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 0.15, scale: 1 }}
+                            animate={{ opacity: 0.15, scale: 1 }}
                             transition={{ duration: 1.5 }}
                             className="text-[clamp(80px,12vw,220px)] font-black text-stone-dark/60 leading-none select-none tracking-tighter uppercase italic drop-shadow-sm"
                         >
@@ -418,7 +417,7 @@ const Home = () => {
                         <div className="lg:col-span-4 flex justify-center lg:justify-start">
                             <motion.div
                                 initial={{ x: -60, opacity: 0 }}
-                                whileInView={{ x: 0, opacity: 1 }}
+                                animate={{ x: 0, opacity: 1 }}
                                 transition={{ duration: 0.8 }}
                                 onClick={() => settings.hero_video_url && setIsVideoModalOpen(true)}
                                 className={`hidden sm:block w-full max-w-[240px] lg:max-w-[280px] aspect-[4/3] rounded-[2.5rem] overflow-hidden shadow-xl relative group bg-stone-100 ${settings.hero_video_url ? 'cursor-pointer' : ''}`}
@@ -466,7 +465,7 @@ const Home = () => {
                         <div className="lg:col-span-4 flex justify-center lg:translate-x-8">
                             <motion.div
                                 initial={{ y: 50, opacity: 0, scale: 0.9 }}
-                                whileInView={{ y: 0, opacity: 1, scale: 1 }}
+                                animate={{ y: 0, opacity: 1, scale: 1 }}
                                 transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
                                 className="relative w-full max-w-[240px] lg:max-w-[300px]"
                             >
@@ -488,7 +487,7 @@ const Home = () => {
                         <div className="lg:col-span-4 flex flex-col gap-4 lg:pl-10 text-center lg:text-left items-center lg:items-start">
                             <motion.div
                                 initial={{ x: 60, opacity: 0 }}
-                                whileInView={{ x: 0, opacity: 1 }}
+                                animate={{ x: 0, opacity: 1 }}
                                 transition={{ duration: 0.8, delay: 0.2 }}
                                 className="max-w-sm"
                             >
