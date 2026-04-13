@@ -22,11 +22,11 @@ const ICON_MAP = {
  * 6 langkah proses heritage produksi keripik tempe Pakuaty.
  */
 const JOURNEY_STEPS = [
-    { id: 1, step_number: 1, title: 'Kedelai Premium', title_en: 'Premium Soybeans', description: 'Kedelai non-GMO lokal untuk kualitas terbaik.', description_en: 'Locally sourced non-GMO soybeans for the freshest quality.', icon: 'Sprout' },
-    { id: 2, step_number: 2, title: 'Fermentasi Alami', title_en: 'Natural Fermentation', description: 'Proses fermentasi tradisional 48 jam.', description_en: 'Traditional 48-hour slow fermentation process.', icon: 'Microscope' },
-    { id: 3, step_number: 3, title: 'Bumbu Khas', title_en: 'Bold Seasoning', description: 'Diramu dengan campuran rempah warisan.', description_en: 'Hand-seasoned with signature heritage spice blends.', icon: 'Package' },
-    { id: 4, step_number: 4, title: 'Penggorengan Renyah', title_en: 'Crispy Frying', description: 'Digoreng dengan suhu optimal hingga renyah sempurna.', description_en: 'Fried at optimal temperature for perfect crispiness.', icon: 'Flame' },
-    { id: 5, step_number: 5, title: 'Kontrol Kualitas', title_en: 'Quality Control', description: 'Setiap batch diperiksa ketat sebelum dikemas.', description_en: 'Every batch is strictly inspected before packaging.', icon: 'ShieldCheck' },
+    { id: 1, step_number: 1, title: 'Kedelai Pilihan', title_en: 'Selected Soybeans', description: 'Kedelai non-GMO lokal untuk kualitas terbaik.', description_en: 'Locally sourced non-GMO soybeans for the freshest quality.', icon: 'Sprout' },
+    { id: 2, step_number: 2, title: 'Fermentasi Alami', title_en: 'Natural Fermentation', description: 'Fermentasi Higienis.', description_en: 'Higenic fermentation.', icon: 'Microscope' },
+    { id: 3, step_number: 3, title: 'Bumbu Khas', title_en: 'Genuine Seasoning', description: 'Diramu dengan campuran rempah warisan.', description_en: 'Hand-seasoned with signature heritage spice blends.', icon: 'Package' },
+    { id: 4, step_number: 4, title: 'Penggorengan Terkontrol', title_en: 'Controlled Frying', description: 'Digoreng dengan suhu optimal hingga renyah sempurna.', description_en: 'Fried at optimal temperature for perfect crispiness.', icon: 'Flame' },
+    { id: 5, step_number: 5, title: 'Kualitas Terkontrol', title_en: 'Quality Control', description: 'Setiap batch diperiksa ketat sebelum dikemas.', description_en: 'Every batch is strictly inspected before packaging.', icon: 'ShieldCheck' },
     { id: 6, step_number: 6, title: 'Siap Ekspor', title_en: 'Export Ready', description: 'Dikemas vakum untuk kualitas ekspor internasional.', description_en: 'Vacuum-sealed to ensure international export quality.', icon: 'Store' }
 ];
 
