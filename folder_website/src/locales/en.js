@@ -109,23 +109,10 @@ export const en = {
 
     // Product Data
     "product.1.name": "Original",
-    "product.1.grade": "Classic Tempe Chip",
-    "product.1.desc": "For those who love unique and distinct snacks, Pakuaty Original Tempe Chips are ready to be your loyal companion! Crafted from a traditional recipe rich in authentic Indonesian culture, Pakuaty brings a deliciousness that is truly addictive. It's crunchy, savory, and non-greasy, reminding you of the timeless authenticity of tempe flavor.",
     "product.2.name": "Balado",
-    "product.2.grade": "Spicy Chili Tempe Chip",
-    "product.2.desc": "Ready to experience an addictive spice? Pakuaty Balado Tempe Chips come with perfect crunch and a bold balado seasoning. Ideal for those who enjoy snacking with a savory-spicy sensation that never ends.",
     "product.3.name": "BBQ",
-    "product.3.grade": "Smoky BBQ Tempe Chip",
-    "product.3.desc": "Bring the grill atmosphere to every bite with Pakuaty Barbecue Tempe Chips! Maximum crunch combined with a touch of smoky and savory barbecue flavor will keep you snacking. Perfect for enjoying a barbecue sensation anytime, anywhere.",
     "product.4.name": "Cheese",
-    "product.4.grade": "Creamy Cheese Tempe Chip",
-    "product.4.desc": "Get ready to experience the combination of tempe crunch and savory cheese that melts in your mouth! Pakuaty Cheese Tempe Chips offer a creamy and addictive cheese flavor.",
     "product.5.name": "Roasted Beef",
-    "product.5.grade": "Premium Savory Tempe Chip",
-    "product.5.desc": "Discover a new delight in every bite! Pakuaty Roasted Beef Tempe Chips serve a delicious savory flavor that captivates the palate. The crunch of tempe blends perfectly with the rich aroma of roasted beef.",
-    "product.6.name": "Crispy Mushroom",
-    "product.6.grade": "Healthy Crunchy Snack",
-    "product.6.desc": "Snacking without guilt? Pakuaty Crispy Mushroom is the solution! Made from high-quality mushrooms processed hygienically. It's savory, crunchy, and definitely addictive!",
 
     // About Page
     "about.header_label": "About Us",
@@ -184,21 +171,7 @@ export const en = {
     "certs.footer_point2": "Lab Tested Weekly",
     "certs.footer_point3": "Non-GMO Guaranteed",
 
-    "cert.1.title": "HACCP Certified",
-    "cert.1.sub": "Food Safety",
-    "cert.1.desc": "Hazard Analysis and Critical Control Points (HACCP) is an internationally recognized system for reducing food safety hazards.",
-    "cert.2.title": "Halal Indonesia",
-    "cert.2.sub": "BPJPH Certified",
-    "cert.2.desc": "Ensuring all products comply with Islamic dietary laws as regulated by the Indonesian government.",
-    "cert.3.title": "SNI Standard",
-    "cert.3.sub": "National Standard",
-    "cert.3.desc": "The only standard that has national validity in Indonesia, ensuring product quality and safety.",
-    "cert.4.title": "BPOM RI",
-    "cert.4.sub": "Food Safety",
-    "cert.4.desc": "Official registration ensuring that our products meet national health and safety requirements.",
-    "cert.5.title": "ISO 22000",
-    "cert.5.sub": "Safety Systems",
-    "cert.5.desc": "International standard for food safety management across the entire supply chain.",
+
 
     // Gallery Page
     "gallery.header_label": "Visual Narrative",
@@ -216,20 +189,7 @@ export const en = {
     "gallery.no_images": "No images found",
     "gallery.no_images_desc": "Try a different search term or category",
 
-    "gallery.item1.title": "Heritage Fermentation",
-    "gallery.item1.cat": "Process",
-    "gallery.item2.title": "Spicy Infusion",
-    "gallery.item2.cat": "Flavor",
-    "gallery.item3.title": "Smoky Perfection",
-    "gallery.item3.cat": "Quality",
-    "gallery.item4.title": "Golden Grating",
-    "gallery.item4.cat": "Detail",
-    "gallery.item5.title": "Roasted Excellence",
-    "gallery.item5.cat": "Export",
-    "gallery.item6.title": "Crunch Anatomy",
-    "gallery.item6.cat": "Detail",
-    "gallery.item7.title": "The Collection",
-    "gallery.item7.cat": "Brand",
+
 
     // Events Page
     "events.header_label": "Latest Updates",
@@ -240,34 +200,7 @@ export const en = {
 
     "article.detail.back": "Back to Events",
 
-    "article.1.title": "Traditional Fermentation: The Secret to Pakuaty's Crunch",
-    "article.1.excerpt": "Discover the ancient heritage behind our 48-hour fermentation process that creates the unique texture and deep flavor profile of our artisan tempe.",
-    "article.1.content": "Our fermentation process is a labor of love that spans generations. We start with carefully selected non-GMO soybeans, which are soaked and then inoculated with a traditional starter culture. The critical phase is the 48-hour slow fermentation in a temperature-controlled environment. This allows the mycelium to fully bind the soybeans, creating a dense, protein-rich 'cake' that forms the base of our chips.\n\nThis patient approach is what differentiates Pakuaty. While industrial methods try to speed up this process, we believe that true flavor and the perfect 'crunch' can only be achieved by respecting nature's timeline. The result is a snack that isn't just delicious, but deeply rooted in traditional wisdom.",
-    "article.1.date": "Jan 15, 2026",
-    "article.1.author": "Production Master",
-    "article.1.cat": "Process",
-    "article.2.title": "Pakuaty Expands to Middle Eastern Markets",
-    "article.2.excerpt": "Our recent partnership with major retailers in Dubai marks a significant milestone in our journey to bring Indonesian flavors to the global stage.",
-    "article.2.content": "Pakuaty is proud to announce its entry into the Middle Eastern market through a strategic partnership with leading retail chains in the UAE. This expansion represents a key milestone in our mission to bring authentic, high-quality Indonesian tempe snacks to international consumers. Our chips will now be available in major cities including Dubai and Abu Dhabi, bringing a taste of Indonesia to the world.",
-    "article.2.date": "Feb 02, 2026",
-    "article.2.author": "Export Division",
-    "article.2.cat": "Global",
-    "article.3.title": "Designing the Future: The Evolution of Our Packaging",
-    "article.3.excerpt": "Explore the design philosophy behind our new premium holographic packaging that balances modern aesthetics with traditional Indonesian motifs.",
-    "article.3.author": "Design Team",
-    "article.3.cat": "Innovation",
-    "article.4.title": "Sourcing Excellence: Meeting Our Local Soybean Farmers",
-    "article.4.excerpt": "We visit the heart of East Java to meet the families who grow the non-GMO soybeans that form the foundation of every Pakuaty tempe chip.",
-    "article.4.author": "Sourcing Team",
-    "article.4.cat": "Community",
-    "article.5.title": "The Health Benefits of Fermented Snacks",
-    "article.5.excerpt": "Scientific insights into why our traditional fermentation process makes tempe chips a superior snack choice for health-conscious consumers.",
-    "article.5.author": "Health Expert",
-    "article.5.cat": "Wellness",
-    "article.6.title": "Upcoming Event: Indonesian Food Expo 2026",
-    "article.6.excerpt": "Join us in Jakarta this coming April as we showcase our latest flavor innovations and heritage craftsmanship at the national food exhibition.",
-    "article.6.author": "PR Team",
-    "article.6.cat": "Event",
+
 
     // Contact Page
     "contact.header_label": "Inquiry & Support",

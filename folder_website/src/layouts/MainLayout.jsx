@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
 import AnnouncementPopup from '../components/AnnouncementPopup.jsx';
+import FloatingChatbot from '../components/FloatingChatbot.jsx';
 // Preloader — Layar loading yang tampil saat data belum siap
 import Preloader from '../components/Preloader.jsx';
 // Hook untuk cek status loading global
@@ -59,6 +60,9 @@ const MainLayout = () => {
 
                     {/* Komponen Informasi Bawah */}
                     <Footer />
+
+                    {/* Widget Chatbot Mengambang (Pojok Kanan Bawah) siap dihubungkan dengan server n8n */}
+                    <FloatingChatbot />
                 </motion.div>
             )}
         </>

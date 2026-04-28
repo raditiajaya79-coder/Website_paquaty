@@ -109,23 +109,10 @@ export const id = {
 
     // Product Data
     "product.1.name": "Original",
-    "product.1.grade": "Keripik Tempe Klasik",
-    "product.1.desc": "Buat kamu yang suka camilan unik dan beda, Keripik Tempe Pakuaty rasa Original siap jadi teman setiamu! Dibuat dari resep tradisional yang kaya akan rasa otentik budaya Indonesia, Pakuaty menghadirkan kelezatan yang bikin ketagihan. Rasanya renyah, gurih dan tidak berminyak yang akan bikin kamu ingat pada keaslian rasa tempe yang tidak pernah lekang oleh waktu.",
     "product.2.name": "Balado",
-    "product.2.grade": "Keripik Tempe Pedas",
-    "product.2.desc": "Siap merasakan pedasnya yang bikin ketagihan? Keripik Tempe Pakuaty rasa Balado hadir dengan kerenyahan sempurna dan bumbu balado yang nendang. Pas banget buat kamu yang suka ngemil dengan sensasi pedas gurih yang nggak bisa berhenti.",
     "product.3.name": "BBQ",
-    "product.3.grade": "Keripik Tempe Smoky",
-    "product.3.desc": "Bawa suasana panggangan ke dalam setiap gigitan dengan Keripik Tempe Pakuaty rasa Barbeque! Kerenyahannya yang maksimal, ditambah dengan sentuhan rasa barbeque yang smoky dan gurih, bikin kamu nggak bisa berhenti ngemil.",
     "product.4.name": "Keju",
-    "product.4.grade": "Keripik Tempe Gurih",
-    "product.4.desc": "Siap-siap merasakan kombinasi kerenyahan tempe dan gurihnya keju yang lumer di lidah! Keripik Tempe Pakuaty rasa Keju hadir dengan cita rasa keju yang creamy dan bikin nagih.",
     "product.5.name": "Sapi Panggang",
-    "product.5.grade": "Keripik Tempe Premium",
-    "product.5.desc": "Temukan kenikmatan baru dalam setiap gigitan! Keripik Tempe Pakuaty rasa Sapi Panggang menyajikan rasa gurih lezat yang bikin lidah bergoyang. Kerenyahan tempe berpadu sempurna dengan aroma khas sapi panggang yang kaya rasa.",
-    "product.6.name": "Jamur Crispy",
-    "product.6.grade": "Camilan Sehat Renyah",
-    "product.6.desc": "Ngemil enak tanpa rasa bersalah? Keripik Jamur Pakuaty solusinya! Terbuat dari jamur berkualitas yang diolah dengan cara higienis. Rasanya gurih, teksturnya renyah, dan pastinya bikin ketagihan!",
 
     // About Page
     "about.header_label": "Tentang Kami",
@@ -184,21 +171,7 @@ export const id = {
     "certs.footer_point2": "Uji Lab Mingguan",
     "certs.footer_point3": "Jaminan Non-GMO",
 
-    "cert.1.title": "Keamanan Pangan",
-    "cert.1.sub": "Sertifikasi HACCP",
-    "cert.1.desc": "Analisis Bahaya dan Titik Kendali Kritis (HACCP) adalah sistem internasional untuk mengurangi bahaya keamanan pangan.",
-    "cert.2.title": "Halal Teruji",
-    "cert.2.sub": "Sertifikasi BPJPH",
-    "cert.2.desc": "Memastikan semua produk mematuhi hukum pangan Islam sesuai regulasi Pemerintah Indonesia.",
-    "cert.3.title": "Standar Nasional",
-    "cert.3.sub": "Kebanggaan Lokal",
-    "cert.3.desc": "Satu-satunya standar yang memiliki validitas nasional di Indonesia, menjamin kualitas dan keamanan produk.",
-    "cert.4.title": "Izin Resmi",
-    "cert.4.sub": "Aman Dikonsumsi",
-    "cert.4.desc": "Registrasi resmi yang memastikan produk kami memenuhi persyaratan kesehatan dan keselamatan nasional.",
-    "cert.5.title": "Sertifikasi ISO",
-    "cert.5.sub": "Mutu Global",
-    "cert.5.desc": "Standar internasional untuk manajemen keamanan pangan di seluruh rantai pasokan.",
+
 
     // Gallery Page
     "gallery.header_label": "Narasi Visual",
@@ -216,20 +189,7 @@ export const id = {
     "gallery.no_images": "Foto tidak ditemukan",
     "gallery.no_images_desc": "Coba gunakan kata kunci atau kategori lain",
 
-    "gallery.item1.title": "Luhur Tradisi",
-    "gallery.item1.cat": "Proses",
-    "gallery.item2.title": "Pedas Memikat",
-    "gallery.item2.cat": "Rasa",
-    "gallery.item3.title": "Aroma Panggang",
-    "gallery.item3.cat": "Kualitas",
-    "gallery.item4.title": "Parutan Emas",
-    "gallery.item4.cat": "Detail",
-    "gallery.item5.title": "Kelezatan Panggang",
-    "gallery.item5.cat": "Ekspor",
-    "gallery.item6.title": "Renyah Merata",
-    "gallery.item6.cat": "Detail",
-    "gallery.item7.title": "Koleksi Rasa",
-    "gallery.item7.cat": "Merek",
+
 
     // Events Page
     "events.header_label": "Update Terbaru",
@@ -240,34 +200,7 @@ export const id = {
 
     "article.detail.back": "Kembali ke Acara",
 
-    "article.1.title": "Rahasia Renyah: Seni Fermentasi Pakuaty",
-    "article.1.excerpt": "Telusuri dedikasi di balik proses fermentasi 48 jam yang menciptakan keajaiban tekstur dan kedalaman rasa tempe kami.",
-    "article.1.content": "Proses fermentasi kami adalah wujud dedikasi yang diwariskan dengan penuh ketelitian. Kami memulai dengan kedelai non-GMO pilihan yang direndam dan diinokulasi dengan starter tradisional. Fase krusialnya adalah fermentasi lambat selama 48 jam dalam lingkungan yang suhunya terjaga dengan presisi. Ini memungkinkan miselium mengikat kedelai dengan sempurna, menciptakan 'cake' padat kaya protein yang menjadi jiwa dari setiap keripik kami.\n\nPendekatan penuh kesabaran inilah yang membedakan Pakuaty. Di saat metode industri berupaya mempercepat waktu, kami percaya bahwa rasa sejati dan 'kerenyahan' paripurna hanya dapat diraih dengan menghormati ritme alam. Hasilnya adalah camilan yang tidak hanya memanjakan lidah, namun juga berakar kuat dalam kearifan tradisi yang kami mulyakan.",
-    "article.1.date": "15 Jan 2026",
-    "article.1.author": "Pakar Produksi",
-    "article.1.cat": "Proses",
-    "article.2.title": "Langkah Global: Pakuaty Merambah Pasar Timur Tengah",
-    "article.2.excerpt": "Kemitraan strategis kami dengan peritel terkemuka di Dubai menandai tonggak sejarah baru dalam membawa cita rasa Nusantara ke kancah dunia.",
-    "article.2.content": "Pakuaty dengan bangga mengumumkan keberhasilan penetrasi ke pasar Timur Tengah melalui kolaborasi strategis dengan jaringan ritel prestisius di Uni Emirat Arab. Ekspansi ini adalah langkah konkret dari visi kami untuk menghadirkan camilan tempe Indonesia yang otentik dan berkualitas premium bagi konsumen dunia. Keripik kebanggaan kami kini hadir di kota-kota metropolitan seperti Dubai dan Abu Dhabi, membawa pesona rasa Nusantara ke hadapan masyarakat global.",
-    "article.2.date": "02 Feb 2026",
-    "article.2.author": "Divisi Ekspor",
-    "article.2.cat": "Global",
-    "article.3.title": "Desain Masa Depan: Evolusi Kemasan Premium Kami",
-    "article.3.excerpt": "Jelajahi filosofi desain di balik kemasan holografik premium baru kami yang menyeimbangkan estetika modern dengan motif tradisional Indonesia.",
-    "article.3.author": "Tim Desain",
-    "article.3.cat": "Inovasi",
-    "article.4.title": "Sumber Utama: Menemui Petani Kedelai Lokal",
-    "article.4.excerpt": "Kami mengunjungi jantung Jawa Timur untuk menemui keluarga yang menanam kedelai non-GMO yang menjadi dasar dari setiap keripik tempe Pakuaty.",
-    "article.4.author": "Tim Pengadaan",
-    "article.4.cat": "Komunitas",
-    "article.5.title": "Sehat & Renyah: Manfaat Camilan Fermentasi",
-    "article.5.excerpt": "Wawasan ilmiah mengapa proses fermentasi tradisional kami menjadikan keripik tempe pilihan camilan unggul bagi konsumen yang sadar kesehatan.",
-    "article.5.author": "Ahli Kesehatan",
-    "article.5.cat": "Kesehatan",
-    "article.6.title": "Hadirilah: Indonesian Food Expo 2026 Bersama Kami",
-    "article.6.excerpt": "Bergabunglah dengan kami di Jakarta April mendatang saat kami memamerkan inovasi rasa terbaru dan keahlian warisan kami di pameran makanan nasional.",
-    "article.6.author": "Tim PR",
-    "article.6.cat": "Acara",
+
 
     // Contact Page
     "contact.header_label": "Pertanyaan & Dukungan",
