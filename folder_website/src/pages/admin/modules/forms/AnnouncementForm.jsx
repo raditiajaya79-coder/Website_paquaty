@@ -367,6 +367,13 @@ const AnnouncementForm = () => {
                     </div>
                 </div>
 
+                {/* Pengingat Auto Translate — Di atas tombol submit */}
+                <div className="p-3.5 bg-amber-50 border border-amber-200/80 rounded-xl">
+                    <p className="text-[11px] font-bold text-amber-700 leading-relaxed text-center">
+                        <strong className="text-amber-800">Jangan lupa!</strong> Klik tombol <span className="inline-flex items-center px-2 py-0.5 bg-indigo-100 text-indigo-600 rounded text-[9px] font-black uppercase tracking-widest">Magic Translate (EN)</span> sebelum menyimpan, agar teks bahasa Inggris terisi otomatis.
+                    </p>
+                </div>
+
                 {/* Submit Area */}
                 <div className="flex flex-col md:flex-row gap-5 pt-8">
                     <button
