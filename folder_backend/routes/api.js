@@ -18,6 +18,7 @@ const announcementController = require('../controllers/announcementController');
 const contactController = require('../controllers/contactController');
 const dashboardController = require('../controllers/dashboardController'); // Import controller statistik
 const settingsController = require('../controllers/settingsController'); // Import controller settings
+const knowledgeController = require('../controllers/knowledgeController'); // Import controller knowledge base chatbot
 
 const upload = require('../middleware/upload'); // Import middleware upload
 const imageController = require('../controllers/imageController'); // Import image proxy controller
@@ -115,6 +116,10 @@ router.delete('/announcements/:id', auth, announcementController.deleteAnnouncem
 // --- SITE SETTINGS ROUTES ---
 router.get('/settings', settingsController.getSettings); // Publik
 router.put('/settings', auth, settingsController.updateSetting); // Admin Only
+
+// --- KNOWLEDGE BASE ROUTE (CHATBOT AI) ---
+// Endpoint publik untuk n8n: mengagregasi seluruh data DB menjadi satu JSON
+router.get('/knowledge', knowledgeController.getKnowledge); // Publik (diakses oleh n8n tanpa token)
 
 
 

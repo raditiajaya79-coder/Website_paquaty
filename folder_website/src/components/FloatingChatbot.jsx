@@ -86,7 +86,7 @@ const FloatingChatbot = () => {
             }
 
             // INTEGRASI REAL KE n8n WEBHOOK WEB
-            const response = await fetch('https://auto.apps.kediritechnopark.com/webhook/chatbot_pakuaty', {
+            const response = await fetch('https://bot.kediritechnopark.com/webhook/chatbot_pakuaty', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -98,7 +98,8 @@ const FloatingChatbot = () => {
                 })
             });
 
-            if (!response.ok) throw new Error('Response API Webhook gagal.');
+            // Menghapus pengecekan kaku (!response.ok) agar pesan error kustom dari n8n 
+            // (seperti dari node Respond to Webhook1) tetap bisa dibaca oleh sistem.
 
             // Ekstraksi data secara dinamis
             const contentType = response.headers.get("content-type");
@@ -147,8 +148,14 @@ const FloatingChatbot = () => {
                 animate: shouldAnimate 
             }]);
         } catch (error) {
+            // Blok ini hanya akan jalan jika koneksi benar-benar putus (Network Error) 
+            // atau server n8n mati total.
             console.error("n8n Webhook Error:", error);
-            setMessages((prev) => [...prev, { role: 'bot', text: 'Maaf, terjadi kendala saat menghubungi ke n8n server. Apakah Webhook di n8n-nya sudah aktif (Active/Test)?', animate: false }]);
+            setMessages((prev) => [...prev, { 
+                role: 'bot', 
+                text: 'Maaf, sepertinya ada gangguan koneksi ke server pusat kami. Silakan hubungi kami langsung via WhatsApp untuk bantuan segera.', 
+                animate: false 
+            }]);
         } finally {
             setIsLoading(false);
         }
